@@ -9,7 +9,6 @@
     "build": "npm run clean && tsc && npm run build-tsc && npm run build-webpack",
     "doc": "bin/doc-gen.sh",
     "doc-serve": "bin/doc-gen.sh -r 59320 -s -w -o",
-    "test": "jasmine",
     "karma": "karma start --single-run"
   },
   "repository": {
