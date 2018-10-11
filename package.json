@@ -34,22 +34,24 @@
   "homepage": "https://github.com/stomp-js/rx-stomp#readme",
   "dependencies": {
     "@stomp/stompjs": "^5.0.0-beta.4",
-    "angular2-uuid": "^1.1.1",
-    "webpack-rxjs-externals": "^2.0.0"
+    "angular2-uuid": "^1.1.1"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.3",
+    "@types/jasmine": "^2.8.9",
     "awesome-typescript-loader": "^5.2.0",
     "jasmine": "^3.1.0",
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",
     "karma-summary-reporter": "^1.5.0",
+    "karma-typescript": "^3.0.13",
     "rxjs": "^6.3.3",
     "text-encoding": "^0.6.4",
     "typescript": "^2.9.2",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8",
+    "webpack-rxjs-externals": "^2.0.0",
     "websocket": "^1.0.26"
   },
   "esm5": "./esm5/index.js",

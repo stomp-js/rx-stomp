@@ -35,7 +35,7 @@ const config = {
   externals: [
     webpackRxjsExternals(),
     {
-      '@stomp/stompjs': '@stomp/stompjs',
+      '@stomp/stompjs': 'StompJs',
       'angular2-uuid': 'angular2-uuid'
     }
   ],
