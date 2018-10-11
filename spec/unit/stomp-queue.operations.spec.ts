@@ -3,9 +3,9 @@
 import "jasmine";
 
 import { map } from 'rxjs/operators';
-import { StompService} from '../src';
-import { defaultConfig, stompServiceFactory } from './stomp.service.factory';
-import { ensureStompConnected, disconnetStompRAndEnsure} from './helpers';
+import { StompService} from '../../src';
+import { defaultConfig, stompServiceFactory } from '../helpers/stomp.service.factory';
+import { ensureStompConnected, disconnetStompRAndEnsure} from '../helpers/helpers';
 import { Subscription } from 'rxjs';
 
 describe('StompService Queues', () => {

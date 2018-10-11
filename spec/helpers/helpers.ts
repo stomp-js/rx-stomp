@@ -3,7 +3,7 @@
 import 'jasmine';
 
 // Helper functions
-import {StompRService, StompState} from '../src';
+import {StompRService, StompState} from '../../src';
 
 export function ensureStompConnected(stompService: StompRService, done: any) {
   stompService.connectObservable.subscribe((state: StompState) => {

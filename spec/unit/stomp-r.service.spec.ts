@@ -2,10 +2,10 @@
 
 import "jasmine";
 
-import { StompRService, StompState, StompConfig } from '../src';
+import { StompRService, StompState, StompConfig } from '../../src';
 
-import { defaultConfig, MyStompRService } from './stomp.service.factory';
-import { ensureStompConnected, disconnetStompRAndEnsure, ensureStompRDisconnected } from './helpers';
+import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
+import { ensureStompConnected, disconnetStompRAndEnsure, ensureStompRDisconnected } from '../helpers/helpers';
 
 describe('StompRService', () => {
   let stompService: MyStompRService;

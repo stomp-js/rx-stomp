@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { StompRService, StompService, StompConfig } from '../src';
+import { StompRService, StompService, StompConfig } from '../../src';
 
 export function defaultConfig(): StompConfig {
   return {

@@ -3,11 +3,11 @@
 import "jasmine";
 
 import { filter } from 'rxjs/operators';
-import { StompService, StompState } from '../src';
+import { StompService, StompState } from '../../src';
 
-import { defaultConfig, MyStompService, stompServiceFactory } from './stomp.service.factory';
+import { defaultConfig, MyStompService, stompServiceFactory } from '../helpers/stomp.service.factory';
 import { Message, StompHeaders } from '@stomp/stompjs';
-import { ensureStompConnected, disconnetStompRAndEnsure } from './helpers';
+import { ensureStompConnected, disconnetStompRAndEnsure } from '../helpers/helpers';
 
 describe('StompService', () => {
   let stompService: StompService;

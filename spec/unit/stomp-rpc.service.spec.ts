@@ -2,11 +2,11 @@
 
 import "jasmine";
 
-import {defaultConfig, stompServiceFactory} from './stomp.service.factory';
-import {ensureStompConnected} from './helpers';
+import {defaultConfig, stompServiceFactory} from '../helpers/stomp.service.factory';
+import {ensureStompConnected} from '../helpers/helpers';
 import {Message} from '@stomp/stompjs';
 import {UUID} from 'angular2-uuid';
-import {StompRPCService, StompService} from "../src";
+import {StompRPCService, StompService} from "../../src";
 
 describe('Rabbit RPC', () => {
   const myServiceEndPoint = '/topic/echo';
