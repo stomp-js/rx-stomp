@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf bundles esm5 esm6",
     "build-tsc": "tsc -m es6 --outDir esm6",
-    "build-webpack": "webpack && webpack --mode=production --output-filename=stomp.umd.min.js",
+    "build-webpack": "webpack && webpack --mode=production --output-filename=rx-stomp.umd.min.js",
     "build": "npm run clean && tsc && npm run build-tsc && npm run build-webpack",
     "doc": "bin/doc-gen.sh",
     "doc-serve": "bin/doc-gen.sh -r 59320 -s -w -o",

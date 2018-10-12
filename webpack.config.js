@@ -35,8 +35,7 @@ const config = {
   externals: [
     webpackRxjsExternals(),
     {
-      '@stomp/stompjs': 'StompJs',
-      'angular2-uuid': 'angular2-uuid'
+      '@stomp/stompjs': 'StompJs'
     }
   ],
   // Activate source maps for the bundles in order to preserve the original
@@ -51,8 +50,7 @@ const config = {
         query: {
           declaration: false,
         }
-      },
-      {enforce: "pre", test: /\.js$/, loader: "source-map-loader"}
+      }
     ]
   }
 
