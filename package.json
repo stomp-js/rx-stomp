@@ -54,6 +54,7 @@
     "websocket": "^1.0.26"
   },
   "esm5": "./esm5/index.js",
+  "esm6": "./esm6/index.js",
   "main": "./esm5/index.js",
   "typings": "index.d.ts",
   "sideEffects": false
