@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { StompRService, StompService, StompConfig } from '../../src';
+import { RxStomp, StompService, StompConfig } from '../../src';
 
 export function defaultConfig(): StompConfig {
   return {
@@ -49,7 +49,7 @@ export function stompServiceFactory(_conf: StompConfig) {
   return new MyStompService(_conf);
 }
 
-export class MyStompRService extends StompRService {
+export class MyStompRService extends RxStomp {
   /**
    * This method closes the underlying WebSocket, simulating a close due to an error
    */

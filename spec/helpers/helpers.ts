@@ -3,15 +3,15 @@
 import 'jasmine';
 
 // Helper functions
-import {StompRService, StompState} from '../../src';
+import {RxStomp, StompState} from '../../src';
 
-export function ensureStompConnected(stompService: StompRService, done: any) {
+export function ensureStompConnected(stompService: RxStomp, done: any) {
   stompService.connectObservable.subscribe((state: StompState) => {
     done();
   });
 }
 
-export function ensureStompRDisconnected (stompService: StompRService, done: any) {
+export function ensureStompRDisconnected (stompService: RxStomp, done: any) {
   stompService.state.subscribe((state: StompState) => {
     if (state === StompState.CLOSED) {
       done();
@@ -19,7 +19,7 @@ export function ensureStompRDisconnected (stompService: StompRService, done: any
   });
 }
 
-export function  disconnetStompRAndEnsure(stompService: StompRService, done: any) {
+export function  disconnetStompRAndEnsure(stompService: RxStomp, done: any) {
   stompService.disconnect();
   ensureStompRDisconnected(stompService, done);
 }

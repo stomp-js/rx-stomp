@@ -1,14 +1,12 @@
-import {filter, first, share} from 'rxjs/operators';
+import {filter, share} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs';
 
-import {StompConfig} from './stomp.config';
+import {StompConfig} from './stomp-config';
 
 import {Client, Frame, Message, Stomp, StompHeaders, StompSubscription} from '@stomp/stompjs';
 import {StompState} from './stomp-state';
 
 /**
- * Angular2 STOMP Raw Service using @stomp/stomp.js
- *
  * You will only need the public properties and
  * methods listed unless you are an advanced user. This service handles subscribing to a
  * message queue using the stomp.js library, and returns
@@ -19,7 +17,7 @@ import {StompState} from './stomp-state';
  * If you will like to pass the configuration as a dependency,
  * please use StompService class.
  */
-export class StompRService {
+export class RxStomp {
   /**
    * State of the STOMPService
    *

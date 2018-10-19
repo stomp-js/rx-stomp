@@ -6,19 +6,19 @@ import {defaultConfig, stompServiceFactory} from '../helpers/stomp.service.facto
 import {ensureStompConnected} from '../helpers/helpers';
 import {Message} from '@stomp/stompjs';
 import {UUID} from 'angular2-uuid';
-import {StompRPCService, StompService} from "../../src";
+import {RxStompRPC, StompService} from "../../src";
 
 describe('Rabbit RPC', () => {
   const myServiceEndPoint = '/topic/echo';
 
   let stompService: StompService;
-  let stompRPCService: StompRPCService;
+  let stompRPCService: RxStompRPC;
   const stompConfig = defaultConfig();
 
   // Wait till STOMP Service is actually connected
   beforeAll(() => {
     stompService = stompServiceFactory(stompConfig);
-    stompRPCService = new StompRPCService(stompService);
+    stompRPCService = new RxStompRPC(stompService);
   });
 
   // Wait till STOMP Service is actually connected

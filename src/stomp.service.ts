@@ -1,6 +1,6 @@
-import { StompConfig } from './stomp.config';
+import { StompConfig } from './stomp-config';
 
-import { StompRService } from './stomp-r.service';
+import { RxStomp } from './rx-stomp';
 
 /**
  * Angular2 STOMP Service using @stomp/stomp.js
@@ -14,7 +14,7 @@ import { StompRService } from './stomp-r.service';
  * If you want to manually configure and initialize the service
  * please use StompRService
  */
-export class StompService extends StompRService {
+export class StompService extends RxStomp {
 
   /**
    * Constructor

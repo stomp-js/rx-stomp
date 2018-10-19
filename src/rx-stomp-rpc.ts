@@ -2,15 +2,15 @@ import {Message, StompHeaders} from '@stomp/stompjs';
 import {UUID} from 'angular2-uuid';
 import {Observable, Observer, Subscription} from "rxjs";
 import {filter, first} from "rxjs/operators";
-import {StompRService} from "./stomp-r.service";
-import {setupReplyQueueFnType, StompRPCConfig} from "./stomp-rpc.config";
+import {RxStomp} from "./rx-stomp";
+import {setupReplyQueueFnType, StompRPCConfig} from "./stomp-rpc-config";
 
 /**
  * An implementation of RPC service using messaging.
  *
  * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
  */
-export class StompRPCService {
+export class RxStompRPC {
   private _replyQueueName = '/temp-queue/rpc-replies';
 
   private _setupReplyQueue: setupReplyQueueFnType = () => {
@@ -22,7 +22,7 @@ export class StompRPCService {
   /**
    * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
    */
-  constructor(private stompService: StompRService, private stompRPCConfig?: StompRPCConfig) {
+  constructor(private stompService: RxStomp, private stompRPCConfig?: StompRPCConfig) {
     if (stompRPCConfig) {
       if (stompRPCConfig.replyQueueName) {
         this._replyQueueName = stompRPCConfig.replyQueueName;

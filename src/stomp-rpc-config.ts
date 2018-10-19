@@ -1,11 +1,11 @@
 import { Observable } from "rxjs";
 import { Message } from "@stomp/stompjs";
-import {StompRService} from "./stomp-r.service";
+import {RxStomp} from "./rx-stomp";
 
 /**
  * See the guide for example
  */
-export type setupReplyQueueFnType = (replyQueueName: string, stompService: StompRService) => Observable<Message>;
+export type setupReplyQueueFnType = (replyQueueName: string, stompService: RxStomp) => Observable<Message>;
 
 /**
  * RPC Config. See the guide for example.

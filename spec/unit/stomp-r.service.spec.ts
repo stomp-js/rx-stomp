@@ -2,7 +2,7 @@
 
 import "jasmine";
 
-import { StompRService, StompState, StompConfig } from '../../src';
+import { RxStomp, StompState, StompConfig } from '../../src';
 
 import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
 import { ensureStompConnected, disconnetStompRAndEnsure, ensureStompRDisconnected } from '../helpers/helpers';
