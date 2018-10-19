@@ -43,8 +43,6 @@ Instructions on setting up development environment:
 ├── docs/                    -- Generated docs, root for GitHub pages
 ├── docs-src/                -- Source for guides
 ├── esm5/                    -- Generated ES5 modules
-├── esm6/                    -- Generated ES6 modules
-├── example/
 ├── index.d.ts
 ├── karma.conf.js
 ├── package-lock.json
@@ -52,14 +50,9 @@ Instructions on setting up development environment:
 ├── rabbitmq/
 │   └── Dockerfile           -- This builds a docker image that is used to run test cases
 ├── spec/                    -- These test cases run both for nodejs (using just Jasmine) and Chrome (Jasmine/Karma)
-│   ├── config/              -- Slightly different setups for nodejs and Karma
 │   ├── helpers/
-│   ├── support/
-│   │   └── jasmine.json     -- Used only while running for nodejs
 │   └── unit/                -- Test cases using Jasmine
-│       └── compatibility/   -- Test cases to check compatibility mode
 ├── src/                     -- Typescript sources
-│   └── compatibility/       -- Code for compatibility mode
 ├── tsconfig.json
 └── webpack.config.js
 ```
@@ -67,7 +60,7 @@ Instructions on setting up development environment:
 ## Setup a Stomp broker
 
 * A Stomp broker is used for running the tests. I have been using RabbitMQ.
-* Edit `spec/config/browser-config.js` and `spec/config/node-config.js` as per
+* Edit `spec/helpers/stomp.service.factory.ts` as per
   your setup. Defaults should work for as RabbitMQ default setup on localhost.
 * Please note that in RabbitMQ you will need to enable Stomp and WebStomp plugins.
 * By default RabbitMQ WebStomp will treat messages a text, you will need to tell
@@ -92,7 +85,6 @@ build-webpack - Internally used by `npm run build`
 build - Build three variants - ES5, ES6, and UMD
 doc - Generate docs
 doc-serve - Generate docs and watch for changes
-test - Run tests in NodeJS
 karma - Rune test in browsers
 ```
 

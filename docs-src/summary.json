@@ -1,15 +1,11 @@
 [
   {
-    "title": "Usage",
-    "file": "Usage.md"
-  },
-  {
-    "title": "Upgrading",
-    "file": "Upgrade.md"
+    "title": "Remote Procedure Call (RPC)",
+    "file": "RPC.md"
   },
   {
     "title": "SockJS Support",
-    "file": "sockjs.md"
+    "file": "SockJS.md"
   },
   {
     "title": "Change Log",
