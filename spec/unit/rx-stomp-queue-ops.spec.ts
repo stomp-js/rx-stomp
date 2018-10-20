@@ -4,28 +4,28 @@ import "jasmine";
 
 import { map } from 'rxjs/operators';
 import { RxStomp } from '../../src';
-import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
+import { defaultConfig, MyRxStomp } from '../helpers/rx-stomp-factory';
 import { ensureStompConnected, disconnetStompRAndEnsure} from '../helpers/helpers';
 import { Subscription } from 'rxjs';
 
-describe('StompService Queues', () => {
-  let stompService: RxStomp;
-  const stompConfig = defaultConfig();
+describe('RxStomp Queues', () => {
+  let rxStomp: RxStomp;
+  const rxStompConfig = defaultConfig();
 
   // Wait till STOMP Service is actually connected
   beforeEach((done) => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-    stompService = new MyStompRService();
-    stompService.config = stompConfig;
-    stompService.initAndConnect();
-    ensureStompConnected(stompService, done);
+    rxStomp = new MyRxStomp();
+    rxStomp.config = rxStompConfig;
+    rxStomp.initAndConnect();
+    ensureStompConnected(rxStomp, done);
   });
 
   // Disconnect and wait till it actually disconnects
   afterEach((done) => {
-    disconnetStompRAndEnsure(stompService, done);
-    stompService = null;
+    disconnetStompRAndEnsure(rxStomp, done);
+    rxStomp = null;
   });
 
   describe('should handle two simultaneous subscriptions', () => {
@@ -50,11 +50,11 @@ describe('StompService Queues', () => {
 
     // Subscribe to both queues
     beforeEach((done) => {
-      queSubscription1 = stompService.subscribe(queueName1).pipe(
+      queSubscription1 = rxStomp.subscribe(queueName1).pipe(
         map((message) => message.body)
       ).subscribe(spyHandler1);
 
-      queSubscription2 = stompService.subscribe(queueName2).pipe(
+      queSubscription2 = rxStomp.subscribe(queueName2).pipe(
         map((message) => message.body)
       ).subscribe(spyHandler2);
 
@@ -65,8 +65,8 @@ describe('StompService Queues', () => {
 
     // Send one message to each queue and verify that these are received in respective subscriptions
     beforeEach((done) => {
-      stompService.publish(queueName1, 'Message 01-01');
-      stompService.publish(queueName2, 'Message 02-01');
+      rxStomp.publish(queueName1, 'Message 01-01');
+      rxStomp.publish(queueName2, 'Message 02-01');
 
       setTimeout(() => {
         expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
@@ -90,8 +90,8 @@ describe('StompService Queues', () => {
       });
 
       it('should not receive message in the first queue', (done) => {
-        stompService.publish(queueName1, 'Message 01-02');
-        stompService.publish(queueName2, 'Message 02-02');
+        rxStomp.publish(queueName1, 'Message 01-02');
+        rxStomp.publish(queueName2, 'Message 02-02');
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(1);
@@ -111,8 +111,8 @@ describe('StompService Queues', () => {
       });
 
       it('should not receive message in the second queue', (done) => {
-        stompService.publish(queueName1, 'Message 01-02');
-        stompService.publish(queueName2, 'Message 02-02');
+        rxStomp.publish(queueName1, 'Message 01-02');
+        rxStomp.publish(queueName2, 'Message 02-02');
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(2);
@@ -133,8 +133,8 @@ describe('StompService Queues', () => {
       });
 
       it('should not receive message in any of the  queues', (done) => {
-        stompService.publish(queueName1, 'Message 01-02');
-        stompService.publish(queueName2, 'Message 02-02');
+        rxStomp.publish(queueName1, 'Message 01-02');
+        rxStomp.publish(queueName2, 'Message 02-02');
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(1);

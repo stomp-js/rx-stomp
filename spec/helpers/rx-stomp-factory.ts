@@ -32,7 +32,7 @@ export function defaultConfig(): RxStompConfig {
   };
 }
 
-export class MyStompRService extends RxStomp {
+export class MyRxStomp extends RxStomp {
   /**
    * This method closes the underlying WebSocket, simulating a close due to an error
    */
