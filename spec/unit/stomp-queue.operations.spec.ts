@@ -3,20 +3,22 @@
 import "jasmine";
 
 import { map } from 'rxjs/operators';
-import { StompService} from '../../src';
-import { defaultConfig, stompServiceFactory } from '../helpers/stomp.service.factory';
+import { RxStomp } from '../../src';
+import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
 import { ensureStompConnected, disconnetStompRAndEnsure} from '../helpers/helpers';
 import { Subscription } from 'rxjs';
 
 describe('StompService Queues', () => {
-  let stompService: StompService;
+  let stompService: RxStomp;
   const stompConfig = defaultConfig();
 
   // Wait till STOMP Service is actually connected
   beforeEach((done) => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-    stompService = stompServiceFactory(stompConfig);
+    stompService = new MyStompRService();
+    stompService.config = stompConfig;
+    stompService.initAndConnect();
     ensureStompConnected(stompService, done);
   });
 

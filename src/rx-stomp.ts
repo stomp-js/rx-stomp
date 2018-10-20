@@ -1,7 +1,7 @@
 import {filter, share} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs';
 
-import {StompConfig} from './stomp-config';
+import {RxStompConfig} from './rx-stomp-config';
 
 import {Client, Frame, Message, Stomp, StompHeaders, StompSubscription} from '@stomp/stompjs';
 import {StompState} from './stomp-state';
@@ -69,7 +69,7 @@ export class RxStomp {
   /**
    * Configuration
    */
-  private _config: StompConfig;
+  private _config: RxStompConfig;
 
   /**
    * STOMP Client from @stomp/stomp.js
@@ -107,7 +107,7 @@ export class RxStomp {
   }
 
   /** Set configuration */
-  set config(value: StompConfig) {
+  set config(value: RxStompConfig) {
     this._config = value;
   }
 

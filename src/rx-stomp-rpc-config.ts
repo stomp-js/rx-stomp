@@ -10,7 +10,7 @@ export type setupReplyQueueFnType = (replyQueueName: string, stompService: RxSto
 /**
  * RPC Config. See the guide for example.
  */
-export class StompRPCConfig {
+export class RxStompRPCConfig {
   /**
    * Name of the reply queue
    */

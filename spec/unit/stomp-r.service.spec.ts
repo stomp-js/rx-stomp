@@ -2,14 +2,14 @@
 
 import "jasmine";
 
-import { RxStomp, StompState, StompConfig } from '../../src';
+import { RxStomp, StompState, RxStompConfig } from '../../src';
 
 import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
 import { ensureStompConnected, disconnetStompRAndEnsure, ensureStompRDisconnected } from '../helpers/helpers';
 
 describe('StompRService', () => {
   let stompService: MyStompRService;
-  const stompConfig: StompConfig = defaultConfig();
+  const stompConfig: RxStompConfig = defaultConfig();
 
   beforeEach(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;

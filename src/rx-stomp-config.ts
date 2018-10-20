@@ -4,7 +4,7 @@ import { StompHeaders } from "@stomp/stompjs";
  * STOMPService to connect to.
  */
 
-export class StompConfig {
+export class RxStompConfig {
   /**
    * Server URL to connect to. Please refer to your STOMP broker documentation for details.
    *

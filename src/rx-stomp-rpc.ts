@@ -3,10 +3,10 @@ import {UUID} from 'angular2-uuid';
 import {Observable, Observer, Subscription} from "rxjs";
 import {filter, first} from "rxjs/operators";
 import {RxStomp} from "./rx-stomp";
-import {setupReplyQueueFnType, StompRPCConfig} from "./stomp-rpc-config";
+import {setupReplyQueueFnType, RxStompRPCConfig} from "./rx-stomp-rpc-config";
 
 /**
- * An implementation of RPC service using messaging.
+ * An implementation of Remote Procedure Call (RPC) using messaging.
  *
  * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
  */
@@ -14,7 +14,7 @@ export class RxStompRPC {
   private _replyQueueName = '/temp-queue/rpc-replies';
 
   private _setupReplyQueue: setupReplyQueueFnType = () => {
-    return this.stompService.defaultMessagesObservable;
+    return this.rxStomp.defaultMessagesObservable;
   };
 
   private _repliesObservable: Observable<Message>;
@@ -22,7 +22,7 @@ export class RxStompRPC {
   /**
    * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
    */
-  constructor(private stompService: RxStomp, private stompRPCConfig?: StompRPCConfig) {
+  constructor(private rxStomp: RxStomp, private stompRPCConfig?: RxStompRPCConfig) {
     if (stompRPCConfig) {
       if (stompRPCConfig.replyQueueName) {
         this._replyQueueName = stompRPCConfig.replyQueueName;
@@ -46,7 +46,7 @@ export class RxStompRPC {
    */
   public stream(serviceEndPoint: string, payload: string, headers: StompHeaders = {}) {
     if (!this._repliesObservable) {
-      this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.stompService);
+      this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
     }
 
     return Observable.create(
@@ -65,7 +65,7 @@ export class RxStompRPC {
         headers['reply-to'] = this._replyQueueName;
         headers['correlation-id'] = correlationId;
 
-        this.stompService.publish(serviceEndPoint, payload, headers);
+        this.rxStomp.publish(serviceEndPoint, payload, headers);
 
         return () => { // Cleanup
           defaultMessagesSubscription.unsubscribe();

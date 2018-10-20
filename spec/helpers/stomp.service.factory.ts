@@ -1,8 +1,8 @@
 /* tslint:disable:no-unused-variable */
 
-import { RxStomp, StompService, StompConfig } from '../../src';
+import { RxStomp, RxStompConfig } from '../../src';
 
-export function defaultConfig(): StompConfig {
+export function defaultConfig(): RxStompConfig {
   return {
     // Which server?
     url: 'ws://127.0.0.1:15674/ws',
@@ -30,23 +30,6 @@ export function defaultConfig(): StompConfig {
     // Will log diagnostics on console
     debug: true
   };
-}
-
-export class MyStompService extends StompService {
-  constructor(private _conf: StompConfig) {
-    super(_conf);
-  }
-
-  /**
-   * This method closes the underlying WebSocket, simulating a close due to an error
-   */
-  public forceDisconnect(): void {
-    this.client.forceDisconnect();
-  }
-}
-
-export function stompServiceFactory(_conf: StompConfig) {
-  return new MyStompService(_conf);
 }
 
 export class MyStompRService extends RxStomp {

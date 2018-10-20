@@ -2,22 +2,24 @@
 
 import "jasmine";
 
-import {defaultConfig, stompServiceFactory} from '../helpers/stomp.service.factory';
-import {ensureStompConnected} from '../helpers/helpers';
-import {Message} from '@stomp/stompjs';
-import {UUID} from 'angular2-uuid';
-import {RxStompRPC, StompService} from "../../src";
+import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
+import { ensureStompConnected } from '../helpers/helpers';
+import { Message } from '@stomp/stompjs';
+import { UUID } from 'angular2-uuid';
+import { RxStompRPC, RxStomp } from "../../src";
 
 describe('Rabbit RPC', () => {
   const myServiceEndPoint = '/topic/echo';
 
-  let stompService: StompService;
+  let stompService: RxStomp;
   let stompRPCService: RxStompRPC;
   const stompConfig = defaultConfig();
 
   // Wait till STOMP Service is actually connected
   beforeAll(() => {
-    stompService = stompServiceFactory(stompConfig);
+    stompService = new MyStompRService();
+    stompService.config = stompConfig;
+    stompService.initAndConnect();
     stompRPCService = new RxStompRPC(stompService);
   });
 

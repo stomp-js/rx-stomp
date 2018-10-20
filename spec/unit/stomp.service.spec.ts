@@ -3,19 +3,21 @@
 import "jasmine";
 
 import { filter } from 'rxjs/operators';
-import { StompService, StompState } from '../../src';
+import { RxStomp, StompState } from '../../src';
 
-import { defaultConfig, MyStompService, stompServiceFactory } from '../helpers/stomp.service.factory';
+import { defaultConfig, MyStompRService } from '../helpers/stomp.service.factory';
 import { Message, StompHeaders } from '@stomp/stompjs';
 import { ensureStompConnected, disconnetStompRAndEnsure } from '../helpers/helpers';
 
 describe('StompService', () => {
-  let stompService: StompService;
+  let stompService: RxStomp;
   const stompConfig = defaultConfig();
 
   // Wait till STOMP Service is actually connected
   beforeEach(() => {
-    stompService = stompServiceFactory(stompConfig);
+    stompService = new MyStompRService();
+    stompService.config = stompConfig;
+    stompService.initAndConnect();
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
   });
 
@@ -110,7 +112,7 @@ describe('StompService', () => {
         if (firstTime) {
           firstTime = false;
 
-          (<MyStompService>stompService).forceDisconnect();
+          (<MyStompRService>stompService).forceDisconnect();
 
           setTimeout(() => {
             // Now publish the message when STOMP Broker has been disconnected
