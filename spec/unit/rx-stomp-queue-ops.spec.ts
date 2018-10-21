@@ -4,21 +4,16 @@ import "jasmine";
 
 import { map } from 'rxjs/operators';
 import { RxStomp } from '../../src';
-import { defaultConfig, MyRxStomp } from '../helpers/rx-stomp-factory';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { ensureStompConnected, disconnetStompRAndEnsure} from '../helpers/helpers';
 import { Subscription } from 'rxjs';
 
 describe('RxStomp Queues', () => {
   let rxStomp: RxStomp;
-  const rxStompConfig = defaultConfig();
 
   // Wait till RxStomp is actually connected
   beforeEach((done) => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
-
-    rxStomp = new MyRxStomp();
-    rxStomp.config = rxStompConfig;
-    rxStomp.initAndConnect();
+    rxStomp = rxStompFactory();
     ensureStompConnected(rxStomp, done);
   });
 

@@ -40,3 +40,11 @@ export class MyRxStomp extends RxStomp {
     this.client.forceDisconnect();
   }
 }
+
+// Wait till RxStomp is actually connected
+export function rxStompFactory () {
+  const rxStomp = new MyRxStomp();
+  rxStomp.config = defaultConfig();
+  rxStomp.initAndConnect();
+  return rxStomp;
+}

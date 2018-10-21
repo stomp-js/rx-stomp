@@ -5,20 +5,16 @@ import "jasmine";
 import { filter } from 'rxjs/operators';
 import { RxStomp, StompState } from '../../src';
 
-import { defaultConfig, MyRxStomp } from '../helpers/rx-stomp-factory';
+import { MyRxStomp, rxStompFactory } from '../helpers/rx-stomp-factory';
 import { Message, StompHeaders } from '@stomp/stompjs';
 import { ensureStompConnected, disconnetStompRAndEnsure } from '../helpers/helpers';
 
 describe('RxStomp', () => {
   let rxStomp: RxStomp;
-  const rxStompConfig = defaultConfig();
 
   // Wait till RxStomp is actually connected
   beforeEach(() => {
-    rxStomp = new MyRxStomp();
-    rxStomp.config = rxStompConfig;
-    rxStomp.initAndConnect();
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    rxStomp = rxStompFactory();
   });
 
   // Disconnect and wait till it actually disconnects

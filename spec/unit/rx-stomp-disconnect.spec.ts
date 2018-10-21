@@ -4,22 +4,14 @@ import "jasmine";
 
 import { RxStomp, StompState, RxStompConfig } from '../../src';
 
-import { defaultConfig, MyRxStomp } from '../helpers/rx-stomp-factory';
-import { ensureStompConnected, disconnetStompRAndEnsure, ensureStompRDisconnected } from '../helpers/helpers';
+import { MyRxStomp, rxStompFactory } from '../helpers/rx-stomp-factory';
+import {disconnetStompRAndEnsure, ensureStompConnected, ensureStompRDisconnected} from '../helpers/helpers';
 
 describe('RxStomp disconnect', () => {
   let rxStomp: MyRxStomp;
-  const rxStompConfig: RxStompConfig = defaultConfig();
 
-  beforeEach(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
-  });
-
-  // Wait till RxStomp is actually connected
   beforeEach((done) => {
-    rxStomp = new MyRxStomp();
-    rxStomp.config = rxStompConfig;
-    rxStomp.initAndConnect();
+    rxStomp = rxStompFactory();
     ensureStompConnected(rxStomp, done);
   });
 
@@ -43,7 +35,7 @@ describe('RxStomp disconnect', () => {
   });
 
   describe('should disconnect even when underlying connection is not there', () => {
-    // Simulate error on Websocket and wait for while and call disconnect
+    // Simulate error on WebSocket and wait for while and call disconnect
     beforeEach((done) => {
       disconnetStompRAndEnsure(rxStomp, done);
     });

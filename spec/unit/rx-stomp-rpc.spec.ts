@@ -3,7 +3,7 @@
 
 import "jasmine";
 
-import { defaultConfig, MyRxStomp } from '../helpers/rx-stomp-factory';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { ensureStompConnected } from '../helpers/helpers';
 import { Message } from '@stomp/stompjs';
 import { UUID } from 'angular2-uuid';
@@ -14,18 +14,11 @@ describe('RxStomp RPC', () => {
 
   let rxStomp: RxStomp;
   let rxStompRPC: RxStompRPC;
-  const rxStompConfig = defaultConfig();
-
-  // Wait till RxStomp is actually connected
-  beforeAll(() => {
-    rxStomp = new MyRxStomp();
-    rxStomp.config = rxStompConfig;
-    rxStomp.initAndConnect();
-    rxStompRPC = new RxStompRPC(rxStomp);
-  });
 
   // Wait till RxStomp is actually connected
   beforeAll((done) => {
+    rxStomp = rxStompFactory();
+    rxStompRPC = new RxStompRPC(rxStomp);
     ensureStompConnected(rxStomp, done);
   });
 
