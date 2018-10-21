@@ -2,13 +2,13 @@
 
 import "jasmine";
 
-import { RxStomp, StompState, RxStompConfig } from '../../src';
+import { RxStomp, StompState } from '../../src';
 
-import { MyRxStomp, rxStompFactory } from '../helpers/rx-stomp-factory';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import {disconnetStompRAndEnsure, ensureStompConnected, ensureStompRDisconnected} from '../helpers/helpers';
 
 describe('RxStomp disconnect', () => {
-  let rxStomp: MyRxStomp;
+  let rxStomp: RxStomp;
 
   beforeEach((done) => {
     rxStomp = rxStompFactory();
