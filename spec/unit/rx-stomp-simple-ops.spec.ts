@@ -5,7 +5,7 @@ import "jasmine";
 import { filter } from 'rxjs/operators';
 import { RxStomp, StompState } from '../../src';
 
-import { MyRxStomp, rxStompFactory } from '../helpers/rx-stomp-factory';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { Message, StompHeaders } from '@stomp/stompjs';
 import { ensureStompConnected, disconnetStompRAndEnsure } from '../helpers/helpers';
 
@@ -108,7 +108,7 @@ describe('RxStomp', () => {
         if (firstTime) {
           firstTime = false;
 
-          (<MyRxStomp>rxStomp).forceDisconnect();
+          rxStomp.stompClient.forceDisconnect();
 
           setTimeout(() => {
             // Now publish the message when STOMP Broker has been disconnected

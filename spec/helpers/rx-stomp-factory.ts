@@ -32,18 +32,9 @@ export function defaultConfig(): RxStompConfig {
   };
 }
 
-export class MyRxStomp extends RxStomp {
-  /**
-   * This method closes the underlying WebSocket, simulating a close due to an error
-   */
-  public forceDisconnect(): void {
-    this.stompClient.forceDisconnect();
-  }
-}
-
 // Wait till RxStomp is actually connected
 export function rxStompFactory () {
-  const rxStomp = new MyRxStomp();
+  const rxStomp = new RxStomp();
   rxStomp.config = defaultConfig();
   rxStomp.initAndConnect();
   return rxStomp;
