@@ -37,7 +37,7 @@ export class MyRxStomp extends RxStomp {
    * This method closes the underlying WebSocket, simulating a close due to an error
    */
   public forceDisconnect(): void {
-    this.client.forceDisconnect();
+    this.stompClient.forceDisconnect();
   }
 }
 

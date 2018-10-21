@@ -20,6 +20,6 @@ export function ensureStompRDisconnected (rxStomp: RxStomp, done: any) {
 }
 
 export function  disconnetStompRAndEnsure(rxStomp: RxStomp, done: any) {
-  rxStomp.disconnect();
+  rxStomp.deactivate();
   ensureStompRDisconnected(rxStomp, done);
 }

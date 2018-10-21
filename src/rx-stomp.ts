@@ -71,7 +71,7 @@ export class RxStomp {
   /**
    * STOMP Client from @stomp/stomp.js
    */
-  protected client: Client;
+  protected stompClient: Client;
 
   /**
    * Constructor
@@ -111,28 +111,28 @@ export class RxStomp {
   /** It will initialize STOMP Client. */
   protected initStompClient(): void {
     // disconnect if connected
-    this.disconnect();
+    this.deactivate();
 
     // url takes precedence over socketFn
     if (typeof(this._config.url) === 'string') {
-      this.client = Stomp.client(this._config.url);
+      this.stompClient = Stomp.client(this._config.url);
     } else {
-      this.client = Stomp.over(this._config.url);
+      this.stompClient = Stomp.over(this._config.url);
     }
 
     // Configure client heart-beating
-    this.client.heartbeatIncoming = this._config.heartbeat_in;
-    this.client.heartbeatOutgoing = this._config.heartbeat_out;
+    this.stompClient.heartbeatIncoming = this._config.heartbeat_in;
+    this.stompClient.heartbeatOutgoing = this._config.heartbeat_out;
 
     // Auto reconnect
-    this.client.reconnectDelay = this._config.reconnect_delay;
+    this.stompClient.reconnectDelay = this._config.reconnect_delay;
 
     if (!this._config.debug) {
       this.debug = function () {
       };
     }
     // Set function to debug print messages
-    this.client.debug = this.debug;
+    this.stompClient.debug = this.debug;
 
     // Default messages
     this.setupOnReceive();
@@ -152,7 +152,7 @@ export class RxStomp {
       this._config.headers = {};
     }
 
-    this.client.configure({
+    this.stompClient.configure({
       onConnect: this.on_connect,
       onStompError: (frame: Frame) => {
         // Trigger the frame subject
@@ -164,7 +164,7 @@ export class RxStomp {
       connectHeaders: this._config.headers
     });
     // Attempt connection, passing in a callback
-    this.client.activate();
+    this.stompClient.activate();
 
     this.debug('Connecting...');
     this._changeState(StompState.TRYING);
@@ -172,23 +172,17 @@ export class RxStomp {
 
 
   /**
-   * It will disconnect from the STOMP broker.
+   * It will disconnect from the STOMP broker and stop retires to connect.
    */
-  public disconnect(): void {
-
+  public deactivate(): void {
     // Disconnect if connected. Callback will set CLOSED state
-    if (this.client) {
+    if (this.stompClient) {
+      this.stompClient.deactivate();
 
-      this.client.deactivate();
-
-      if (!this.client.connected) {
-        // Nothing to do
-        this._changeState(StompState.CLOSED);
-        return;
+      if (this.stompClient.connected) {
+        // Notify observers that we are disconnecting!
+        this._changeState(StompState.DISCONNECTING);
       }
-
-      // Notify observers that we are disconnecting!
-      this._changeState(StompState.DISCONNECTING);
     }
   }
 
@@ -211,7 +205,7 @@ export class RxStomp {
    */
   public publish(queueName: string, message: string, headers: StompHeaders = {}): void {
     if (this.connected()) {
-      this.client.publish({destination: queueName, headers: headers, body: message});
+      this.stompClient.publish({destination: queueName, headers: headers, body: message});
     } else {
       this.debug(`Not connected, queueing ${message}`);
       this.queuedMessages.push({queueName: <string>queueName, message: <string>message, headers: headers});
@@ -281,7 +275,7 @@ export class RxStomp {
         stompConnectedSubscription = this.connectObservable
           .subscribe(() => {
             this.debug(`Will subscribe to ${queueName}`);
-            stompSubscription = this.client.subscribe(queueName, (message: Message) => {
+            stompSubscription = this.stompClient.subscribe(queueName, (message: Message) => {
                 messages.next(message);
               },
               headers);
@@ -315,7 +309,7 @@ export class RxStomp {
   protected setupOnReceive(): void {
     this.defaultMessagesObservable = new Subject();
 
-    this.client.onUnhandledMessage = (message: Message) => {
+    this.stompClient.onUnhandledMessage = (message: Message) => {
       this.defaultMessagesObservable.next(message);
     };
   }
@@ -326,7 +320,7 @@ export class RxStomp {
   protected setupReceipts(): void {
     this.receiptsObservable = new Subject();
 
-    this.client.onUnhandledReceipt = (frame: Frame) => {
+    this.stompClient.onUnhandledReceipt = (frame: Frame) => {
       this.receiptsObservable.next(frame);
     };
   }
@@ -335,7 +329,7 @@ export class RxStomp {
    * Wait for receipt, this indicates that server has carried out the related operation
    */
   public waitForReceipt(receiptId: string, callback: (frame: Frame) => void): void {
-    this.client.watchForReceipt(receiptId, callback);
+    this.stompClient.watchForReceipt(receiptId, callback);
   }
 
   /**

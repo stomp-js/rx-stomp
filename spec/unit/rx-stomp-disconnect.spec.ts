@@ -25,7 +25,7 @@ describe('RxStomp disconnect', () => {
     // Ask RxStomp to disconnect and wait for 500 ms (more than double
     // of reconnect delay)
     beforeEach((done) => {
-      rxStomp.disconnect();
+      rxStomp.deactivate();
       setTimeout(() => { done(); }, 500);
     });
 
@@ -43,7 +43,7 @@ describe('RxStomp disconnect', () => {
     // Ask RxStomp to disconnect and wait for 500 ms (more than double
     // of reconnect delay)
     beforeEach((done) => {
-      rxStomp.disconnect();
+      rxStomp.deactivate();
       setTimeout(() => { done(); }, 500);
     });
 
