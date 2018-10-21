@@ -16,7 +16,7 @@ describe('RxStomp RPC', () => {
   let rxStompRPC: RxStompRPC;
   const rxStompConfig = defaultConfig();
 
-  // Wait till STOMP Service is actually connected
+  // Wait till RxStomp is actually connected
   beforeAll(() => {
     rxStomp = new MyRxStomp();
     rxStomp.config = rxStompConfig;
@@ -24,7 +24,7 @@ describe('RxStomp RPC', () => {
     rxStompRPC = new RxStompRPC(rxStomp);
   });
 
-  // Wait till STOMP Service is actually connected
+  // Wait till RxStomp is actually connected
   beforeAll((done) => {
     ensureStompConnected(rxStomp, done);
   });

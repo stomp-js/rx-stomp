@@ -15,7 +15,7 @@ describe('RxStomp disconnect', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
   });
 
-  // Wait till STOMP Service is actually connected
+  // Wait till RxStomp is actually connected
   beforeEach((done) => {
     rxStomp = new MyRxStomp();
     rxStomp.config = rxStompConfig;
@@ -30,7 +30,7 @@ describe('RxStomp disconnect', () => {
   });
 
   describe('should disconnect', () => {
-    // Ask service to disconnect and wait for 500 ms (more than double
+    // Ask RxStomp to disconnect and wait for 500 ms (more than double
     // of reconnect delay)
     beforeEach((done) => {
       rxStomp.disconnect();
@@ -48,7 +48,7 @@ describe('RxStomp disconnect', () => {
       disconnetStompRAndEnsure(rxStomp, done);
     });
 
-    // Ask service to disconnect and wait for 500 ms (more than double
+    // Ask RxStomp to disconnect and wait for 500 ms (more than double
     // of reconnect delay)
     beforeEach((done) => {
       rxStomp.disconnect();

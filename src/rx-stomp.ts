@@ -8,18 +8,15 @@ import {StompState} from './stomp-state';
 
 /**
  * You will only need the public properties and
- * methods listed unless you are an advanced user. This service handles subscribing to a
+ * methods listed unless you are an advanced user. This class handles subscribing to a
  * message queue using the stomp.js library, and returns
  * values via the ES6 Observable specification for
  * asynchronous value streaming by wiring the STOMP
  * messages into an observable.
- *
- * If you will like to pass the configuration as a dependency,
- * please use StompService class.
  */
 export class RxStomp {
   /**
-   * State of the STOMPService
+   * Connection State
    *
    * It is a BehaviorSubject and will emit current status immediately. This will typically get
    * used to show current status to the end user.

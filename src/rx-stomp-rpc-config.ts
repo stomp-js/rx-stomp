@@ -5,7 +5,7 @@ import {RxStomp} from "./rx-stomp";
 /**
  * See the guide for example
  */
-export type setupReplyQueueFnType = (replyQueueName: string, stompService: RxStomp) => Observable<Message>;
+export type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<Message>;
 
 /**
  * RPC Config. See the guide for example.

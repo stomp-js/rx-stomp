@@ -1,5 +1,5 @@
 /**
- * Possible states for the STOMP service
+ * Possible states for the RxStomp
  */
 export enum StompState {
   CLOSED,

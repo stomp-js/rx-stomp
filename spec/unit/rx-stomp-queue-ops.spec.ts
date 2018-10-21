@@ -12,7 +12,7 @@ describe('RxStomp Queues', () => {
   let rxStomp: RxStomp;
   const rxStompConfig = defaultConfig();
 
-  // Wait till STOMP Service is actually connected
+  // Wait till RxStomp is actually connected
   beforeEach((done) => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 

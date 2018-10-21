@@ -13,7 +13,7 @@ describe('RxStomp', () => {
   let rxStomp: RxStomp;
   const rxStompConfig = defaultConfig();
 
-  // Wait till STOMP Service is actually connected
+  // Wait till RxStomp is actually connected
   beforeEach(() => {
     rxStomp = new MyRxStomp();
     rxStomp.config = rxStompConfig;
@@ -28,7 +28,7 @@ describe('RxStomp', () => {
   });
 
   describe('Simple operations', () => {
-    // Wait till STOMP Service is actually connected
+    // Wait till RxStomp is actually connected
     beforeEach((done) => {
       ensureStompConnected(rxStomp, done);
     });
@@ -58,7 +58,7 @@ describe('RxStomp', () => {
       const queueName = '/topic/ng-demo-sub01';
       const msg = 'My very special message 01';
 
-      // Subscribe and set up the Observable, the underlying STOMP Service may not have been connected
+      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       rxStomp.subscribe(queueName).subscribe((message: Message) => {
         expect(message.body).toBe(msg);
         done();
@@ -75,7 +75,7 @@ describe('RxStomp', () => {
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 02' + Math.random();
 
-      // Subscribe and set up the Observable, the underlying STOMP Service may not have been connected
+      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       rxStomp.subscribe(queueName).pipe(
         filter((message: Message) => {
           // Since the queue is durable, we may receive older messages as well, discard those
@@ -96,7 +96,7 @@ describe('RxStomp', () => {
 
       let firstTime = true;
 
-      // Subscribe and set up the Observable, the underlying STOMP Service may not have been connected
+      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       rxStomp.subscribe(queueName).pipe(
         filter((message: Message) => {
           // Since the queue is durable, we may receive older messages as well, discard those
