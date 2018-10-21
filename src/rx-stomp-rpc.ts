@@ -1,9 +1,12 @@
-import {Message, StompHeaders} from '@stomp/stompjs';
-import {UUID} from 'angular2-uuid';
-import {Observable, Observer, Subscription} from "rxjs";
-import {filter, first} from "rxjs/operators";
-import {RxStomp} from "./rx-stomp";
-import {setupReplyQueueFnType, RxStompRPCConfig} from "./rx-stomp-rpc-config";
+import { Observable, Observer, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+
+import { UUID } from 'angular2-uuid';
+
+import { Message, StompHeaders } from '@stomp/stompjs';
+
+import { RxStomp } from './rx-stomp';
+import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config';
 
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
@@ -15,7 +18,7 @@ export class RxStompRPC {
 
   private _setupReplyQueue: setupReplyQueueFnType = () => {
     return this.rxStomp.defaultMessagesObservable;
-  };
+  }
 
   private _repliesObservable: Observable<Message>;
 

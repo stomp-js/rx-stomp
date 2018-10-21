@@ -1,4 +1,4 @@
-import { StompHeaders } from "@stomp/stompjs";
+import { StompHeaders } from '@stomp/stompjs';
 /**
  * Represents a configuration object for the
  * RxSTOMP.
@@ -19,21 +19,21 @@ export class RxStompConfig {
    *   return new SockJS('http://127.0.0.1:15674/stomp');
    * }
    */
-  url: string | (() => any);
+  public url: string | (() => any);
 
   /**
    * Headers
    * Typical keys: login: string, passcode: string.
-   * host:string will neeed to be passed for virtual hosts in RabbitMQ
+   * host:string will needed to be passed for virtual hosts in RabbitMQ
    */
-  headers: StompHeaders;
+  public headers: StompHeaders;
 
   /** How often to incoming heartbeat?
    * Interval in milliseconds, set to 0 to disable
    *
    * Typical value 0 - disabled
    */
-  heartbeat_in: number;
+  public heartbeatIncoming: number;
 
   /**
    * How often to outgoing heartbeat?
@@ -41,7 +41,7 @@ export class RxStompConfig {
    *
    * Typical value 20000 - every 20 seconds
    */
-  heartbeat_out: number;
+  public heartbeatOutgoing: number;
 
   /**
    * Wait in milliseconds before attempting auto reconnect
@@ -49,8 +49,8 @@ export class RxStompConfig {
    *
    * Typical value 5000 (5 seconds)
    */
-  reconnect_delay: number;
+  public reconnectDelay: number;
 
   /** Enable client debugging? */
-  debug: boolean;
+  public debug: boolean;
 }

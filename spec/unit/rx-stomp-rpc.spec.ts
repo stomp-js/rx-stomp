@@ -1,13 +1,15 @@
 // These are likely to fail on any broker other than RabbitMQ
 // Works with ActiveMQ, with special init function
 
-import "jasmine";
+import 'jasmine';
 
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
-import { ensureStompConnected } from '../helpers/helpers';
 import { Message } from '@stomp/stompjs';
 import { UUID } from 'angular2-uuid';
-import { RxStompRPC, RxStomp } from "../../src";
+
+import { RxStomp, RxStompRPC } from '../../src';
+
+import { ensureStompConnected } from '../helpers/helpers';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('RxStomp RPC', () => {
   const myRPCEndPoint = '/topic/echo';
@@ -48,11 +50,11 @@ describe('RxStomp RPC', () => {
   });
 
   it('Should not leak', (done) => {
-    let numSubscribers = () => {
+    const numSubscribers = () => {
       return rxStomp.defaultMessagesObservable.observers.length;
     };
 
-    let origNumSubcribers = numSubscribers();
+    const origNumSubcribers = numSubscribers();
 
     // Watch for RPC response
     rxStompRPC.rpc(myRPCEndPoint, 'Hello').subscribe((message: Message) => {

@@ -1,10 +1,11 @@
-import {filter, share} from 'rxjs/operators';
-import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs';
+import { BehaviorSubject, Observable, Observer, Subject, Subscription } from 'rxjs';
 
-import {RxStompConfig} from './rx-stomp-config';
+import { filter, share } from 'rxjs/operators';
 
-import {Client, Frame, Message, Stomp, StompHeaders, StompSubscription} from '@stomp/stompjs';
-import {StompState} from './stomp-state';
+import { Client, Frame, Message, Stomp, StompHeaders, StompSubscription } from '@stomp/stompjs';
+
+import { RxStompConfig } from './rx-stomp-config';
+import { StompState } from './stomp-state';
 
 /**
  * You will only need the public properties and
@@ -61,7 +62,7 @@ export class RxStomp {
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.
    */
-  protected queuedMessages: { queueName: string, message: string, headers: StompHeaders }[] = [];
+  protected queuedMessages: Array<{ queueName: string, message: string, headers: StompHeaders }> = [];
 
   /**
    * Configuration
@@ -125,14 +126,14 @@ export class RxStomp {
     }
 
     // Configure client heart-beating
-    this._stompClient.heartbeatIncoming = this._config.heartbeat_in;
-    this._stompClient.heartbeatOutgoing = this._config.heartbeat_out;
+    this._stompClient.heartbeatIncoming = this._config.heartbeatIncoming;
+    this._stompClient.heartbeatOutgoing = this._config.heartbeatOutgoing;
 
     // Auto reconnect
-    this._stompClient.reconnectDelay = this._config.reconnect_delay;
+    this._stompClient.reconnectDelay = this._config.reconnectDelay;
 
     if (!this._config.debug) {
-      this.debug = function () {
+      this.debug = () => {
       };
     }
     // Set function to debug print messages
@@ -145,7 +146,6 @@ export class RxStomp {
     this.setupReceipts();
   }
 
-
   /**
    * It will connect to the STOMP broker.
    */
@@ -157,15 +157,15 @@ export class RxStomp {
     }
 
     this._stompClient.configure({
-      onConnect: this.on_connect,
+      connectHeaders: this._config.headers,
+      onConnect: this.onConnect,
       onStompError: (frame: Frame) => {
         // Trigger the frame subject
         this.stompError$.next(frame);
       },
       onWebSocketClose: () => {
         this._changeState(StompState.CLOSED);
-      },
-      connectHeaders: this._config.headers
+      }
     });
     // Attempt connection, passing in a callback
     this._stompClient.activate();
@@ -173,7 +173,6 @@ export class RxStomp {
     this.debug('Connecting...');
     this._changeState(StompState.TRYING);
   }
-
 
   /**
    * It will disconnect from the STOMP broker and stop retires to connect.
@@ -209,10 +208,10 @@ export class RxStomp {
    */
   public publish(queueName: string, message: string, headers: StompHeaders = {}): void {
     if (this.connected()) {
-      this._stompClient.publish({destination: queueName, headers: headers, body: message});
+      this._stompClient.publish({destination: queueName, headers, body: message});
     } else {
       this.debug(`Not connected, queueing ${message}`);
-      this.queuedMessages.push({queueName: <string>queueName, message: <string>message, headers: headers});
+      this.queuedMessages.push({queueName: queueName as string, message: message as string, headers});
     }
   }
 
@@ -263,8 +262,8 @@ export class RxStomp {
     this.debug(`Request to subscribe ${queueName}`);
 
     // By default auto acknowledgement of messages
-    if (!headers['ack']) {
-      headers['ack'] = 'auto';
+    if (!headers.ack) {
+      headers.ack = 'auto';
     }
 
     const coldObservable = Observable.create(
@@ -347,7 +346,7 @@ export class RxStomp {
   }
 
   /** Callback run on successfully connecting to server */
-  protected on_connect = (frame: Frame) => {
+  protected onConnect = (frame: Frame) => {
 
     this.debug('Connected');
 

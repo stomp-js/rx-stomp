@@ -1,12 +1,14 @@
 /* tslint:disable:no-unused-variable */
 
-import "jasmine";
+import 'jasmine';
 
 import { map } from 'rxjs/operators';
+
 import { RxStomp } from '../../src';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
-import { ensureStompConnected, disconnetStompRAndEnsure} from '../helpers/helpers';
+
 import { Subscription } from 'rxjs';
+import { disconnetStompRAndEnsure, ensureStompConnected } from '../helpers/helpers';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('RxStomp Queues', () => {
   let rxStomp: RxStomp;

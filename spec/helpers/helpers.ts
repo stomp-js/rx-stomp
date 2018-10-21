@@ -11,7 +11,7 @@ export function ensureStompConnected(rxStomp: RxStomp, done: any) {
   });
 }
 
-export function ensureStompRDisconnected (rxStomp: RxStomp, done: any) {
+export function ensureStompRDisconnected(rxStomp: RxStomp, done: any) {
   rxStomp.state.subscribe((state: StompState) => {
     if (state === StompState.CLOSED) {
       done();

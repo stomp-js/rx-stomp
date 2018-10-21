@@ -1,11 +1,11 @@
 /* tslint:disable:no-unused-variable */
 
-import "jasmine";
+import 'jasmine';
 
 import { RxStomp, StompState } from '../../src';
 
+import { disconnetStompRAndEnsure, ensureStompConnected, ensureStompRDisconnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
-import {disconnetStompRAndEnsure, ensureStompConnected, ensureStompRDisconnected} from '../helpers/helpers';
 
 describe('RxStomp disconnect', () => {
   let rxStomp: RxStomp;

@@ -19,13 +19,13 @@ export function defaultConfig(): RxStompConfig {
 
     // How often to heartbeat?
     // Interval in milliseconds, set to 0 to disable
-    heartbeat_in: 0, // Typical value 0 - disabled
-    heartbeat_out: 0, // Typical value 20000 - every 20 seconds
+    heartbeatIncoming: 0, // Typical value 0 - disabled
+    heartbeatOutgoing: 0, // Typical value 20000 - every 20 seconds
 
     // Wait in milliseconds before attempting auto reconnect
     // Set to 0 to disable
     // Typical value 5000 (5 seconds)
-    reconnect_delay: 200,
+    reconnectDelay: 200,
 
     // Will log diagnostics on console
     debug: true
@@ -33,7 +33,7 @@ export function defaultConfig(): RxStompConfig {
 }
 
 // Wait till RxStomp is actually connected
-export function rxStompFactory () {
+export function rxStompFactory() {
   const rxStomp = new RxStomp();
   rxStomp.config = defaultConfig();
   rxStomp.initAndConnect();
