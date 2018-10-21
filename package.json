@@ -9,7 +9,8 @@
     "build": "npm run clean && tsc && npm run build-tsc && npm run build-webpack",
     "doc": "bin/doc-gen.sh",
     "doc-serve": "bin/doc-gen.sh -r 59320 -s -w -o",
-    "karma": "karma start --single-run"
+    "karma": "karma start --single-run",
+    "lint": "tslint 'src/**/*ts' 'spec/**/*ts'"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "karma-typescript": "^3.0.13",
     "rxjs": "^6.3.3",
     "text-encoding": "^0.6.4",
+    "tslint": "^5.11.0",
     "typescript": "^2.9.2",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8",
