@@ -30,7 +30,7 @@ describe('RxStomp disconnect', () => {
     });
 
     it('and not reconnect', () => {
-      expect(rxStomp.state.getValue()).toEqual(StompState.CLOSED);
+      expect(rxStomp.connectionState$.getValue()).toEqual(StompState.CLOSED);
     });
   });
 
@@ -48,7 +48,7 @@ describe('RxStomp disconnect', () => {
     });
 
     it('and not reconnect', () => {
-      expect(rxStomp.state.getValue()).not.toEqual(StompState.CONNECTED);
+      expect(rxStomp.connectionState$.getValue()).not.toEqual(StompState.CONNECTED);
     });
   });
 });

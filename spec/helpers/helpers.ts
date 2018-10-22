@@ -6,13 +6,13 @@ import 'jasmine';
 import {RxStomp, StompState} from '../../src';
 
 export function ensureStompConnected(rxStomp: RxStomp, done: any) {
-  rxStomp.connectObservable.subscribe((state: StompState) => {
+  rxStomp.connected$.subscribe((state: StompState) => {
     done();
   });
 }
 
 export function ensureStompRDisconnected(rxStomp: RxStomp, done: any) {
-  rxStomp.state.subscribe((state: StompState) => {
+  rxStomp.connectionState$.subscribe((state: StompState) => {
     if (state === StompState.CLOSED) {
       done();
     }

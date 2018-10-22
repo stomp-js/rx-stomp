@@ -22,7 +22,7 @@ export class RxStomp {
    * It is a BehaviorSubject and will emit current status immediately. This will typically get
    * used to show current status to the end user.
    */
-  public state: BehaviorSubject<StompState>;
+  public connectionState$: BehaviorSubject<StompState>;
 
   /**
    * Will trigger when connection is established. Use this to carry out initialization.
@@ -30,7 +30,7 @@ export class RxStomp {
    * it will trigger immediately. You can safely ignore the value, as it will always be
    * StompState.CONNECTED
    */
-  public connectObservable: Observable<StompState>;
+  public connected$: Observable<StompState>;
 
   /**
    * Provides headers from most recent connection to the server as return by the CONNECTED
@@ -39,30 +39,30 @@ export class RxStomp {
    * It will additionally trigger in event of reconnection, the value will be set of headers from
    * the recent server response.
    */
-  public serverHeadersObservable: Observable<StompHeaders>;
+  public serverHeaders$: Observable<StompHeaders>;
 
-  protected _serverHeadersBehaviourSubject: BehaviorSubject<null | StompHeaders>;
+  protected _serverHeadersBehaviourSubject$: BehaviorSubject<null | StompHeaders>;
 
   /**
    * Will emit all messages to the default queue (any message that are not handled by a subscription)
    */
-  public defaultMessagesObservable: Subject<Message>;
+  public defaultMessages$: Subject<Message>;
 
   /**
    * Will emit all receipts
    */
-  public receiptsObservable: Subject<Frame>;
+  public unhandledReceipts$: Subject<Frame>;
 
   /**
    * Will trigger when an error occurs. This Subject can be used to handle errors from
    * the stomp broker.
    */
-  public stompError$: Subject<Frame>;
+  public stompErrors$: Subject<Frame>;
 
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.
    */
-  protected queuedMessages: Array<{ queueName: string, message: string, headers: StompHeaders }> = [];
+  protected _queuedMessages: Array<{ queueName: string, message: string, headers: StompHeaders }> = [];
 
   /**
    * STOMP Client from @stomp/stompjs.
@@ -96,28 +96,28 @@ export class RxStomp {
     this._debug = () => {};
 
     // Initial state is CLOSED
-    this.state = new BehaviorSubject<StompState>(StompState.CLOSED);
+    this.connectionState$ = new BehaviorSubject<StompState>(StompState.CLOSED);
 
-    this.connectObservable = this.state.pipe(
+    this.connected$ = this.connectionState$.pipe(
       filter((currentState: StompState) => {
         return currentState === StompState.CONNECTED;
       })
     );
 
     // Setup sending queuedMessages
-    this.connectObservable.subscribe(() => {
+    this.connected$.subscribe(() => {
       this.sendQueuedMessages();
     });
 
-    this._serverHeadersBehaviourSubject = new BehaviorSubject<null | StompHeaders>(null);
+    this._serverHeadersBehaviourSubject$ = new BehaviorSubject<null | StompHeaders>(null);
 
-    this.serverHeadersObservable = this._serverHeadersBehaviourSubject.pipe(
+    this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(
       filter((headers: null | StompHeaders) => {
         return headers !== null;
       })
     );
 
-    this.stompError$ = new Subject();
+    this.stompErrors$ = new Subject();
   }
 
   /** Set configuration */
@@ -135,14 +135,14 @@ export class RxStomp {
   public activate(): void {
     this._stompClient.configure({
       onConnect: (frame: Frame) => {
-        this._serverHeadersBehaviourSubject.next(frame.headers);
+        this._serverHeadersBehaviourSubject$.next(frame.headers);
 
         // Indicate our connected state to observers
         this._changeState(StompState.CONNECTED);
       },
       onStompError: (frame: Frame) => {
         // Trigger the frame subject
-        this.stompError$.next(frame);
+        this.stompErrors$.next(frame);
       },
       onWebSocketClose: () => {
         this._changeState(StompState.CLOSED);
@@ -172,7 +172,7 @@ export class RxStomp {
    * It will return `true` if STOMP broker is connected and `false` otherwise.
    */
   public connected(): boolean {
-    return this.state.getValue() === StompState.CONNECTED;
+    return this.connectionState$.getValue() === StompState.CONNECTED;
   }
 
   /**
@@ -190,14 +190,14 @@ export class RxStomp {
       this._stompClient.publish({destination: queueName, headers, body: message});
     } else {
       this._debug(`Not connected, queueing ${message}`);
-      this.queuedMessages.push({queueName: queueName as string, message: message as string, headers});
+      this._queuedMessages.push({queueName: queueName as string, message: message as string, headers});
     }
   }
 
   /** It will send queued messages. */
   protected sendQueuedMessages(): void {
-    const queuedMessages = this.queuedMessages;
-    this.queuedMessages = [];
+    const queuedMessages = this._queuedMessages;
+    this._queuedMessages = [];
 
     this._debug(`Will try sending queued messages ${queuedMessages}`);
 
@@ -254,8 +254,7 @@ export class RxStomp {
 
         let stompConnectedSubscription: Subscription;
 
-        stompConnectedSubscription = this.connectObservable
-          .subscribe(() => {
+        stompConnectedSubscription = this.connected$.subscribe(() => {
             this._debug(`Will subscribe to ${queueName}`);
             stompSubscription = this._stompClient.subscribe(queueName, (message: Message) => {
                 messages.next(message);
@@ -267,7 +266,7 @@ export class RxStomp {
           this._debug(`Stop watching connection state (for ${queueName})`);
           stompConnectedSubscription.unsubscribe();
 
-          if (this.state.getValue() === StompState.CONNECTED) {
+          if (this.connected()) {
             this._debug(`Will unsubscribe from ${queueName} at Stomp`);
             stompSubscription.unsubscribe();
           } else {
@@ -289,10 +288,10 @@ export class RxStomp {
    * get delivered to the default queue.
    */
   protected setupOnReceive(): void {
-    this.defaultMessagesObservable = new Subject();
+    this.defaultMessages$ = new Subject();
 
     this._stompClient.onUnhandledMessage = (message: Message) => {
-      this.defaultMessagesObservable.next(message);
+      this.defaultMessages$.next(message);
     };
   }
 
@@ -300,10 +299,10 @@ export class RxStomp {
    * It will emit all receipts.
    */
   protected setupReceipts(): void {
-    this.receiptsObservable = new Subject();
+    this.unhandledReceipts$ = new Subject();
 
     this._stompClient.onUnhandledReceipt = (frame: Frame) => {
-      this.receiptsObservable.next(frame);
+      this.unhandledReceipts$.next(frame);
     };
   }
 
@@ -315,7 +314,7 @@ export class RxStomp {
   }
 
   protected _changeState(state: StompState): void {
-    this.state.next(state);
+    this.connectionState$.next(state);
   }
 
 }
