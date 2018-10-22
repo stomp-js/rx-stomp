@@ -8,6 +8,7 @@ import { Message, StompHeaders } from '@stomp/stompjs';
 
 import { RxStomp, StompState } from '../../src';
 
+import { generateBinaryData } from '../helpers/content-helpers';
 import { disconnetStompRAndEnsure, ensureStompConnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
@@ -48,6 +49,21 @@ describe('RxStomp', () => {
 
       // Now publish to the same queue
       rxStomp.publish({destination: queueName, body: msg});
+    });
+
+    it('send and receive a binary message', (done) => {
+
+      const queueName = '/topic/ng-demo-sub';
+      const binaryMsg = generateBinaryData(1);
+
+      // Subscribe and set up the Observable
+      rxStomp.subscribe(queueName).subscribe((message: Message) => {
+        expect(message.binaryBody.toString()).toBe(binaryMsg.toString());
+        done();
+      });
+
+      // Now publish to the same queue
+      rxStomp.publish({destination: queueName, binaryBody: binaryMsg});
     });
   });
 

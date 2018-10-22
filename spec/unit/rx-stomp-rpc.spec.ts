@@ -8,6 +8,7 @@ import { UUID } from 'angular2-uuid';
 
 import { RxStomp, RxStompRPC } from '../../src';
 
+import { generateBinaryData } from '../helpers/content-helpers';
 import { ensureStompConnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
@@ -30,12 +31,11 @@ describe('RxStomp RPC', () => {
     rxStomp.subscribe(myRPCEndPoint, {receipt: receiptId}).subscribe((message: Message) => {
       const replyTo = message.headers['reply-to'];
       const correlationId = message.headers['correlation-id'];
-      const incomingMessage = message.body;
+      const incomingMessage = message.binaryBody;
 
-      const outgoingMessage = 'Echoing - ' + incomingMessage;
       rxStomp.publish({
         destination: replyTo,
-        body: outgoingMessage,
+        binaryBody: incomingMessage,
         headers: {'correlation-id': correlationId}
       });
     });
@@ -47,8 +47,20 @@ describe('RxStomp RPC', () => {
 
   it('Simple RPC', (done) => {
     // Watch for RPC response
-    rxStompRPC.rpc({destination: myRPCEndPoint, body: 'Hello'}).subscribe((message: Message) => {
-      expect(message.body).toBe('Echoing - Hello');
+
+    const msg = 'Hello';
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: Message) => {
+      expect(message.body).toEqual(msg);
+      done();
+    });
+  });
+
+  it('RPC with binary payload', (done) => {
+    // Watch for RPC response
+
+    const binaryMsg = generateBinaryData(1);
+    rxStompRPC.rpc({destination: myRPCEndPoint, binaryBody: binaryMsg}).subscribe((message: Message) => {
+      expect(message.binaryBody.toString()).toEqual(binaryMsg.toString());
       done();
     });
   });
@@ -60,9 +72,10 @@ describe('RxStomp RPC', () => {
 
     const origNumSubcribers = numSubscribers();
 
+    const msg = 'Hello';
     // Watch for RPC response
-    rxStompRPC.rpc({destination: myRPCEndPoint, body: 'Hello'}).subscribe((message: Message) => {
-      expect(message.body).toBe('Echoing - Hello');
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: Message) => {
+      expect(message.body).toEqual(msg);
       setTimeout(() => {
         expect(numSubscribers()).toBe(origNumSubcribers);
         done();
