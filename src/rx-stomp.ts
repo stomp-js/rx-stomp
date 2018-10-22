@@ -134,6 +134,12 @@ export class RxStomp {
    */
   public activate(): void {
     this._stompClient.configure({
+      beforeConnect: () => {
+        // Call handler
+        if (this._stompClient.active) {
+          this._changeState(StompState.TRYING);
+        }
+      },
       onConnect: (frame: Frame) => {
         this._serverHeadersBehaviourSubject$.next(frame.headers);
 
@@ -149,8 +155,6 @@ export class RxStomp {
       }
     });
 
-    this._changeState(StompState.TRYING);
-
     // Attempt connection
     this._stompClient.activate();
   }
@@ -162,9 +166,15 @@ export class RxStomp {
     // Disconnect if connected. Callback will set CLOSED state
     this._stompClient.deactivate();
 
-    if (this._stompClient.connected) {
+    const stompState = this.connectionState$.getValue();
+    if (stompState === StompState.CONNECTED) {
       // Notify observers that we are disconnecting!
       this._changeState(StompState.DISCONNECTING);
+    }
+    // This is bit tricky situation, it would be better handled at stompjs level
+    if (stompState === StompState.TRYING) {
+      // Notify observers that we are disconnecting!
+      this._changeState(StompState.CLOSED);
     }
   }
 
