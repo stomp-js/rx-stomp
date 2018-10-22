@@ -3,7 +3,7 @@ import { filter, first } from 'rxjs/operators';
 
 import { UUID } from 'angular2-uuid';
 
-import { Message, StompHeaders } from '@stomp/stompjs';
+import {Message, publishParams, StompHeaders} from '@stomp/stompjs';
 
 import { RxStomp } from './rx-stomp';
 import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config';
@@ -39,15 +39,18 @@ export class RxStompRPC {
   /**
    * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
    */
-  public rpc(serviceEndPoint: string, payload: string, headers?: StompHeaders): Observable<Message> {
+  public rpc(params: publishParams): Observable<Message> {
     // We know there will be only one message in reply
-    return this.stream(serviceEndPoint, payload, headers).pipe(first());
+    return this.stream(params).pipe(first());
   }
 
   /**
    * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
    */
-  public stream(serviceEndPoint: string, payload: string, headers: StompHeaders = {}) {
+  public stream(params: publishParams): Observable<Message> {
+    const headers: StompHeaders = (Object as any).assign({}, params.headers || {});
+    const {destination, body, binaryBody} = params;
+
     if (!this._repliesObservable) {
       this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
     }
@@ -68,7 +71,7 @@ export class RxStompRPC {
         headers['reply-to'] = this._replyQueueName;
         headers['correlation-id'] = correlationId;
 
-        this.rxStomp.publish(serviceEndPoint, payload, headers);
+        this.rxStomp.publish({destination, body, binaryBody, headers});
 
         return () => { // Cleanup
           defaultMessagesSubscription.unsubscribe();

@@ -47,7 +47,7 @@ describe('RxStomp', () => {
       });
 
       // Now publish to the same queue
-      rxStomp.publish(queueName, msg);
+      rxStomp.publish({destination: queueName, body: msg});
     });
   });
 
@@ -64,7 +64,7 @@ describe('RxStomp', () => {
 
       rxStomp.connected$.subscribe((state: StompState) => {
         // Now publish the message when STOMP Broker is connected
-        rxStomp.publish(queueName, msg);
+        rxStomp.publish({destination: queueName, body: msg});
       });
     });
 
@@ -84,7 +84,7 @@ describe('RxStomp', () => {
         done();
       });
 
-      rxStomp.publish(queueName, msg);
+      rxStomp.publish({destination: queueName, body: msg});
     });
 
     it('should be able to publish/subscribe when STOMP is disconnected', (done) => {
@@ -114,7 +114,7 @@ describe('RxStomp', () => {
 
           setTimeout(() => {
             // Now publish the message when STOMP Broker has been disconnected
-            rxStomp.publish(queueName, msg);
+            rxStomp.publish({destination: queueName, body: msg});
           }, 500);
         }
       });

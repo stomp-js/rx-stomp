@@ -33,7 +33,11 @@ describe('RxStomp RPC', () => {
       const incomingMessage = message.body;
 
       const outgoingMessage = 'Echoing - ' + incomingMessage;
-      rxStomp.publish(replyTo, outgoingMessage, {'correlation-id' : correlationId});
+      rxStomp.publish({
+        destination: replyTo,
+        body: outgoingMessage,
+        headers: {'correlation-id': correlationId}
+      });
     });
 
     rxStomp.waitForReceipt(receiptId, () => {
@@ -43,7 +47,7 @@ describe('RxStomp RPC', () => {
 
   it('Simple RPC', (done) => {
     // Watch for RPC response
-    rxStompRPC.rpc(myRPCEndPoint, 'Hello').subscribe((message: Message) => {
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: 'Hello'}).subscribe((message: Message) => {
       expect(message.body).toBe('Echoing - Hello');
       done();
     });
@@ -57,7 +61,7 @@ describe('RxStomp RPC', () => {
     const origNumSubcribers = numSubscribers();
 
     // Watch for RPC response
-    rxStompRPC.rpc(myRPCEndPoint, 'Hello').subscribe((message: Message) => {
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: 'Hello'}).subscribe((message: Message) => {
       expect(message.body).toBe('Echoing - Hello');
       setTimeout(() => {
         expect(numSubscribers()).toBe(origNumSubcribers);

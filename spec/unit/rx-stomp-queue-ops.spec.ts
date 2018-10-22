@@ -62,8 +62,8 @@ describe('RxStomp Queues', () => {
 
     // Send one message to each queue and verify that these are received in respective subscriptions
     beforeEach((done) => {
-      rxStomp.publish(queueName1, 'Message 01-01');
-      rxStomp.publish(queueName2, 'Message 02-01');
+      rxStomp.publish({destination: queueName1, body: 'Message 01-01'});
+      rxStomp.publish({destination: queueName2, body: 'Message 02-01'});
 
       setTimeout(() => {
         expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
@@ -87,8 +87,8 @@ describe('RxStomp Queues', () => {
       });
 
       it('should not receive message in the first queue', (done) => {
-        rxStomp.publish(queueName1, 'Message 01-02');
-        rxStomp.publish(queueName2, 'Message 02-02');
+        rxStomp.publish({destination: queueName1, body: 'Message 01-02'});
+        rxStomp.publish({destination: queueName2, body: 'Message 02-02'});
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(1);
@@ -108,8 +108,8 @@ describe('RxStomp Queues', () => {
       });
 
       it('should not receive message in the second queue', (done) => {
-        rxStomp.publish(queueName1, 'Message 01-02');
-        rxStomp.publish(queueName2, 'Message 02-02');
+        rxStomp.publish({destination: queueName1, body: 'Message 01-02'});
+        rxStomp.publish({destination: queueName2, body: 'Message 02-02'});
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(2);
@@ -130,8 +130,8 @@ describe('RxStomp Queues', () => {
       });
 
       it('should not receive message in any of the  queues', (done) => {
-        rxStomp.publish(queueName1, 'Message 01-02');
-        rxStomp.publish(queueName2, 'Message 02-02');
+        rxStomp.publish({destination: queueName1, body: 'Message 01-02'});
+        rxStomp.publish({destination: queueName2, body: 'Message 02-02'});
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(1);

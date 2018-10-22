@@ -2,7 +2,7 @@ import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs
 
 import {filter, share} from 'rxjs/operators';
 
-import {Client, debugFnType, Frame, Message, StompHeaders, StompSubscription} from '@stomp/stompjs';
+import {Client, debugFnType, Frame, Message, publishParams, StompHeaders, StompSubscription} from '@stomp/stompjs';
 
 import {RxStompConfig} from './rx-stomp-config';
 import {StompState} from './stomp-state';
@@ -62,7 +62,7 @@ export class RxStomp {
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.
    */
-  protected _queuedMessages: Array<{ queueName: string, message: string, headers: StompHeaders }> = [];
+  protected _queuedMessages: publishParams[] = [];
 
   /**
    * STOMP Client from @stomp/stompjs.
@@ -180,17 +180,13 @@ export class RxStomp {
    *
    * The message will get locally queued if the STOMP broker is not connected. It will attempt to
    * publish queued messages as soon as the broker gets connected.
-   *
-   * @param queueName
-   * @param message
-   * @param headers
    */
-  public publish(queueName: string, message: string, headers: StompHeaders = {}): void {
+  public publish(parameters: publishParams): void {
     if (this.connected()) {
-      this._stompClient.publish({destination: queueName, headers, body: message});
+      this._stompClient.publish(parameters);
     } else {
-      this._debug(`Not connected, queueing ${message}`);
-      this._queuedMessages.push({queueName: queueName as string, message: message as string, headers});
+      this._debug(`Not connected, queueing`);
+      this._queuedMessages.push(parameters);
     }
   }
 
@@ -199,11 +195,15 @@ export class RxStomp {
     const queuedMessages = this._queuedMessages;
     this._queuedMessages = [];
 
-    this._debug(`Will try sending queued messages ${queuedMessages}`);
+    if (queuedMessages.length === 0) {
+      return;
+    }
+
+    this._debug(`Will try sending  ${queuedMessages.length} queued message(s)`);
 
     for (const queuedMessage of queuedMessages) {
       this._debug(`Attempting to send ${queuedMessage}`);
-      this.publish(queuedMessage.queueName, queuedMessage.message, queuedMessage.headers);
+      this.publish(queuedMessage);
     }
   }
 
