@@ -104,7 +104,7 @@ describe('RxStomp Queues', () => {
         queSubscription2.unsubscribe();
         setTimeout(() => {
           done();
-        }, 100);
+        }, 200);
       });
 
       it('should not receive message in the second queue', (done) => {
