@@ -1,11 +1,11 @@
-import { BehaviorSubject, Observable, Observer, Subject, Subscription } from 'rxjs';
+import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs';
 
-import { filter, share } from 'rxjs/operators';
+import {filter, share} from 'rxjs/operators';
 
-import { Client, Frame, Message, Stomp, StompHeaders, StompSubscription } from '@stomp/stompjs';
+import {Client, debugFnType, Frame, Message, StompHeaders, StompSubscription} from '@stomp/stompjs';
 
-import { RxStompConfig } from './rx-stomp-config';
-import { StompState } from './stomp-state';
+import {RxStompConfig} from './rx-stomp-config';
+import {StompState} from './stomp-state';
 
 /**
  * You will only need the public properties and
@@ -41,7 +41,7 @@ export class RxStomp {
    */
   public serverHeadersObservable: Observable<StompHeaders>;
 
-  private _serverHeadersBehaviourSubject: BehaviorSubject<null | StompHeaders>;
+  protected _serverHeadersBehaviourSubject: BehaviorSubject<null | StompHeaders>;
 
   /**
    * Will emit all messages to the default queue (any message that are not handled by a subscription)
@@ -65,18 +65,18 @@ export class RxStomp {
   protected queuedMessages: Array<{ queueName: string, message: string, headers: StompHeaders }> = [];
 
   /**
-   * Configuration
-   */
-  private _config: RxStompConfig;
-
-  /**
    * STOMP Client from @stomp/stompjs.
    * Be careful in calling methods directly it may have unintended consequences.
    */
   get stompClient(): Client {
     return this._stompClient;
   }
-  private _stompClient: Client;
+  protected _stompClient: Client;
+
+  /**
+   * Will be assigned during configuration, no-op otherwise
+   */
+  protected _debug: debugFnType;
 
   /**
    * Constructor
@@ -84,6 +84,18 @@ export class RxStomp {
    * See README and samples for configuration examples
    */
   public constructor() {
+    this._stompClient = new Client();
+
+    // Default messages
+    this.setupOnReceive();
+
+    // Receipts
+    this.setupReceipts();
+
+    // debug is no-op by default
+    this._debug = () => {};
+
+    // Initial state is CLOSED
     this.state = new BehaviorSubject<StompState>(StompState.CLOSED);
 
     this.connectObservable = this.state.pipe(
@@ -109,56 +121,25 @@ export class RxStomp {
   }
 
   /** Set configuration */
-  set config(value: RxStompConfig) {
-    this._config = value;
-  }
-
-  /** It will initialize STOMP Client. */
-  protected initStompClient(): void {
-    // disconnect if connected
-    this.deactivate();
-
-    // url takes precedence over socketFn
-    if (typeof(this._config.url) === 'string') {
-      this._stompClient = Stomp.client(this._config.url);
-    } else {
-      this._stompClient = Stomp.over(this._config.url);
+  public configure(rxStompConfig: RxStompConfig) {
+    // RxStompConfig has subset of StompConfig fields
+    this._stompClient.configure(rxStompConfig);
+    if (rxStompConfig.debug) {
+      this._debug = rxStompConfig.debug;
     }
-
-    // Configure client heart-beating
-    this._stompClient.heartbeatIncoming = this._config.heartbeatIncoming;
-    this._stompClient.heartbeatOutgoing = this._config.heartbeatOutgoing;
-
-    // Auto reconnect
-    this._stompClient.reconnectDelay = this._config.reconnectDelay;
-
-    if (!this._config.debug) {
-      this.debug = () => {
-      };
-    }
-    // Set function to debug print messages
-    this._stompClient.debug = this.debug;
-
-    // Default messages
-    this.setupOnReceive();
-
-    // Receipts
-    this.setupReceipts();
   }
 
   /**
    * It will connect to the STOMP broker.
    */
-  public initAndConnect(): void {
-    this.initStompClient();
-
-    if (!this._config.headers) {
-      this._config.headers = {};
-    }
-
+  public activate(): void {
     this._stompClient.configure({
-      connectHeaders: this._config.headers,
-      onConnect: this.onConnect,
+      onConnect: (frame: Frame) => {
+        this._serverHeadersBehaviourSubject.next(frame.headers);
+
+        // Indicate our connected state to observers
+        this._changeState(StompState.CONNECTED);
+      },
       onStompError: (frame: Frame) => {
         // Trigger the frame subject
         this.stompError$.next(frame);
@@ -167,11 +148,11 @@ export class RxStomp {
         this._changeState(StompState.CLOSED);
       }
     });
-    // Attempt connection, passing in a callback
-    this._stompClient.activate();
 
-    this.debug('Connecting...');
     this._changeState(StompState.TRYING);
+
+    // Attempt connection
+    this._stompClient.activate();
   }
 
   /**
@@ -179,13 +160,11 @@ export class RxStomp {
    */
   public deactivate(): void {
     // Disconnect if connected. Callback will set CLOSED state
-    if (this._stompClient) {
-      this._stompClient.deactivate();
+    this._stompClient.deactivate();
 
-      if (this._stompClient.connected) {
-        // Notify observers that we are disconnecting!
-        this._changeState(StompState.DISCONNECTING);
-      }
+    if (this._stompClient.connected) {
+      // Notify observers that we are disconnecting!
+      this._changeState(StompState.DISCONNECTING);
     }
   }
 
@@ -210,7 +189,7 @@ export class RxStomp {
     if (this.connected()) {
       this._stompClient.publish({destination: queueName, headers, body: message});
     } else {
-      this.debug(`Not connected, queueing ${message}`);
+      this._debug(`Not connected, queueing ${message}`);
       this.queuedMessages.push({queueName: queueName as string, message: message as string, headers});
     }
   }
@@ -220,10 +199,10 @@ export class RxStomp {
     const queuedMessages = this.queuedMessages;
     this.queuedMessages = [];
 
-    this.debug(`Will try sending queued messages ${queuedMessages}`);
+    this._debug(`Will try sending queued messages ${queuedMessages}`);
 
     for (const queuedMessage of queuedMessages) {
-      this.debug(`Attempting to send ${queuedMessage}`);
+      this._debug(`Attempting to send ${queuedMessage}`);
       this.publish(queuedMessage.queueName, queuedMessage.message, queuedMessage.headers);
     }
   }
@@ -259,7 +238,7 @@ export class RxStomp {
      * The observable that we return to caller remains same across all reconnects, so no special handling needed at
      * the message subscriber.
      */
-    this.debug(`Request to subscribe ${queueName}`);
+    this._debug(`Request to subscribe ${queueName}`);
 
     // By default auto acknowledgement of messages
     if (!headers.ack) {
@@ -277,7 +256,7 @@ export class RxStomp {
 
         stompConnectedSubscription = this.connectObservable
           .subscribe(() => {
-            this.debug(`Will subscribe to ${queueName}`);
+            this._debug(`Will subscribe to ${queueName}`);
             stompSubscription = this._stompClient.subscribe(queueName, (message: Message) => {
                 messages.next(message);
               },
@@ -285,14 +264,14 @@ export class RxStomp {
           });
 
         return () => { /* cleanup function, will be called when no subscribers are left */
-          this.debug(`Stop watching connection state (for ${queueName})`);
+          this._debug(`Stop watching connection state (for ${queueName})`);
           stompConnectedSubscription.unsubscribe();
 
           if (this.state.getValue() === StompState.CONNECTED) {
-            this.debug(`Will unsubscribe from ${queueName} at Stomp`);
+            this._debug(`Will unsubscribe from ${queueName} at Stomp`);
             stompSubscription.unsubscribe();
           } else {
-            this.debug(`Stomp not connected, no need to unsubscribe from ${queueName} at Stomp`);
+            this._debug(`Stomp not connected, no need to unsubscribe from ${queueName} at Stomp`);
           }
         };
       });
@@ -335,28 +314,7 @@ export class RxStomp {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 
-  /**
-   * Callback Functions
-   *
-   * Note the method signature: () => preserves lexical scope
-   * if we need to use this.x inside the function
-   */
-  protected debug = (args: any): void => {
-    console.log(new Date(), args);
-  }
-
-  /** Callback run on successfully connecting to server */
-  protected onConnect = (frame: Frame) => {
-
-    this.debug('Connected');
-
-    this._serverHeadersBehaviourSubject.next(frame.headers);
-
-    // Indicate our connected state to observers
-    this._changeState(StompState.CONNECTED);
-  }
-
-  private _changeState(state: StompState): void {
+  protected _changeState(state: StompState): void {
     this.state.next(state);
   }
 

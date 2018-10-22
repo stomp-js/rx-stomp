@@ -5,14 +5,14 @@ import { RxStomp, RxStompConfig } from '../../src';
 export function defaultConfig(): RxStompConfig {
   return {
     // Which server?
-    url: 'ws://127.0.0.1:15674/ws',
+    brokerURL: 'ws://127.0.0.1:15674/ws',
 
     // Comment above and uncomment below to test with SockJS
     // url: socketProvider,
 
     // Headers
     // Typical keys: login, passcode, host
-    headers: {
+    connectHeaders: {
       login: 'guest',
       passcode: 'guest'
     },
@@ -28,14 +28,16 @@ export function defaultConfig(): RxStompConfig {
     reconnectDelay: 200,
 
     // Will log diagnostics on console
-    debug: true
+    debug: (msg: string): void => {
+      console.log(new Date(), msg);
+    }
   };
 }
 
 // Wait till RxStomp is actually connected
 export function rxStompFactory() {
   const rxStomp = new RxStomp();
-  rxStomp.config = defaultConfig();
-  rxStomp.initAndConnect();
+  rxStomp.configure(defaultConfig());
+  rxStomp.activate();
   return rxStomp;
 }

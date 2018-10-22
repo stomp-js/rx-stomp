@@ -1,4 +1,4 @@
-import { StompHeaders } from '@stomp/stompjs';
+import {debugFnType, StompHeaders, Versions} from '@stomp/stompjs';
 /**
  * Represents a configuration object for the
  * RxSTOMP.
@@ -19,29 +19,20 @@ export class RxStompConfig {
    *   return new SockJS('http://127.0.0.1:15674/stomp');
    * }
    */
-  public url: string | (() => any);
+  public brokerURL: string;
+
+  /** Enable client debugging? */
+  public debug: debugFnType;
 
   /**
-   * Headers
-   * Typical keys: login: string, passcode: string.
-   * host:string will needed to be passed for virtual hosts in RabbitMQ
+   * See See [Client#stompVersions]{@link Client#stompVersions}.
    */
-  public headers: StompHeaders;
-
-  /** How often to incoming heartbeat?
-   * Interval in milliseconds, set to 0 to disable
-   *
-   * Typical value 0 - disabled
-   */
-  public heartbeatIncoming: number;
+  public stompVersions?: Versions;
 
   /**
-   * How often to outgoing heartbeat?
-   * Interval in milliseconds, set to 0 to disable
-   *
-   * Typical value 20000 - every 20 seconds
+   * See [Client#webSocketFactory]{@link Client#webSocketFactory}.
    */
-  public heartbeatOutgoing: number;
+  public webSocketFactory?: () => any;
 
   /**
    * Wait in milliseconds before attempting auto reconnect
@@ -49,8 +40,32 @@ export class RxStompConfig {
    *
    * Typical value 5000 (5 seconds)
    */
-  public reconnectDelay: number;
+  public reconnectDelay?: number;
 
-  /** Enable client debugging? */
-  public debug: boolean;
+  /** How often to incoming heartbeat?
+   * Interval in milliseconds, set to 0 to disable
+   *
+   * Typical value 0 - disabled
+   */
+  public heartbeatIncoming?: number;
+
+  /**
+   * How often to outgoing heartbeat?
+   * Interval in milliseconds, set to 0 to disable
+   *
+   * Typical value 20000 - every 20 seconds
+   */
+  public heartbeatOutgoing?: number;
+
+  /**
+   * Connect headers.
+   * Typical keys: login: string, passcode: string.
+   * host:string will needed to be passed for virtual hosts in RabbitMQ
+   */
+  public connectHeaders?: StompHeaders;
+
+  /**
+   * See [Client#disconnectHeaders]{@link Client#disconnectHeaders}.
+   */
+  public disconnectHeaders?: StompHeaders;
 }
