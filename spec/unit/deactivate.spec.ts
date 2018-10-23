@@ -4,20 +4,20 @@ import 'jasmine';
 
 import { RxStomp, StompState } from '../../src';
 
-import { disconnetStompRAndEnsure, ensureStompConnected, ensureStompRDisconnected } from '../helpers/helpers';
+import { disconnectRxStompAndEnsure, ensureRxStompConnected, ensureRxStompDisconnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-describe('RxStomp disconnect', () => {
+describe('Deactivate', () => {
   let rxStomp: RxStomp;
 
   beforeEach((done) => {
     rxStomp = rxStompFactory();
-    ensureStompConnected(rxStomp, done);
+    ensureRxStompConnected(rxStomp, done);
   });
 
   // Disconnect and wait till it actually disconnects
   afterEach((done) => {
-    ensureStompRDisconnected(rxStomp, done);
+    ensureRxStompDisconnected(rxStomp, done);
     rxStomp = null;
   });
 
@@ -34,10 +34,10 @@ describe('RxStomp disconnect', () => {
     });
   });
 
-  describe('should disconnect even when underlying connection is not there', () => {
+  describe('should deactivate even when underlying connection is not there', () => {
     // Simulate error on WebSocket and wait for while and call disconnect
     beforeEach((done) => {
-      disconnetStompRAndEnsure(rxStomp, done);
+      disconnectRxStompAndEnsure(rxStomp, done);
     });
 
     // Ask RxStomp to disconnect and wait for 500 ms (more than double

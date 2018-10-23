@@ -9,10 +9,10 @@ import { UUID } from 'angular2-uuid';
 import { RxStomp, RxStompRPC } from '../../src';
 
 import { generateBinaryData } from '../helpers/content-helpers';
-import { ensureStompConnected } from '../helpers/helpers';
+import { ensureRxStompConnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-describe('RxStomp RPC', () => {
+describe('RPC', () => {
   const myRPCEndPoint = '/topic/echo';
 
   let rxStomp: RxStomp;
@@ -22,7 +22,7 @@ describe('RxStomp RPC', () => {
   beforeAll((done) => {
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp);
-    ensureStompConnected(rxStomp, done);
+    ensureRxStompConnected(rxStomp, done);
   });
 
   beforeAll((done) => {
