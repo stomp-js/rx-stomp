@@ -2,7 +2,16 @@ import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs
 
 import {filter, share} from 'rxjs/operators';
 
-import {Client, debugFnType, Frame, Message, publishParams, StompHeaders, StompSubscription} from '@stomp/stompjs';
+import {
+  Client,
+  debugFnType,
+  Frame,
+  Message,
+  publishParams,
+  StompConfig,
+  StompHeaders,
+  StompSubscription
+} from '@stomp/stompjs';
 
 import {RxStompConfig} from './rx-stomp-config';
 import {StompState} from './stomp-state';
@@ -74,6 +83,11 @@ export class RxStomp {
   protected _stompClient: Client;
 
   /**
+   * Before connect
+   */
+  protected _beforeConnect: () => void;
+
+  /**
    * Will be assigned during configuration, no-op otherwise
    */
   protected _debug: debugFnType;
@@ -92,8 +106,13 @@ export class RxStomp {
     // Receipts
     this.setupReceipts();
 
+    const noOp = () => {};
+
+    // Before connect is no op by default
+    this._beforeConnect = noOp;
+
     // debug is no-op by default
-    this._debug = () => {};
+    this._debug = noOp;
 
     // Initial state is CLOSED
     this.connectionState$ = new BehaviorSubject<StompState>(StompState.CLOSED);
@@ -122,10 +141,17 @@ export class RxStomp {
 
   /** Set configuration */
   public configure(rxStompConfig: RxStompConfig) {
+    const stompConfig: StompConfig = (Object as any).assign({}, rxStompConfig);
+
+    if (stompConfig.beforeConnect) {
+      this._beforeConnect = stompConfig.beforeConnect;
+      delete stompConfig.beforeConnect;
+    }
+
     // RxStompConfig has subset of StompConfig fields
-    this._stompClient.configure(rxStompConfig);
-    if (rxStompConfig.debug) {
-      this._debug = rxStompConfig.debug;
+    this._stompClient.configure(stompConfig);
+    if (stompConfig.debug) {
+      this._debug = stompConfig.debug;
     }
   }
 
@@ -135,10 +161,10 @@ export class RxStomp {
   public activate(): void {
     this._stompClient.configure({
       beforeConnect: () => {
+        this._changeState(StompState.TRYING);
+
         // Call handler
-        if (this._stompClient.active) {
-          this._changeState(StompState.TRYING);
-        }
+        this._beforeConnect();
       },
       onConnect: (frame: Frame) => {
         this._serverHeadersBehaviourSubject$.next(frame.headers);

@@ -19,10 +19,10 @@ export class RxStompConfig {
    *   return new SockJS('http://127.0.0.1:15674/stomp');
    * }
    */
-  public brokerURL: string;
+  public brokerURL?: string;
 
   /** Enable client debugging? */
-  public debug: debugFnType;
+  public debug?: debugFnType;
 
   /**
    * See See [Client#stompVersions]{@link Client#stompVersions}.
@@ -68,4 +68,9 @@ export class RxStompConfig {
    * See [Client#disconnectHeaders]{@link Client#disconnectHeaders}.
    */
   public disconnectHeaders?: StompHeaders;
+
+  /**
+   * Before connect
+   */
+  public beforeConnect?: () => void;
 }
