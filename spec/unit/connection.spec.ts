@@ -2,14 +2,11 @@
 
 import 'jasmine';
 
-import { filter } from 'rxjs/operators';
+import { StompHeaders } from '@stomp/stompjs';
 
-import { Message, StompHeaders } from '@stomp/stompjs';
+import { RxStomp } from '../../src';
 
-import { RxStomp, StompState } from '../../src';
-
-import { generateBinaryData } from '../helpers/content-helpers';
-import { disconnectRxStompAndEnsure, ensureRxStompConnected } from '../helpers/helpers';
+import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Connection', () => {
