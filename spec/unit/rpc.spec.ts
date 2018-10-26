@@ -67,7 +67,7 @@ describe('RPC', () => {
 
   it('Should not leak', (done) => {
     const numSubscribers = () => {
-      return rxStomp.defaultMessages$.observers.length;
+      return rxStomp.unhandledMessage$.observers.length;
     };
 
     const origNumSubcribers = numSubscribers();

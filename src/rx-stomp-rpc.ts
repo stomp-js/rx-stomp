@@ -17,7 +17,7 @@ export class RxStompRPC {
   private _replyQueueName = '/temp-queue/rpc-replies';
 
   private _setupReplyQueue: setupReplyQueueFnType = () => {
-    return this.rxStomp.defaultMessages$;
+    return this.rxStomp.unhandledMessage$;
   }
 
   private _repliesObservable: Observable<Message>;

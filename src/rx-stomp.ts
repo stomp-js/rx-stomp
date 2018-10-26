@@ -55,7 +55,7 @@ export class RxStomp {
   /**
    * Will emit all messages to the default queue (any message that are not handled by a subscription)
    */
-  public defaultMessages$: Subject<Message>;
+  public unhandledMessage$: Subject<Message>;
 
   /**
    * Will emit all receipts
@@ -101,10 +101,10 @@ export class RxStomp {
     this._stompClient = new Client();
 
     // Default messages
-    this.setupOnReceive();
+    this._setupUnhandledMessages();
 
     // Receipts
-    this.setupReceipts();
+    this._setupUnhandledReceipts();
 
     const noOp = () => {};
 
@@ -125,7 +125,7 @@ export class RxStomp {
 
     // Setup sending queuedMessages
     this.connected$.subscribe(() => {
-      this.sendQueuedMessages();
+      this._sendQueuedMessages();
     });
 
     this._serverHeadersBehaviourSubject$ = new BehaviorSubject<null | StompHeaders>(null);
@@ -227,7 +227,7 @@ export class RxStomp {
   }
 
   /** It will send queued messages. */
-  protected sendQueuedMessages(): void {
+  protected _sendQueuedMessages(): void {
     const queuedMessages = this._queuedMessages;
     this._queuedMessages = [];
 
@@ -320,21 +320,20 @@ export class RxStomp {
   }
 
   /**
-   * It will handle messages received in the default queue. Messages that would not be handled otherwise
-   * get delivered to the default queue.
+   * Setup streaming unhandled messages.
    */
-  protected setupOnReceive(): void {
-    this.defaultMessages$ = new Subject();
+  protected _setupUnhandledMessages(): void {
+    this.unhandledMessage$ = new Subject();
 
     this._stompClient.onUnhandledMessage = (message: Message) => {
-      this.defaultMessages$.next(message);
+      this.unhandledMessage$.next(message);
     };
   }
 
   /**
-   * It will emit all receipts.
+   * Setup streaming unhandled receipts.
    */
-  protected setupReceipts(): void {
+  protected _setupUnhandledReceipts(): void {
     this.unhandledReceipts$ = new Subject();
 
     this._stompClient.onUnhandledReceipt = (frame: Frame) => {
