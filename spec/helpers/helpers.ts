@@ -3,17 +3,17 @@
 import 'jasmine';
 
 // Helper functions
-import {RxStomp, StompState} from '../../src';
+import {RxStomp, RxStompState} from '../../src';
 
 export function ensureRxStompConnected(rxStomp: RxStomp, done: any) {
-  rxStomp.connected$.subscribe((state: StompState) => {
+  rxStomp.connected$.subscribe((state: RxStompState) => {
     done();
   });
 }
 
 export function ensureRxStompDisconnected(rxStomp: RxStomp, done: any) {
-  rxStomp.connectionState$.subscribe((state: StompState) => {
-    if (state === StompState.CLOSED) {
+  rxStomp.connectionState$.subscribe((state: RxStompState) => {
+    if (state === RxStompState.CLOSED) {
       done();
     }
   });

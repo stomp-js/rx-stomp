@@ -2,7 +2,7 @@
 
 import 'jasmine';
 
-import { RxStomp, StompState } from '../../src';
+import { RxStomp, RxStompState } from '../../src';
 
 import { disconnectRxStompAndEnsure, ensureRxStompConnected, ensureRxStompDisconnected } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
@@ -30,7 +30,7 @@ describe('Deactivate', () => {
     });
 
     it('and not reconnect', () => {
-      expect(rxStomp.connectionState$.getValue()).toEqual(StompState.CLOSED);
+      expect(rxStomp.connectionState$.getValue()).toEqual(RxStompState.CLOSED);
     });
   });
 
@@ -48,7 +48,7 @@ describe('Deactivate', () => {
     });
 
     it('and not reconnect', () => {
-      expect(rxStomp.connectionState$.getValue()).not.toEqual(StompState.CONNECTED);
+      expect(rxStomp.connectionState$.getValue()).not.toEqual(RxStompState.OPEN);
     });
   });
 });

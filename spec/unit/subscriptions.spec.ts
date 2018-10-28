@@ -6,7 +6,7 @@ import {filter, take} from 'rxjs/operators';
 
 import { Message } from '@stomp/stompjs';
 
-import { RxStomp, StompState } from '../../src';
+import { RxStomp, RxStompState } from '../../src';
 
 import { generateBinaryData } from '../helpers/content-helpers';
 import { disconnectRxStompAndEnsure, ensureRxStompConnected } from '../helpers/helpers';
@@ -74,7 +74,7 @@ describe('Subscribe & Publish', () => {
         done();
       });
 
-      rxStomp.connected$.subscribe((state: StompState) => {
+      rxStomp.connected$.subscribe((state: RxStompState) => {
         // Now publish the message when STOMP Broker is connected
         rxStomp.publish({destination: queueName, body: msg});
       });
@@ -118,8 +118,8 @@ describe('Subscribe & Publish', () => {
       // Actively disconnect simulating error after STOMP connects, then publish the message
       rxStomp.connected$.pipe(take(1)).subscribe(() => {
         // publish when disconnected
-        rxStomp.connectionState$.pipe(filter((state: StompState) => {
-          return (state === StompState.CLOSED);
+        rxStomp.connectionState$.pipe(filter((state: RxStompState) => {
+          return (state === RxStompState.CLOSED);
         }), take(1)).subscribe(() => {
           rxStomp.publish({destination: queueName, body: msg});
         });

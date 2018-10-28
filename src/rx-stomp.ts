@@ -14,7 +14,7 @@ import {
 } from '@stomp/stompjs';
 
 import {RxStompConfig} from './rx-stomp-config';
-import {StompState} from './stomp-state';
+import {RxStompState} from './rx-stomp-state';
 
 /**
  * This is the main Stomp Client.
@@ -40,15 +40,15 @@ export class RxStomp {
    * It is a BehaviorSubject and will emit current status immediately. This will typically get
    * used to show current status to the end user.
    */
-  public connectionState$: BehaviorSubject<StompState>;
+  public connectionState$: BehaviorSubject<RxStompState>;
 
   /**
    * Will trigger when connection is established.
    * It will trigger every time a (re)connection occurs.
    * If it is already connected it will trigger immediately.
-   * You can safely ignore the value, as it will always be `StompState.CONNECTED`
+   * You can safely ignore the value, as it will always be `StompState.OPEN`
    */
-  public connected$: Observable<StompState>;
+  public connected$: Observable<RxStompState>;
 
   /**
    * Provides headers from most recent connection to the server as returned by the CONNECTED frame.
@@ -147,11 +147,11 @@ export class RxStomp {
     this._debug = noOp;
 
     // Initial state is CLOSED
-    this.connectionState$ = new BehaviorSubject<StompState>(StompState.CLOSED);
+    this.connectionState$ = new BehaviorSubject<RxStompState>(RxStompState.CLOSED);
 
     this.connected$ = this.connectionState$.pipe(
-      filter((currentState: StompState) => {
-        return currentState === StompState.CONNECTED;
+      filter((currentState: RxStompState) => {
+        return currentState === RxStompState.OPEN;
       })
     );
 
@@ -224,7 +224,7 @@ export class RxStomp {
   public activate(): void {
     this._stompClient.configure({
       beforeConnect: () => {
-        this._changeState(StompState.TRYING);
+        this._changeState(RxStompState.CONNECTING);
 
         // Call handler
         this._beforeConnect();
@@ -233,14 +233,14 @@ export class RxStomp {
         this._serverHeadersBehaviourSubject$.next(frame.headers);
 
         // Indicate our connected state to observers
-        this._changeState(StompState.CONNECTED);
+        this._changeState(RxStompState.OPEN);
       },
       onStompError: (frame: Frame) => {
         // Trigger the frame subject
         this.stompErrors$.next(frame);
       },
       onWebSocketClose: () => {
-        this._changeState(StompState.CLOSED);
+        this._changeState(RxStompState.CLOSED);
       }
     });
 
@@ -261,14 +261,14 @@ export class RxStomp {
     this._stompClient.deactivate();
 
     const stompState = this.connectionState$.getValue();
-    if (stompState === StompState.CONNECTED) {
+    if (stompState === RxStompState.OPEN) {
       // Notify observers that we are disconnecting!
-      this._changeState(StompState.DISCONNECTING);
+      this._changeState(RxStompState.CLOSING);
     }
     // This is bit tricky situation, it would be better handled at stompjs level
-    if (stompState === StompState.TRYING) {
+    if (stompState === RxStompState.CONNECTING) {
       // Notify observers that we are disconnecting!
-      this._changeState(StompState.CLOSED);
+      this._changeState(RxStompState.CLOSED);
     }
   }
 
@@ -276,7 +276,7 @@ export class RxStomp {
    * It will return `true` if STOMP broker is connected and `false` otherwise.
    */
   public connected(): boolean {
-    return this.connectionState$.getValue() === StompState.CONNECTED;
+    return this.connectionState$.getValue() === RxStompState.OPEN;
   }
 
   /**
@@ -477,7 +477,7 @@ export class RxStomp {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 
-  protected _changeState(state: StompState): void {
+  protected _changeState(state: RxStompState): void {
     this.connectionState$.next(state);
   }
 
