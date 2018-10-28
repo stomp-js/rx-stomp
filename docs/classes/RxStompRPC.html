@@ -1,0 +1,479 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>@stomp/rx-stomp documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">@stomp/rx-stomp documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Classes</li>
+  <li>RxStompRPC</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/rx-stomp-rpc.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>An implementation of Remote Procedure Call (RPC) using messaging.</p>
+<p>Please see the <a href="../additional-documentation/rpc---remote-procedure-call.html">guide</a> for details.</p>
+
+            </p>
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#rpc">rpc</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#stream">stream</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(rxStomp: <a href="../classes/RxStomp.html">RxStomp</a>, stompRPCConfig?: <a href="../classes/RxStompRPCConfig.html">RxStompRPCConfig</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/rx-stomp-rpc.ts:23</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Create an instance, see the <a href="../additional-documentation/rpc---remote-procedure-call.html">guide</a> for details.</p>
+</div>
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>rxStomp</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../classes/RxStomp.html" target="_self" >RxStomp</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>stompRPCConfig</td>
+                                                  
+                                                        <td>
+                                                                    <code><a href="../classes/RxStompRPCConfig.html" target="_self" >RxStompRPCConfig</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Yes
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+            <section>
+    
+        <h3 id="methods">
+            Methods
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="rpc"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            rpc
+                            </b>
+                            <a href="#rpc"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon icon ion-ios-reset"></span>
+                        <code>rpc(params: publishParams)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/rx-stomp-rpc.ts:42</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Make an RPC request. See the <a href="../additional-documentation/rpc---remote-procedure-call.html">guide</a> for example.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>params</td>
+                                                        <td>
+                                                                    <code>publishParams</code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;Message&gt;</code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="stream"></a>
+                        <span class="name">
+                            <b>
+                                <span class="modifier">Public</span>
+                            stream
+                            </b>
+                            <a href="#stream"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                            <span class="modifier-icon icon ion-ios-reset"></span>
+                        <code>stream(params: publishParams)</code>
+                    </td>
+                </tr>
+
+
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/rx-stomp-rpc.ts:50</a></div>
+                            </td>
+                        </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Make an RPC stream request. See the <a href="../additional-documentation/rpc---remote-procedure-call.html">guide</a>.</p>
+</div>
+
+                            <div class="io-description">
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>params</td>
+                                                        <td>
+                                                                    <code>publishParams</code>
+                                                        </td>
+                                                    
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="io-description">
+                                <b>Returns : </b>    <code>Observable&lt;Message&gt;</code>
+
+                            </div>
+                                <div class="io-description">
+                                    
+                                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Observable, Observer, Subscription } from &#x27;rxjs&#x27;;
+import { filter, first } from &#x27;rxjs/operators&#x27;;
+
+import { UUID } from &#x27;angular2-uuid&#x27;;
+
+import {Message, publishParams, StompHeaders} from &#x27;@stomp/stompjs&#x27;;
+
+import { RxStomp } from &#x27;./rx-stomp&#x27;;
+import { RxStompRPCConfig, setupReplyQueueFnType } from &#x27;./rx-stomp-rpc-config&#x27;;
+
+/**
+ * An implementation of Remote Procedure Call (RPC) using messaging.
+ *
+ * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ */
+export class RxStompRPC {
+  private _replyQueueName &#x3D; &#x27;/temp-queue/rpc-replies&#x27;;
+
+  private _setupReplyQueue: setupReplyQueueFnType &#x3D; () &#x3D;&gt; {
+    return this.rxStomp.unhandledMessage$;
+  }
+
+  private _repliesObservable: Observable&lt;Message&gt;;
+
+  /**
+   * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+   */
+  constructor(private rxStomp: RxStomp, private stompRPCConfig?: RxStompRPCConfig) {
+    if (stompRPCConfig) {
+      if (stompRPCConfig.replyQueueName) {
+        this._replyQueueName &#x3D; stompRPCConfig.replyQueueName;
+      }
+      if (stompRPCConfig.setupReplyQueue) {
+        this._setupReplyQueue &#x3D; stompRPCConfig.setupReplyQueue;
+      }
+    }
+  }
+
+  /**
+   * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+   */
+  public rpc(params: publishParams): Observable&lt;Message&gt; {
+    // We know there will be only one message in reply
+    return this.stream(params).pipe(first());
+  }
+
+  /**
+   * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+   */
+  public stream(params: publishParams): Observable&lt;Message&gt; {
+    const headers: StompHeaders &#x3D; (Object as any).assign({}, params.headers || {});
+    const {destination, body, binaryBody} &#x3D; params;
+
+    if (!this._repliesObservable) {
+      this._repliesObservable &#x3D; this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+    }
+
+    return Observable.create(
+      (rpcObserver: Observer&lt;Message&gt;) &#x3D;&gt; {
+        let defaultMessagesSubscription: Subscription;
+
+        const correlationId &#x3D; UUID.UUID();
+
+        defaultMessagesSubscription &#x3D; this._repliesObservable.pipe(filter((message: Message) &#x3D;&gt; {
+          return message.headers[&#x27;correlation-id&#x27;] &#x3D;&#x3D;&#x3D; correlationId;
+        })).subscribe((message: Message) &#x3D;&gt; {
+          rpcObserver.next(message);
+        });
+
+        // send an RPC request
+        headers[&#x27;reply-to&#x27;] &#x3D; this._replyQueueName;
+        headers[&#x27;correlation-id&#x27;] &#x3D; correlationId;
+
+        this.rxStomp.publish({destination, body, binaryBody, headers});
+
+        return () &#x3D;&gt; { // Cleanup
+          defaultMessagesSubscription.unsubscribe();
+        };
+      }
+    );
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'RxStompRPC.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <script src="../js/menu-wc.js"></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

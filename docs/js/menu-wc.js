@@ -81,19 +81,16 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <ul class="links collapse"
             ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
                     <li class="link">
-                        <a href="classes/StompConfig.html" data-type="entity-link">StompConfig</a>
+                        <a href="classes/RxStomp.html" data-type="entity-link">RxStomp</a>
                     </li>
                     <li class="link">
-                        <a href="classes/StompRPCConfig.html" data-type="entity-link">StompRPCConfig</a>
+                        <a href="classes/RxStompConfig.html" data-type="entity-link">RxStompConfig</a>
                     </li>
                     <li class="link">
-                        <a href="classes/StompRPCService.html" data-type="entity-link">StompRPCService</a>
+                        <a href="classes/RxStompRPC.html" data-type="entity-link">RxStompRPC</a>
                     </li>
                     <li class="link">
-                        <a href="classes/StompRService.html" data-type="entity-link">StompRService</a>
-                    </li>
-                    <li class="link">
-                        <a href="classes/StompService.html" data-type="entity-link">StompService</a>
+                        <a href="classes/RxStompRPCConfig.html" data-type="entity-link">RxStompRPCConfig</a>
                     </li>
             </ul>
         </li>
