@@ -1,76 +1,106 @@
 import {debugFnType, StompHeaders, Versions} from '@stomp/stompjs';
 /**
- * Represents a configuration object for the
- * RxSTOMP.
+ * Represents a configuration object for RxSTOMP.
+ * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
+ *
+ * All the attributes of this calls are optional.
  */
 
 export class RxStompConfig {
   /**
-   * Server URL to connect to. Please refer to your STOMP broker documentation for details.
+   * The URL for the STOMP broker to connect to.
+   * Typically like `"ws://broker.329broker.com:15674/ws"` or `"wss://broker.329broker.com:15674/ws"`.
    *
-   * Example: ws://127.0.0.1:15674/ws (for a RabbitMQ default setup running on localhost)
+   * Only one of this or [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} need to be set.
+   * If both are set, [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} will be used.
    *
-   * Alternatively this parameter can be a function that returns an object similar to WebSocket
-   * (typically SockJS instance).
-   *
-   * Example:
-   *
-   * () => {
-   *   return new SockJS('http://127.0.0.1:15674/stomp');
-   * }
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#brokerURL
    */
   public brokerURL?: string;
+
+  /**
+   * STOMP versions to attempt during STOMP handshake. By default versions `1.0`, `1.1`, and `1.2` are attempted.
+   *
+   * Example:
+   * ```javascript
+   *        // Try only versions 1.0 and 1.1
+   *        rxStompConfig.stompVersions= new Versions(['1.0', '1.1']);
+   * ```
+   *
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#stompVersions
+   */
+  public stompVersions?: Versions;
 
   /** Enable client debugging? */
   public debug?: debugFnType;
 
   /**
-   * See See [Client#stompVersions]{@link Client#stompVersions}.
-   */
-  public stompVersions?: Versions;
-
-  /**
-   * See [Client#webSocketFactory]{@link Client#webSocketFactory}.
+   * This function should return a WebSocket or a similar (e.g. SockJS) object.
+   * If your STOMP Broker supports WebSockets, prefer setting [Client#brokerURL]{@link Client#brokerURL}.
+   *
+   * If both this and [Client#brokerURL]{@link Client#brokerURL} are set, this will be used.
+   *
+   * Example:
+   * ```javascript
+   *        // use a WebSocket
+   *        rxStompConfig.webSocketFactory= function () {
+   *          return new WebSocket("wss://broker.329broker.com:15674/ws");
+   *        };
+   *
+   *        // Typical usage with SockJS
+   *        rxStompConfig.webSocketFactory= function () {
+   *          return new SockJS("http://broker.329broker.com/stomp");
+   *        };
+   * ```
+   *
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#webSocketFactory
    */
   public webSocketFactory?: () => any;
 
   /**
-   * Wait in milliseconds before attempting auto reconnect
-   * Set to 0 to disable
+   *  automatically reconnect with delay in milliseconds, set to 0 to disable.
    *
-   * Typical value 5000 (5 seconds)
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#reconnectDelay
    */
   public reconnectDelay?: number;
 
-  /** How often to incoming heartbeat?
-   * Interval in milliseconds, set to 0 to disable
+  /**
+   * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
    *
-   * Typical value 0 - disabled
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#heartbeatIncoming
    */
   public heartbeatIncoming?: number;
 
   /**
-   * How often to outgoing heartbeat?
-   * Interval in milliseconds, set to 0 to disable
+   * Outgoing heartbeat interval in milliseconds. Set to 0 to disable.
    *
-   * Typical value 20000 - every 20 seconds
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#heartbeatOutgoing
    */
   public heartbeatOutgoing?: number;
 
   /**
-   * Connect headers.
-   * Typical keys: login: string, passcode: string.
-   * host:string will needed to be passed for virtual hosts in RabbitMQ
+   * Connection headers, important keys - `login`, `passcode`, `host`.
+   * Though STOMP 1.2 standard marks these keys to be present, check your broker documentation for
+   * details specific to your broker.
+   *
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#connectHeaders
    */
   public connectHeaders?: StompHeaders;
 
   /**
-   * See [Client#disconnectHeaders]{@link Client#disconnectHeaders}.
+   * Disconnection headers.
+   *
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#disconnectHeaders
    */
   public disconnectHeaders?: StompHeaders;
 
   /**
-   * Before connect
+   * Callback, invoked on before a connection connection to the STOMP broker.
+   *
+   * You can change configuration of the rxStomp, which will impact the immediate connect.
+   * It is valid to call [RxStomp#decativate]{@link RxStomp#deactivate} in this callback.
+   *
+   * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#beforeConnect
    */
   public beforeConnect?: () => void;
 }
