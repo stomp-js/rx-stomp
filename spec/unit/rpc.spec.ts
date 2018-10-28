@@ -28,7 +28,7 @@ describe('RPC', () => {
   beforeAll((done) => {
     const receiptId = UUID.UUID();
 
-    rxStomp.subscribe(myRPCEndPoint, {receipt: receiptId}).subscribe((message: Message) => {
+    rxStomp.watch(myRPCEndPoint, {receipt: receiptId}).subscribe((message: Message) => {
       const replyTo = message.headers['reply-to'];
       const correlationId = message.headers['correlation-id'];
       const incomingMessage = message.binaryBody;

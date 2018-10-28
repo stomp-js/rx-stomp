@@ -364,7 +364,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#subscribe
    */
-  public subscribe(destination: string, headers: StompHeaders = {}): Observable<Message> {
+  public watch(destination: string, headers: StompHeaders = {}): Observable<Message> {
 
     /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
      *

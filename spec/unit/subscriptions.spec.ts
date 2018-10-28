@@ -38,7 +38,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message';
 
       // Subscribe and set up the Observable
-      rxStomp.subscribe(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: Message) => {
         expect(message.body).toBe(msg);
         done();
       });
@@ -53,7 +53,7 @@ describe('Subscribe & Publish', () => {
       const binaryMsg = generateBinaryData(1);
 
       // Subscribe and set up the Observable
-      rxStomp.subscribe(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: Message) => {
         expect(message.binaryBody.toString()).toBe(binaryMsg.toString());
         done();
       });
@@ -69,7 +69,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message 01';
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.subscribe(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: Message) => {
         expect(message.body).toBe(msg);
         done();
       });
@@ -86,7 +86,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message 02' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.subscribe(queueName).pipe(
+      rxStomp.watch(queueName).pipe(
         filter((message: Message) => {
           // Since the queue is durable, we may receive older messages as well, discard those
           return message.body === msg;
@@ -105,7 +105,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message 03' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.subscribe(queueName).pipe(
+      rxStomp.watch(queueName).pipe(
         filter((message: Message) => {
           // Since the queue is durable, we may receive older messages as well, discard those
           return message.body === msg;

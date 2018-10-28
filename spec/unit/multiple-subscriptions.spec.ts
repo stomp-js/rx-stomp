@@ -47,11 +47,11 @@ describe('Multiple Queues', () => {
 
     // Subscribe to both queues
     beforeEach((done) => {
-      queSubscription1 = rxStomp.subscribe(queueName1).pipe(
+      queSubscription1 = rxStomp.watch(queueName1).pipe(
         map((message) => message.body)
       ).subscribe(spyHandler1);
 
-      queSubscription2 = rxStomp.subscribe(queueName2).pipe(
+      queSubscription2 = rxStomp.watch(queueName2).pipe(
         map((message) => message.body)
       ).subscribe(spyHandler2);
 
