@@ -1,5 +1,7 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Client, debugFnType, Frame, Message, publishParams, StompHeaders } from '@stomp/stompjs';
+import { Client, debugFnType, publishParams, StompHeaders } from '@stomp/stompjs';
+import { IFrame } from './i-frame';
+import { IMessage } from './i-message';
 import { RxStompConfig } from './rx-stomp-config';
 import { RxStompState } from './rx-stomp-state';
 /**
@@ -54,7 +56,7 @@ export declare class RxStomp {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onUnhandledMessage
      */
-    unhandledMessage$: Subject<Message>;
+    unhandledMessage$: Subject<IMessage>;
     /**
      * STOMP brokers can be requested to notify when an operation is actually completed.
      * Prefer using [RxStomp#watchForReceipt]{@link RxStomp#watchForReceipt}.
@@ -65,7 +67,7 @@ export declare class RxStomp {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onUnhandledReceipt
      */
-    unhandledReceipts$: Subject<Frame>;
+    unhandledReceipts$: Subject<IFrame>;
     /**
      * It will stream all ERROR frames received from the STOMP Broker.
      * A compliant STOMP Broker will close the connection after this type of frame.
@@ -77,7 +79,7 @@ export declare class RxStomp {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onStompError
      */
-    stompErrors$: Subject<Frame>;
+    stompErrors$: Subject<IFrame>;
     /**
      * Internal array to hold locally queued messages when STOMP broker is not connected.
      */
@@ -215,7 +217,7 @@ export declare class RxStomp {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#subscribe
      */
-    watch(destination: string, headers?: StompHeaders): Observable<Message>;
+    watch(destination: string, headers?: StompHeaders): Observable<IMessage>;
     /**
      * Setup streaming unhandled messages.
      */
@@ -252,6 +254,6 @@ export declare class RxStomp {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#watchForReceipt
      */
-    waitForReceipt(receiptId: string, callback: (frame: Frame) => void): void;
+    waitForReceipt(receiptId: string, callback: (frame: IFrame) => void): void;
     protected _changeState(state: RxStompState): void;
 }

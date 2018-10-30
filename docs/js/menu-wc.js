@@ -96,6 +96,23 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         </li>
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
+                ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"' }>
+                <span class="icon ion-md-information-circle-outline"></span>
+                <span>Interfaces</span>
+                <span class="icon ion-ios-arrow-down"></span>
+            </div>
+            <ul class="links collapse"
+            ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
+                    <li class="link">
+                        <a href="interfaces/IFrame.html" data-type="entity-link">IFrame</a>
+                    </li>
+                    <li class="link">
+                        <a href="interfaces/IMessage.html" data-type="entity-link">IMessage</a>
+                    </li>
+            </ul>
+        </li>
+        <li class="chapter">
+            <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"' }>
                 <span class="icon ion-ios-cube"></span>
                 <span>Miscellaneous</span>

@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { Message, publishParams } from '@stomp/stompjs';
+import { publishParams } from '@stomp/stompjs';
+import { IMessage } from './i-message';
 import { RxStomp } from './rx-stomp';
 import { RxStompRPCConfig } from './rx-stomp-rpc-config';
 /**
@@ -20,9 +21,9 @@ export declare class RxStompRPC {
     /**
      * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
      */
-    rpc(params: publishParams): Observable<Message>;
+    rpc(params: publishParams): Observable<IMessage>;
     /**
      * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
      */
-    stream(params: publishParams): Observable<Message>;
+    stream(params: publishParams): Observable<IMessage>;
 }
