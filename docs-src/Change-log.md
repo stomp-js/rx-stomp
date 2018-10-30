@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0-beta.3 (2018-10-30]
+
+* Separate out IFrame and IMessage interfaces to avoid type compatibility issues.
+
 ## 0.1.0-beta.2 (2018-10-28)
 
 * Uses @stomp/stompjs v5 properly

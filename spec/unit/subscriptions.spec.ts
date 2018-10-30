@@ -4,9 +4,7 @@ import 'jasmine';
 
 import {filter, take} from 'rxjs/operators';
 
-import { Message } from '@stomp/stompjs';
-
-import { RxStomp, RxStompState } from '../../src';
+import {IMessage, RxStomp, RxStompState} from '../../src';
 
 import { generateBinaryData } from '../helpers/content-helpers';
 import { disconnectRxStompAndEnsure, ensureRxStompConnected } from '../helpers/helpers';
@@ -38,7 +36,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message';
 
       // Subscribe and set up the Observable
-      rxStomp.watch(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: IMessage) => {
         expect(message.body).toBe(msg);
         done();
       });
@@ -53,7 +51,7 @@ describe('Subscribe & Publish', () => {
       const binaryMsg = generateBinaryData(1);
 
       // Subscribe and set up the Observable
-      rxStomp.watch(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: IMessage) => {
         expect(message.binaryBody.toString()).toBe(binaryMsg.toString());
         done();
       });
@@ -69,7 +67,7 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message 01';
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.watch(queueName).subscribe((message: Message) => {
+      rxStomp.watch(queueName).subscribe((message: IMessage) => {
         expect(message.body).toBe(msg);
         done();
       });
@@ -87,11 +85,11 @@ describe('Subscribe & Publish', () => {
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       rxStomp.watch(queueName).pipe(
-        filter((message: Message) => {
+        filter((message: IMessage) => {
           // Since the queue is durable, we may receive older messages as well, discard those
           return message.body === msg;
         })
-      ).subscribe((message: Message) => {
+      ).subscribe((message: IMessage) => {
         expect(message.body).toBe(msg);
         done();
       });
@@ -106,11 +104,11 @@ describe('Subscribe & Publish', () => {
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       rxStomp.watch(queueName).pipe(
-        filter((message: Message) => {
+        filter((message: IMessage) => {
           // Since the queue is durable, we may receive older messages as well, discard those
           return message.body === msg;
         })
-      ).subscribe((message: Message) => {
+      ).subscribe((message: IMessage) => {
         expect(message.body).toBe(msg);
         done();
       });

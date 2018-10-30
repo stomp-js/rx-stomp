@@ -5,14 +5,14 @@ import {filter, share} from 'rxjs/operators';
 import {
   Client,
   debugFnType,
-  Frame,
-  Message,
   publishParams,
   StompConfig,
   StompHeaders,
   StompSubscription
 } from '@stomp/stompjs';
 
+import {IFrame} from './i-frame';
+import {IMessage} from './i-message';
 import {RxStompConfig} from './rx-stomp-config';
 import {RxStompState} from './rx-stomp-state';
 
@@ -72,7 +72,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onUnhandledMessage
    */
-  public unhandledMessage$: Subject<Message>;
+  public unhandledMessage$: Subject<IMessage>;
 
   /**
    * STOMP brokers can be requested to notify when an operation is actually completed.
@@ -84,7 +84,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onUnhandledReceipt
    */
-  public unhandledReceipts$: Subject<Frame>;
+  public unhandledReceipts$: Subject<IFrame>;
 
   /**
    * It will stream all ERROR frames received from the STOMP Broker.
@@ -97,7 +97,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#onStompError
    */
-  public stompErrors$: Subject<Frame>;
+  public stompErrors$: Subject<IFrame>;
 
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.
@@ -229,13 +229,13 @@ export class RxStomp {
         // Call handler
         this._beforeConnect();
       },
-      onConnect: (frame: Frame) => {
+      onConnect: (frame: IFrame) => {
         this._serverHeadersBehaviourSubject$.next(frame.headers);
 
         // Indicate our connected state to observers
         this._changeState(RxStompState.OPEN);
       },
-      onStompError: (frame: Frame) => {
+      onStompError: (frame: IFrame) => {
         // Trigger the frame subject
         this.stompErrors$.next(frame);
       },
@@ -364,7 +364,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#subscribe
    */
-  public watch(destination: string, headers: StompHeaders = {}): Observable<Message> {
+  public watch(destination: string, headers: StompHeaders = {}): Observable<IMessage> {
 
     /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
      *
@@ -386,7 +386,7 @@ export class RxStomp {
     }
 
     const coldObservable = Observable.create(
-      (messages: Observer<Message>) => {
+      (messages: Observer<IMessage>) => {
         /*
          * These variables will be used as part of the closure and work their magic during unsubscribe
          */
@@ -396,7 +396,7 @@ export class RxStomp {
 
         stompConnectedSubscription = this.connected$.subscribe(() => {
             this._debug(`Will subscribe to ${destination}`);
-            stompSubscription = this._stompClient.subscribe(destination, (message: Message) => {
+            stompSubscription = this._stompClient.subscribe(destination, (message: IMessage) => {
                 messages.next(message);
               },
               headers);
@@ -429,7 +429,7 @@ export class RxStomp {
   protected _setupUnhandledMessages(): void {
     this.unhandledMessage$ = new Subject();
 
-    this._stompClient.onUnhandledMessage = (message: Message) => {
+    this._stompClient.onUnhandledMessage = (message: IMessage) => {
       this.unhandledMessage$.next(message);
     };
   }
@@ -440,7 +440,7 @@ export class RxStomp {
   protected _setupUnhandledReceipts(): void {
     this.unhandledReceipts$ = new Subject();
 
-    this._stompClient.onUnhandledReceipt = (frame: Frame) => {
+    this._stompClient.onUnhandledReceipt = (frame: IFrame) => {
       this.unhandledReceipts$.next(frame);
     };
   }
@@ -473,7 +473,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#watchForReceipt
    */
-  public waitForReceipt(receiptId: string, callback: (frame: Frame) => void): void {
+  public waitForReceipt(receiptId: string, callback: (frame: IFrame) => void): void {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 

@@ -3,10 +3,9 @@
 
 import 'jasmine';
 
-import { Message } from '@stomp/stompjs';
 import { UUID } from 'angular2-uuid';
 
-import { RxStomp, RxStompRPC } from '../../src';
+import {IMessage, RxStomp, RxStompRPC} from '../../src';
 
 import { generateBinaryData } from '../helpers/content-helpers';
 import { ensureRxStompConnected } from '../helpers/helpers';
@@ -28,7 +27,7 @@ describe('RPC', () => {
   beforeAll((done) => {
     const receiptId = UUID.UUID();
 
-    rxStomp.watch(myRPCEndPoint, {receipt: receiptId}).subscribe((message: Message) => {
+    rxStomp.watch(myRPCEndPoint, {receipt: receiptId}).subscribe((message: IMessage) => {
       const replyTo = message.headers['reply-to'];
       const correlationId = message.headers['correlation-id'];
       const incomingMessage = message.binaryBody;
@@ -49,7 +48,7 @@ describe('RPC', () => {
     // Watch for RPC response
 
     const msg = 'Hello';
-    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: Message) => {
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: IMessage) => {
       expect(message.body).toEqual(msg);
       done();
     });
@@ -59,7 +58,7 @@ describe('RPC', () => {
     // Watch for RPC response
 
     const binaryMsg = generateBinaryData(1);
-    rxStompRPC.rpc({destination: myRPCEndPoint, binaryBody: binaryMsg}).subscribe((message: Message) => {
+    rxStompRPC.rpc({destination: myRPCEndPoint, binaryBody: binaryMsg}).subscribe((message: IMessage) => {
       expect(message.binaryBody.toString()).toEqual(binaryMsg.toString());
       done();
     });
@@ -74,7 +73,7 @@ describe('RPC', () => {
 
     const msg = 'Hello';
     // Watch for RPC response
-    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: Message) => {
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg}).subscribe((message: IMessage) => {
       expect(message.body).toEqual(msg);
       setTimeout(() => {
         expect(numSubscribers()).toBe(origNumSubcribers);
