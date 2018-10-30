@@ -11,7 +11,7 @@
     "doc-serve": "bin/doc-gen.sh -r 59320 -s -w -o",
     "karma": "karma start --single-run",
     "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
-    "prepublish": "npm run karma && npm run build && npm run doc"
+    "prepublish": "npm run lint && npm run karma && npm run build && npm run doc"
   },
   "repository": {
     "type": "git",
