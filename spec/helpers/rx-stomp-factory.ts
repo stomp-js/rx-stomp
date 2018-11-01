@@ -7,9 +7,6 @@ export function defaultConfig(): RxStompConfig {
     // Which server?
     brokerURL: 'ws://127.0.0.1:15674/ws',
 
-    // Comment above and uncomment below to test with SockJS
-    // url: socketProvider,
-
     // Headers
     // Typical keys: login, passcode, host
     connectHeaders: {
