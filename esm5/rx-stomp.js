@@ -350,7 +350,7 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#watchForReceipt
      */
-    RxStomp.prototype.waitForReceipt = function (receiptId, callback) {
+    RxStomp.prototype.watchForReceipt = function (receiptId, callback) {
         this._stompClient.watchForReceipt(receiptId, callback);
     };
     RxStomp.prototype._changeState = function (state) {
