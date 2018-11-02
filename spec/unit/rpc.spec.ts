@@ -40,7 +40,7 @@ describe('RPC', () => {
       });
     });
 
-    rxStomp.waitForReceipt(receiptId, () => {
+    rxStomp.watchForReceipt(receiptId, () => {
       done();
     });
   });

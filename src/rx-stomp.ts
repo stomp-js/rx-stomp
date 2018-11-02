@@ -473,7 +473,7 @@ export class RxStomp {
    *
    * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#watchForReceipt
    */
-  public waitForReceipt(receiptId: string, callback: (frame: Frame) => void): void {
+  public watchForReceipt(receiptId: string, callback: (frame: Frame) => void): void {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 
