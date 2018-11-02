@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.1.0-beta.4 (2018-11-02)
+
+* Rolled back beta.3
+* Align with underlying library: waitForReceipt --> watchForReceipt
+
+## 0.1.0-beta.3 (2018-10-30)
+
+* Failed, rolled back
+
 ## 0.1.0-beta.2 (2018-10-28)
 
 * Uses @stomp/stompjs v5 properly
