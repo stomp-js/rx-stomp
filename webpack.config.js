@@ -35,7 +35,12 @@ const config = {
   externals: [
     webpackRxjsExternals(),
     {
-      '@stomp/stompjs': 'StompJs'
+      '@stomp/stompjs': {
+        commonjs: '@stomp/stompjs',
+        commonjs2: '@stomp/stompjs',
+        amd: '@stomp/stompjs',
+        root: 'StompJs'
+      }
     }
   ],
   // Activate source maps for the bundles in order to preserve the original
