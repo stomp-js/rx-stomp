@@ -9,7 +9,7 @@
     "build": "npm run clean && tsc && npm run build-tsc && npm run build-webpack",
     "karma": "karma start --single-run",
     "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
-    "prepublish": "npm run lint && npm run karma && npm run build && npm run doc"
+    "prepublishOnly": "npm run lint && npm run karma && npm run build"
   },
   "repository": {
     "type": "git",
