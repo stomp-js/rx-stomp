@@ -4,6 +4,8 @@ import { RxStomp } from './rx-stomp';
 
 /**
  * See the guide for example
+ *
+ * Prat of `@stomp/rx-stomp`
  */
 export type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<Message>;
 
