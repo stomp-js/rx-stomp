@@ -7,17 +7,19 @@ import { RxStompState } from './rx-stomp-state';
  * Typically you will create an instance of this to connect to the STOMP broker.
  *
  * This wraps [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
- * [Client]{@link https://stomp-js.github.io/stompjs/classes/Client.html} class.
+ * {@link Client} class.
  *
  * The key difference is that it exposes operations as RxJS Observables.
  * For example when a STOMP endpoint is subscribed it returns an Observable
  * that will stream all received messages.
  *
  * With exception of beforeConnect, functionality related to all callbacks in
- * [@stomp/stompjs Client]{@link https://stomp-js.github.io/stompjs/classes/Client.html}
+ * [@stomp/stompjs Client]{@link Client}
  * is exposed as Observables/Subjects/BehaviorSubjects.
  *
  * RxStomp also tries to transparently handle connection failures.
+ *
+ * Prat of `@stomp/rx-stomp`
  */
 var RxStomp = /** @class */ (function () {
     /**
@@ -58,7 +60,7 @@ var RxStomp = /** @class */ (function () {
         /**
          * Instance of actual
          * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
-         * [Client]{@link https://stomp-js.github.io/stompjs/classes/Client.html}.
+         * {@link Client}.
          *
          * **Be careful in calling methods on it directly - you may get unintended consequences.**
          */
@@ -92,7 +94,7 @@ var RxStomp = /** @class */ (function () {
      *        rxStomp.activate();
      * ```
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#configure
+     * Maps to: [Client#configure]{@link Client#configure}
      */
     RxStomp.prototype.configure = function (rxStompConfig) {
         var stompConfig = Object.assign({}, rxStompConfig);
@@ -113,7 +115,7 @@ var RxStomp = /** @class */ (function () {
      *
      * Call [RxStomp#deactivate]{@link RxStomp#deactivate} to disconnect and stop reconnection attempts.
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#activate
+     * Maps to: [Client#activate]{@link Client#activate}
      */
     RxStomp.prototype.activate = function () {
         var _this = this;
@@ -145,7 +147,7 @@ var RxStomp = /** @class */ (function () {
      *
      * To reactivate you can call [RxStomp#activate]{@link RxStomp#activate}.
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#deactivate
+     * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
     RxStomp.prototype.deactivate = function () {
         // Disconnect if connected. Callback will set CLOSED state
@@ -188,7 +190,7 @@ var RxStomp = /** @class */ (function () {
      * Caution: The broker will, most likely, report an error and disconnect if message body has NULL octet(s)
      * and `content-length` header is missing.
      *
-     * See: https://stomp-js.github.io/stompjs/interfaces/publishParams.html
+     * See: {@link publishParams}
      *
      * ```javascript
      *        rxStomp.publish({destination: "/queue/test", headers: {priority: 9}, body: "Hello, STOMP"});
@@ -208,7 +210,7 @@ var RxStomp = /** @class */ (function () {
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
      * publish queued messages as soon as the broker gets connected.
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#publish
+     * Maps to: [Client#publish]{@link Client#publish}
      */
     RxStomp.prototype.publish = function (parameters) {
         if (this.connected()) {
@@ -247,7 +249,7 @@ var RxStomp = /** @class */ (function () {
      * However `subscribe` is also used by RxJS and code read quite strange with two subscribe calls
      * following each other and both meaning very different things.
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#subscribe
+     * Maps to: [Client#subscribe]{@link Client#subscribe}
      */
     RxStomp.prototype.watch = function (destination, headers) {
         var _this = this;
@@ -332,7 +334,7 @@ var RxStomp = /** @class */ (function () {
      * This method allow watching for a receipt and invoke the callback
      * when corresponding receipt has been received.
      *
-     * The actual {@link https://stomp-js.github.io/stompjs/classes/Frame.html}
+     * The actual {@link Frame}
      * will be passed as parameter to the callback.
      *
      * Example:
@@ -343,10 +345,10 @@ var RxStomp = /** @class */ (function () {
      *        rxStomp.watchForReceipt(receiptId, function() {
      *          // Will be called after server acknowledges
      *        });
-     *        rxStomp.publish({destination: TEST.destination, headers: {receipt: receiptId}, body: msg});
+     *        rxStomp.publish({destination: '/topic/special', headers: {receipt: receiptId}, body: msg});
      * ```
      *
-     * Maps to: https://stomp-js.github.io/stompjs/classes/Client.html#watchForReceipt
+     * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
      */
     RxStomp.prototype.watchForReceipt = function (receiptId, callback) {
         this._stompClient.watchForReceipt(receiptId, callback);

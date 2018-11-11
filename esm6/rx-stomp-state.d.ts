@@ -1,5 +1,7 @@
 /**
  * Possible states for the RxStomp
+ *
+ * Prat of `@stomp/rx-stomp`
  */
 export declare enum RxStompState {
     CLOSED = 0,

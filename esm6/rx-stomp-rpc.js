@@ -5,6 +5,8 @@ import { UUID } from 'angular2-uuid';
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
  * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ *
+ * Prat of `@stomp/rx-stomp`
  */
 var RxStompRPC = /** @class */ (function () {
     /**
