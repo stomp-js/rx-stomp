@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.1.0 (2018-11-12)
+
+* Documentation
+
+## 0.1.0-beta.5 (2018-11-10)
+
+* Change in packaging, UMD is now default.
+
 ## 0.1.0-beta.4 (2018-11-02)
 
 * Rolled back beta.3
