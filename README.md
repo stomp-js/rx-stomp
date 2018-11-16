@@ -13,13 +13,22 @@ It provides almost all operations provided by the underlying library.
 
 This has been developed using TypeScript and includes typing information in the distribution.
 
-## Work in Progress
-
-More to come :)
-
 ## TypeScript definitions
 
 The npm package includes TypeScript definitions, so there is no need no install it separately.
+
+## Usage
+
+This module is distributed as UMD, this allows usage easy from NodeJs `require`,
+ES6/typescript `import` or directly including as script in HTML.
+
+See samples at: [https://github.com/stomp-js/samples/](https://github.com/stomp-js/samples/).
+
+API documentation at: 
+[https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html](https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html).
+
+Before installing please check:
+[https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/2018/06/28/pollyfils-for-stompjs-v5.html](https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/2018/06/28/pollyfils-for-stompjs-v5.html).
 
 ## Change log
 
