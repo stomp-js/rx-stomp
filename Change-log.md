@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.1.1 (2018-11-26)
+
+* Update @stomp/stompjs to 5.0.2.
+* Align constant values in RxStompState with WebSocket.
+  Fixes [stomp-js/rx-stomp#7](https://github.com/stomp-js/rx-stomp/issues/7).
+* Updated reference to samples and documents.
+
 ## 0.1.0 (2018-11-12)
 
 * Documentation

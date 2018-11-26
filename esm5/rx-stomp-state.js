@@ -7,9 +7,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var RxStompState;
 (function (RxStompState) {
-    RxStompState[RxStompState["CLOSED"] = 0] = "CLOSED";
-    RxStompState[RxStompState["CONNECTING"] = 1] = "CONNECTING";
-    RxStompState[RxStompState["OPEN"] = 2] = "OPEN";
-    RxStompState[RxStompState["CLOSING"] = 3] = "CLOSING";
+    RxStompState[RxStompState["CONNECTING"] = 0] = "CONNECTING";
+    RxStompState[RxStompState["OPEN"] = 1] = "OPEN";
+    RxStompState[RxStompState["CLOSING"] = 2] = "CLOSING";
+    RxStompState[RxStompState["CLOSED"] = 3] = "CLOSED";
 })(RxStompState = exports.RxStompState || (exports.RxStompState = {}));
 //# sourceMappingURL=rx-stomp-state.js.map

@@ -4,8 +4,8 @@
  * Prat of `@stomp/rx-stomp`
  */
 export declare enum RxStompState {
-    CLOSED = 0,
-    CONNECTING = 1,
-    OPEN = 2,
-    CLOSING = 3
+    CONNECTING = 0,
+    OPEN = 1,
+    CLOSING = 2,
+    CLOSED = 3
 }

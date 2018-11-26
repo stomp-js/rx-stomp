@@ -1,6 +1,6 @@
 {
   "name": "@stomp/rx-stomp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RxJS STOMP cleint for Javascript and Typescript",
   "scripts": {
     "clean": "rm -rf bundles esm5 esm6",
@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/stomp-js/rx-stomp#readme",
   "dependencies": {
-    "@stomp/stompjs": "^5.0.0",
+    "@stomp/stompjs": "^5.0.2 >=5.0.2",
     "angular2-uuid": "^1.1.1"
   },
   "devDependencies": {
