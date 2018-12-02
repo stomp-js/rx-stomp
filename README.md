@@ -1,6 +1,6 @@
 # RxStomp
 
-[![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp)
+[![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp) [![Greenkeeper badge](https://badges.greenkeeper.io/stomp-js/rx-stomp.svg)](https://greenkeeper.io/)
 
 This library provides a RxJS oriented STOMP over WebSocket client for Web browser or node.js
 applications.
