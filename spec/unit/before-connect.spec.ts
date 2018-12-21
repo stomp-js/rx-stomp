@@ -37,4 +37,25 @@ describe('Connection', () => {
       done();
     });
   });
+
+  it('should allow async beforeConnect', (done) => {
+    // In this test, initially there is no valid configuration to connect to the broker
+    // The configuration is set in async beforeConnect
+    rxStomp = new RxStomp();
+
+    const beforeConnect = () => {
+      return new Promise<void>(((resolve, reject) => {
+        setTimeout(() => {
+          rxStomp.configure(defaultConfig());
+          resolve();
+        }, 200);
+      }));
+    };
+
+    rxStomp.configure({beforeConnect});
+    rxStomp.activate();
+    rxStomp.connected$.subscribe(() => {
+      done();
+    });
+  });
 });

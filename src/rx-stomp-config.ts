@@ -102,7 +102,15 @@ export class RxStompConfig {
    * You can change configuration of the rxStomp, which will impact the immediate connect.
    * It is valid to call [RxStomp#decativate]{@link RxStomp#deactivate} in this callback.
    *
+   * As of version 0.1.1, this callback can be
+   * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+   * (i.e., it can return a
+   * [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)).
+   * In that case connect will be called only after the Promise is resolved.
+   * This can be used to reliably fetch credentials, access token etc. from some other service
+   * in an asynchronous way.
+   *
    * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
    */
-  public beforeConnect?: () => void;
+  public beforeConnect?: () => void|Promise<void>;
 }
