@@ -225,11 +225,11 @@ export class RxStomp {
    */
   public activate(): void {
     this._stompClient.configure({
-      beforeConnect: () => {
+      beforeConnect: async () => {
         this._changeState(RxStompState.CONNECTING);
 
         // Call handler
-        this._beforeConnect();
+        await this._beforeConnect();
       },
       onConnect: (frame: Frame) => {
         this._serverHeadersBehaviourSubject$.next(frame.headers);
