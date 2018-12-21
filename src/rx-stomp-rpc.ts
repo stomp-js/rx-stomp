@@ -1,12 +1,12 @@
-import { Observable, Observer, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
+import {Observable, Observer, Subscription} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
 
-import { UUID } from 'angular2-uuid';
+import {UUID} from 'angular2-uuid';
 
-import {Message, publishParams, StompHeaders} from '@stomp/stompjs';
+import {IMessage, publishParams, StompHeaders} from '@stomp/stompjs';
 
-import { RxStomp } from './rx-stomp';
-import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config';
+import {RxStomp} from './rx-stomp';
+import {RxStompRPCConfig, setupReplyQueueFnType} from './rx-stomp-rpc-config';
 
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
@@ -22,7 +22,7 @@ export class RxStompRPC {
     return this.rxStomp.unhandledMessage$;
   }
 
-  private _repliesObservable: Observable<Message>;
+  private _repliesObservable: Observable<IMessage>;
 
   /**
    * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
@@ -41,7 +41,7 @@ export class RxStompRPC {
   /**
    * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
    */
-  public rpc(params: publishParams): Observable<Message> {
+  public rpc(params: publishParams): Observable<IMessage> {
     // We know there will be only one message in reply
     return this.stream(params).pipe(first());
   }
@@ -49,7 +49,7 @@ export class RxStompRPC {
   /**
    * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
    */
-  public stream(params: publishParams): Observable<Message> {
+  public stream(params: publishParams): Observable<IMessage> {
     const headers: StompHeaders = (Object as any).assign({}, params.headers || {});
     const {destination, body, binaryBody} = params;
 
@@ -58,14 +58,14 @@ export class RxStompRPC {
     }
 
     return Observable.create(
-      (rpcObserver: Observer<Message>) => {
+      (rpcObserver: Observer<IMessage>) => {
         let defaultMessagesSubscription: Subscription;
 
         const correlationId = UUID.UUID();
 
-        defaultMessagesSubscription = this._repliesObservable.pipe(filter((message: Message) => {
+        defaultMessagesSubscription = this._repliesObservable.pipe(filter((message: IMessage) => {
           return message.headers['correlation-id'] === correlationId;
-        })).subscribe((message: Message) => {
+        })).subscribe((message: IMessage) => {
           rpcObserver.next(message);
         });
 
