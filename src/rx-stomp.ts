@@ -77,6 +77,19 @@ export class RxStomp {
   public unhandledMessage$: Subject<IMessage>;
 
   /**
+   * This function will be called for any unhandled frame.
+   * Normally you should receive anything here unless it is non compliant STOMP broker
+   * or an error.
+   *
+   * This Observer will yield the received
+   * {@link IFrame}
+   * objects.
+   *
+   * Maps to: [Client#onUnhandledMessage]{@link Client#onUnhandledMessage}
+   */
+  public unhandledFrame$: Subject<IFrame>;
+
+  /**
    * STOMP brokers can be requested to notify when an operation is actually completed.
    * Prefer using [RxStomp#watchForReceipt]{@link RxStomp#watchForReceipt}.
    *
@@ -164,9 +177,10 @@ export class RxStomp {
       })
     );
 
-    this.stompErrors$ = new Subject();
-    this.unhandledMessage$ = new Subject();
-    this.unhandledReceipts$ = new Subject();
+    this.stompErrors$ = new Subject<IFrame>();
+    this.unhandledMessage$ = new Subject<IMessage>();
+    this.unhandledReceipts$ = new Subject<IFrame>();
+    this.unhandledFrame$ = new Subject<IFrame>();
   }
 
   /**
@@ -245,6 +259,9 @@ export class RxStomp {
       },
       onUnhandledReceipt: (frame: IFrame) => {
         this.unhandledReceipts$.next(frame);
+      },
+      onUnhandledFrame: (frame: IFrame) => {
+        this.unhandledFrame$.next(frame);
       }
     });
 
