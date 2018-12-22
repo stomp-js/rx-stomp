@@ -134,12 +134,6 @@ export class RxStomp {
   public constructor() {
     this._stompClient = new Client();
 
-    // Default messages
-    this._setupUnhandledMessages();
-
-    // Receipts
-    this._setupUnhandledReceipts();
-
     const noOp = () => {};
 
     // Before connect is no op by default
@@ -171,6 +165,8 @@ export class RxStomp {
     );
 
     this.stompErrors$ = new Subject();
+    this.unhandledMessage$ = new Subject();
+    this.unhandledReceipts$ = new Subject();
   }
 
   /**
@@ -243,6 +239,12 @@ export class RxStomp {
       },
       onWebSocketClose: () => {
         this._changeState(RxStompState.CLOSED);
+      },
+      onUnhandledMessage: (message: IMessage) => {
+        this.unhandledMessage$.next(message);
+      },
+      onUnhandledReceipt: (frame: IFrame) => {
+        this.unhandledReceipts$.next(frame);
       }
     });
 
@@ -423,28 +425,6 @@ export class RxStomp {
      * A long but good explanatory article at https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339
      */
     return coldObservable.pipe(share());
-  }
-
-  /**
-   * Setup streaming unhandled messages.
-   */
-  protected _setupUnhandledMessages(): void {
-    this.unhandledMessage$ = new Subject();
-
-    this._stompClient.onUnhandledMessage = (message: IMessage) => {
-      this.unhandledMessage$.next(message);
-    };
-  }
-
-  /**
-   * Setup streaming unhandled receipts.
-   */
-  protected _setupUnhandledReceipts(): void {
-    this.unhandledReceipts$ = new Subject();
-
-    this._stompClient.onUnhandledReceipt = (frame: IFrame) => {
-      this.unhandledReceipts$.next(frame);
-    };
   }
 
   /**
