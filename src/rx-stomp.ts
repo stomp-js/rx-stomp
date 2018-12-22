@@ -85,7 +85,7 @@ export class RxStomp {
    * {@link IFrame}
    * objects.
    *
-   * Maps to: [Client#onUnhandledMessage]{@link Client#onUnhandledMessage}
+   * Maps to: [Client#onUnhandledFrame]{@link Client#onUnhandledFrame}
    */
   public unhandledFrame$: Subject<IFrame>;
 
@@ -113,6 +113,16 @@ export class RxStomp {
    * Maps to: [Client#onStompError]{@link Client#onStompError}
    */
   public stompErrors$: Subject<IFrame>;
+
+  /**
+   * It will stream all web socket errors.
+   *
+   * This Observer will yield the received
+   * [Event]{@link https://developer.mozilla.org/en-US/docs/Web/API/Event}.
+   *
+   * Maps to: [Client#onWebSocketError]{@link Client#onWebSocketError}
+   */
+  public webSocketErrors$: Subject<Event>;
 
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.
@@ -181,6 +191,7 @@ export class RxStomp {
     this.unhandledMessage$ = new Subject<IMessage>();
     this.unhandledReceipts$ = new Subject<IFrame>();
     this.unhandledFrame$ = new Subject<IFrame>();
+    this.webSocketErrors$ = new Subject<Event>();
   }
 
   /**
@@ -262,6 +273,9 @@ export class RxStomp {
       },
       onUnhandledFrame: (frame: IFrame) => {
         this.unhandledFrame$.next(frame);
+      },
+      onWebSocketError: (evt: Event) => {
+        this.webSocketErrors$.next(evt);
       }
     });
 
