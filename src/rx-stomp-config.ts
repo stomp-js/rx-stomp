@@ -33,6 +33,18 @@ export class RxStompConfig {
    */
   public stompVersions?: Versions;
 
+  /**
+   * Set it to log the actual raw communication with the broker.
+   * When unset, it logs headers of the parsed frames.
+   *
+   * Change in this effects from next broker reconnect.
+   *
+   * **Caution: this assumes that frames only have valid UTF8 strings.**
+   *
+   * Maps to: [Client#logRawCommunication]{@link Client#logRawCommunication}.
+   */
+  public logRawCommunication?: boolean;
+
   /** Enable client debugging? */
   public debug?: debugFnType;
 
