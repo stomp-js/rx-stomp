@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.2.0
+
+* Update "@stomp/stompjs" dependency to 5.1.0.
+* Travis build - test ng2-stompjs with current build.
+* Travis build - test lint as well.
+* beforeConnect supports async callbacks.
+* Update to IFrame, IMessage, ITransaction interfaces.
+* Concept of unhandledFrame$ and webSocketError$.
+* Support for logRawCommunication, fixes 
+  [rx-stomp/issues/25](https://github.com/stomp-js/rx-stomp/issues/25)
+* Update other dependencies to latest versions.
+
 ## 0.1.1 (2018-11-26)
 
 * Update @stomp/stompjs to 5.0.2.
