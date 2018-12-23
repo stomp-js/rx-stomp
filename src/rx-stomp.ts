@@ -53,6 +53,14 @@ export class RxStomp {
   public connected$: Observable<RxStompState>;
 
   /**
+   * These will be triggered before connectionState$ and connected$.
+   * During a reconnect, tt will allow subscriptions to be reinstated before sending
+   * queued messages.
+   */
+  private _connectionStatePre$: BehaviorSubject<RxStompState>;
+  private _connectedPre$: Observable<RxStompState>;
+
+  /**
    * Provides headers from most recent connection to the server as returned by the CONNECTED frame.
    * If the STOMP connection has already been established it will trigger immediately.
    * It will trigger for each reconnection.
@@ -164,6 +172,15 @@ export class RxStomp {
 
     // debug is no-op by default
     this._debug = noOp;
+
+    // Initial state is CLOSED
+    this._connectionStatePre$ = new BehaviorSubject<RxStompState>(RxStompState.CLOSED);
+
+    this._connectedPre$ = this._connectionStatePre$.pipe(
+      filter((currentState: RxStompState) => {
+        return currentState === RxStompState.OPEN;
+      })
+    );
 
     // Initial state is CLOSED
     this.connectionState$ = new BehaviorSubject<RxStompState>(RxStompState.CLOSED);
@@ -429,13 +446,13 @@ export class RxStomp {
 
         let stompConnectedSubscription: Subscription;
 
-        stompConnectedSubscription = this.connected$.subscribe(() => {
-            this._debug(`Will subscribe to ${destination}`);
-            stompSubscription = this._stompClient.subscribe(destination, (message: IMessage) => {
-                messages.next(message);
-              },
-              headers);
-          });
+        stompConnectedSubscription = this._connectedPre$.subscribe(() => {
+          this._debug(`Will subscribe to ${destination}`);
+          stompSubscription = this._stompClient.subscribe(destination, (message: IMessage) => {
+              messages.next(message);
+            },
+            headers);
+        });
 
         return () => { /* cleanup function, will be called when no subscribers are left */
           this._debug(`Stop watching connection state (for ${destination})`);
@@ -491,6 +508,7 @@ export class RxStomp {
   }
 
   protected _changeState(state: RxStompState): void {
+    this._connectionStatePre$.next(state);
     this.connectionState$.next(state);
   }
 
