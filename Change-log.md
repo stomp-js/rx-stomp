@@ -11,6 +11,9 @@
 * Support for logRawCommunication, fixes 
   [rx-stomp/issues/25](https://github.com/stomp-js/rx-stomp/issues/25)
 * Update other dependencies to latest versions.
+* On a reconnect - ensure subscriptions are established before
+  publishing outstanding messages.
+  Fixes [rx-stomp/issues/4](https://github.com/stomp-js/rx-stomp/issues/4)
 
 ## 0.1.1 (2018-11-26)
 

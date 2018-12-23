@@ -4,13 +4,13 @@ import 'jasmine';
 
 import {filter, take} from 'rxjs/operators';
 
-import { Message } from '@stomp/stompjs';
+import {Message} from '@stomp/stompjs';
 
-import { RxStomp, RxStompState } from '../../src';
+import {RxStomp, RxStompState} from '../../src';
 
-import { generateBinaryData } from '../helpers/content-helpers';
-import { disconnectRxStompAndEnsure, ensureRxStompConnected } from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+import {generateBinaryData} from '../helpers/content-helpers';
+import {disconnectRxStompAndEnsure, ensureRxStompConnected} from '../helpers/helpers';
+import {rxStompFactory} from '../helpers/rx-stomp-factory';
 
 describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp;
@@ -122,6 +122,42 @@ describe('Subscribe & Publish', () => {
           return (state === RxStompState.CLOSED);
         }), take(1)).subscribe(() => {
           rxStomp.publish({destination: queueName, body: msg});
+        });
+
+        rxStomp.stompClient.forceDisconnect();
+      });
+    });
+
+    it('should be able to subscribe before sending queued messages', (done) => {
+      const endPoint = '/topic/ng-demo-sub02';
+      const msg = 'My very special message 03' + Math.random();
+
+      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
+      rxStomp.watch(endPoint).subscribe((message: Message) => {
+        expect(message.body).toBe(msg);
+        done();
+      });
+
+      rxStomp.publish({destination: endPoint, body: msg});
+    });
+
+    it('should be able to subscribe before sending queued messages when broker was disconnected', (done) => {
+      const endPoint = '/topic/ng-demo-sub02';
+      const msg = 'My very special message 03' + Math.random();
+
+      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
+      rxStomp.watch(endPoint).subscribe((message: Message) => {
+        expect(message.body).toBe(msg);
+        done();
+      });
+
+      // Wait for the first connect, set publish after disconnect
+      // then force a disconnect
+      rxStomp.connected$.pipe(take(1)).subscribe(() => {
+        rxStomp.connectionState$.pipe(filter((state) => {
+          return state === RxStompState.CLOSED;
+        }), take(1)).subscribe(() => {
+          rxStomp.publish({destination: endPoint, body: msg});
         });
 
         rxStomp.stompClient.forceDisconnect();
