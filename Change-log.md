@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.2.0
+## 0.2.0-beta.1 (2018-12-24)
 
 * Update "@stomp/stompjs" dependency to 5.1.0.
 * Travis build - test ng2-stompjs with current build.
