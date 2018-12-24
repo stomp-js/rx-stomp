@@ -1,4 +1,39 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
@@ -34,15 +69,16 @@ var RxStomp = /** @class */ (function () {
          */
         this._queuedMessages = [];
         this._stompClient = new stompjs_1.Client();
-        // Default messages
-        this._setupUnhandledMessages();
-        // Receipts
-        this._setupUnhandledReceipts();
         var noOp = function () { };
         // Before connect is no op by default
         this._beforeConnect = noOp;
         // debug is no-op by default
         this._debug = noOp;
+        // Initial state is CLOSED
+        this._connectionStatePre$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
+        this._connectedPre$ = this._connectionStatePre$.pipe(operators_1.filter(function (currentState) {
+            return currentState === rx_stomp_state_1.RxStompState.OPEN;
+        }));
         // Initial state is CLOSED
         this.connectionState$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
         this.connected$ = this.connectionState$.pipe(operators_1.filter(function (currentState) {
@@ -57,6 +93,10 @@ var RxStomp = /** @class */ (function () {
             return headers !== null;
         }));
         this.stompErrors$ = new rxjs_1.Subject();
+        this.unhandledMessage$ = new rxjs_1.Subject();
+        this.unhandledReceipts$ = new rxjs_1.Subject();
+        this.unhandledFrame$ = new rxjs_1.Subject();
+        this.webSocketErrors$ = new rxjs_1.Subject();
     }
     Object.defineProperty(RxStomp.prototype, "stompClient", {
         /**
@@ -122,11 +162,20 @@ var RxStomp = /** @class */ (function () {
     RxStomp.prototype.activate = function () {
         var _this = this;
         this._stompClient.configure({
-            beforeConnect: function () {
-                _this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
-                // Call handler
-                _this._beforeConnect();
-            },
+            beforeConnect: function () { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
+                            // Call handler
+                            return [4 /*yield*/, this._beforeConnect()];
+                        case 1:
+                            // Call handler
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            }); },
             onConnect: function (frame) {
                 _this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
@@ -138,6 +187,18 @@ var RxStomp = /** @class */ (function () {
             },
             onWebSocketClose: function () {
                 _this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
+            },
+            onUnhandledMessage: function (message) {
+                _this.unhandledMessage$.next(message);
+            },
+            onUnhandledReceipt: function (frame) {
+                _this.unhandledReceipts$.next(frame);
+            },
+            onUnhandledFrame: function (frame) {
+                _this.unhandledFrame$.next(frame);
+            },
+            onWebSocketError: function (evt) {
+                _this.webSocketErrors$.next(evt);
             }
         });
         // Attempt connection
@@ -279,7 +340,7 @@ var RxStomp = /** @class */ (function () {
              */
             var stompSubscription;
             var stompConnectedSubscription;
-            stompConnectedSubscription = _this.connected$.subscribe(function () {
+            stompConnectedSubscription = _this._connectedPre$.subscribe(function () {
                 _this._debug("Will subscribe to " + destination);
                 stompSubscription = _this._stompClient.subscribe(destination, function (message) {
                     messages.next(message);
@@ -303,26 +364,6 @@ var RxStomp = /** @class */ (function () {
          * A long but good explanatory article at https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339
          */
         return coldObservable.pipe(operators_1.share());
-    };
-    /**
-     * Setup streaming unhandled messages.
-     */
-    RxStomp.prototype._setupUnhandledMessages = function () {
-        var _this = this;
-        this.unhandledMessage$ = new rxjs_1.Subject();
-        this._stompClient.onUnhandledMessage = function (message) {
-            _this.unhandledMessage$.next(message);
-        };
-    };
-    /**
-     * Setup streaming unhandled receipts.
-     */
-    RxStomp.prototype._setupUnhandledReceipts = function () {
-        var _this = this;
-        this.unhandledReceipts$ = new rxjs_1.Subject();
-        this._stompClient.onUnhandledReceipt = function (frame) {
-            _this.unhandledReceipts$.next(frame);
-        };
     };
     /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
@@ -356,6 +397,7 @@ var RxStomp = /** @class */ (function () {
         this._stompClient.watchForReceipt(receiptId, callback);
     };
     RxStomp.prototype._changeState = function (state) {
+        this._connectionStatePre$.next(state);
         this.connectionState$.next(state);
     };
     return RxStomp;
