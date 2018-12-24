@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Client, debugFnType, Frame, Message, publishParams, StompHeaders } from '@stomp/stompjs';
+import { Client, debugFnType, IFrame, IMessage, publishParams, StompHeaders } from '@stomp/stompjs';
 import { RxStompConfig } from './rx-stomp-config';
 import { RxStompState } from './rx-stomp-state';
 /**
@@ -37,6 +37,13 @@ export declare class RxStomp {
      */
     connected$: Observable<RxStompState>;
     /**
+     * These will be triggered before connectionState$ and connected$.
+     * During a reconnect, tt will allow subscriptions to be reinstated before sending
+     * queued messages.
+     */
+    private _connectionStatePre$;
+    private _connectedPre$;
+    /**
      * Provides headers from most recent connection to the server as returned by the CONNECTED frame.
      * If the STOMP connection has already been established it will trigger immediately.
      * It will trigger for each reconnection.
@@ -51,35 +58,56 @@ export declare class RxStomp {
      * a request to unsubscribe from an endpoint.
      *
      * This Observer will yield the received
-     * {@link Message}
+     * {@link IMessage}
      * objects.
      *
      * Maps to: [Client#onUnhandledMessage]{@link Client#onUnhandledMessage}
      */
-    unhandledMessage$: Subject<Message>;
+    unhandledMessage$: Subject<IMessage>;
+    /**
+     * This function will be called for any unhandled frame.
+     * Normally you should receive anything here unless it is non compliant STOMP broker
+     * or an error.
+     *
+     * This Observer will yield the received
+     * {@link IFrame}
+     * objects.
+     *
+     * Maps to: [Client#onUnhandledFrame]{@link Client#onUnhandledFrame}
+     */
+    unhandledFrame$: Subject<IFrame>;
     /**
      * STOMP brokers can be requested to notify when an operation is actually completed.
      * Prefer using [RxStomp#watchForReceipt]{@link RxStomp#watchForReceipt}.
      *
      * This Observer will yield the received
-     * [Frame]{@link ../classes/Frame.html}
+     * {@link IFrame}
      * objects.
      *
      * Maps to: [Client#onUnhandledReceipt]{@link Client#onUnhandledReceipt}
      */
-    unhandledReceipts$: Subject<Frame>;
+    unhandledReceipts$: Subject<IFrame>;
     /**
      * It will stream all ERROR frames received from the STOMP Broker.
      * A compliant STOMP Broker will close the connection after this type of frame.
      * Please check broker specific documentation for exact behavior.
      *
      * This Observer will yield the received
-     * [Frame]{@link ../classes/Frame.html}
+     * {@link IFrame}
      * objects.
      *
      * Maps to: [Client#onStompError]{@link Client#onStompError}
      */
-    stompErrors$: Subject<Frame>;
+    stompErrors$: Subject<IFrame>;
+    /**
+     * It will stream all web socket errors.
+     *
+     * This Observer will yield the received
+     * [Event]{@link https://developer.mozilla.org/en-US/docs/Web/API/Event}.
+     *
+     * Maps to: [Client#onWebSocketError]{@link Client#onWebSocketError}
+     */
+    webSocketErrors$: Subject<Event>;
     /**
      * Internal array to hold locally queued messages when STOMP broker is not connected.
      */
@@ -217,15 +245,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#subscribe]{@link Client#subscribe}
      */
-    watch(destination: string, headers?: StompHeaders): Observable<Message>;
-    /**
-     * Setup streaming unhandled messages.
-     */
-    protected _setupUnhandledMessages(): void;
-    /**
-     * Setup streaming unhandled receipts.
-     */
-    protected _setupUnhandledReceipts(): void;
+    watch(destination: string, headers?: StompHeaders): Observable<IMessage>;
     /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
      * To request an acknowledgement, a `receipt` header needs to be sent with the actual request.
@@ -254,6 +274,6 @@ export declare class RxStomp {
      *
      * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
      */
-    watchForReceipt(receiptId: string, callback: (frame: Frame) => void): void;
+    watchForReceipt(receiptId: string, callback: (frame: IFrame) => void): void;
     protected _changeState(state: RxStompState): void;
 }

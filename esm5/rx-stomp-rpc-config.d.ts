@@ -1,4 +1,4 @@
-import { Message } from '@stomp/stompjs';
+import { IMessage } from '@stomp/stompjs';
 import { Observable } from 'rxjs';
 import { RxStomp } from './rx-stomp';
 /**
@@ -6,7 +6,7 @@ import { RxStomp } from './rx-stomp';
  *
  * Prat of `@stomp/rx-stomp`
  */
-export declare type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<Message>;
+export declare type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<IMessage>;
 /**
  * RPC Config. See the guide for example.
  */
