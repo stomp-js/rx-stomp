@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.0 (2019-01-10)
+
+* None.
+
 ## 0.2.0-beta.1 (2018-12-24)
 
 * Update "@stomp/stompjs" dependency to 5.1.0.
