@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.0-beta.1
+
+* Expose options from @stomp/stompjs@5.2.0 - 
+  splitLargeFrames and forceBinaryWSFrames.
+
 ## 0.2.0 (2019-01-10)
 
 * None.
