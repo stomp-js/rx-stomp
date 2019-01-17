@@ -84,6 +84,22 @@ export declare class RxStompConfig {
      */
     heartbeatOutgoing?: number;
     /**
+     * Enable non-standards compliant mode of splitting of outgoing large text packets.
+     * See [Client#splitLargeFrames]{@link Client#splitLargeFrames} for details.
+     * Useful with Java Spring based brokers.
+     *
+     * Maps to: [Client#splitLargeFrames]{@link Client#splitLargeFrames}.
+     */
+    splitLargeFrames?: boolean;
+    /**
+     * Maps to: [Client#forceBinaryWSFrames]{@link Client#forceBinaryWSFrames}.
+     */
+    forceBinaryWSFrames?: boolean;
+    /**
+     * Maps to: [Client#maxWebSocketChunkSize]{@link Client#maxWebSocketChunkSize}.
+     */
+    maxWebSocketChunkSize?: number;
+    /**
      * Connection headers, important keys - `login`, `passcode`, `host`.
      * Though STOMP 1.2 standard marks these keys to be present, check your broker documentation for
      * details specific to your broker.
