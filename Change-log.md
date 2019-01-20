@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.0-beta.1 (2019-01-20)
+
+* Promote 0.3.0-beta.1 to 0.3.0
+
 ## 0.3.0-beta.1 (2019-01-17)
 
 * Expose options from @stomp/stompjs@5.2.0 - 
