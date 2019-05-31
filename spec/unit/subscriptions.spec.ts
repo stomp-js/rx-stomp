@@ -33,7 +33,6 @@ describe('Subscribe & Publish', () => {
     });
 
     it('send and receive a message', (done) => {
-
       const queueName = '/topic/ng-demo-sub';
       const msg = 'My very special message';
 
@@ -161,6 +160,32 @@ describe('Subscribe & Publish', () => {
         });
 
         rxStomp.stompClient.forceDisconnect();
+      });
+    });
+
+    describe('When providing retry flag', () => {
+      it('should not be able to publish even before STOMP is connected', (done) => {
+        // Queue is a durable queue
+        const queueName = '/queue/ng-demo-sub02';
+        const msg = 'My very special message 02' + Math.random();
+        expect(() => rxStomp.publish({destination: queueName, body: msg, retryIfDisconnected: false})).toThrow();
+      });
+
+      it('should be able to publish/subscribe when STOMP is disconnected', (done) => {
+        // Queue is a durable queue
+        const queueName = '/queue/ng-demo-sub02';
+        const msg = 'My very special message 03' + Math.random();
+        // Actively disconnect simulating error after STOMP connects, then publish the message
+        rxStomp.connected$.pipe(take(1)).subscribe(() => {
+          // publish when disconnected
+          rxStomp.connectionState$.pipe(filter((state: RxStompState) => {
+            return (state === RxStompState.CLOSED);
+          }), take(1)).subscribe(() => {
+            expect(() => rxStomp.publish({destination: queueName, body: msg, retryIfDisconnected: false})).toThrow();
+            done();
+          });
+          rxStomp.stompClient.forceDisconnect();
+        });
       });
     });
   });

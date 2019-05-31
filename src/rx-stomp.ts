@@ -14,6 +14,7 @@ import {
 } from '@stomp/stompjs';
 
 import {RxStompConfig} from './rx-stomp-config';
+import {IExtendedPublishParams} from './rx-stomp-extendedpublishparams';
 import {RxStompState} from './rx-stomp-state';
 
 /**
@@ -370,16 +371,23 @@ export class RxStomp {
    * ```
    *
    * The message will get locally queued if the STOMP broker is not connected. It will attempt to
-   * publish queued messages as soon as the broker gets connected.
+   * publish queued messages as soon as the broker gets connected if enabled in config
    *
    * Maps to: [Client#publish]{@link Client#publish}
    */
-  public publish(parameters: publishParams): void {
+  public publish(parameters: IExtendedPublishParams): void {
+    // retry behaviour is defaulted to true
+    const shouldRetry = parameters.retryIfDisconnected == null
+      ? true
+      : parameters.retryIfDisconnected;
+
     if (this.connected()) {
       this._stompClient.publish(parameters);
-    } else {
+    } else if (shouldRetry) {
       this._debug(`Not connected, queueing`);
       this._queuedMessages.push(parameters);
+    } else {
+      throw new Error('Cannot publish while broker is not connected');
     }
   }
 
