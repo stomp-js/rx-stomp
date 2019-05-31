@@ -107,9 +107,4 @@ karma - Rune test in browsers
         ```
     - _**Caution:** As both browser and nodejs use same set of test cases and same queue
       names. So, running both together may cause unexpected failures._
-1. Update documentation - do update the docs-src/Change-log.md
-1. Regenerate documentation:
-    ```bash
-    $ npm run doc
-    ```
 1. Please follow GitHub guidelines. Raise an issue if you are unclear.
