@@ -40,9 +40,8 @@ Instructions on setting up development environment:
 ├── README.md
 ├── bin/                     -- Scripts invoked from `npm` tasks
 ├── bundles/                 -- Generated code browsers
-├── docs/                    -- Generated docs, root for GitHub pages
-├── docs-src/                -- Source for guides
 ├── esm5/                    -- Generated ES5 modules
+├── esm6/                    -- Generated ES5 modules
 ├── index.d.ts
 ├── karma.conf.js
 ├── package-lock.json
