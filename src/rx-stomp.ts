@@ -42,7 +42,7 @@ export class RxStomp {
    * It is a BehaviorSubject and will emit current status immediately. This will typically get
    * used to show current status to the end user.
    */
-  public connectionState$: BehaviorSubject<RxStompState>;
+  public readonly connectionState$: BehaviorSubject<RxStompState>;
 
   /**
    * Will trigger when connection is established.
@@ -50,7 +50,7 @@ export class RxStomp {
    * If it is already connected it will trigger immediately.
    * You can safely ignore the value, as it will always be `StompState.OPEN`
    */
-  public connected$: Observable<RxStompState>;
+  public readonly connected$: Observable<RxStompState>;
 
   /**
    * These will be triggered before connectionState$ and connected$.
@@ -65,7 +65,7 @@ export class RxStomp {
    * If the STOMP connection has already been established it will trigger immediately.
    * It will trigger for each reconnection.
    */
-  public serverHeaders$: Observable<StompHeaders>;
+  public readonly serverHeaders$: Observable<StompHeaders>;
 
   protected _serverHeadersBehaviourSubject$: BehaviorSubject<null | StompHeaders>;
 
@@ -82,7 +82,7 @@ export class RxStomp {
    *
    * Maps to: [Client#onUnhandledMessage]{@link Client#onUnhandledMessage}
    */
-  public unhandledMessage$: Subject<IMessage>;
+  public readonly unhandledMessage$: Subject<IMessage>;
 
   /**
    * This function will be called for any unhandled frame.
@@ -95,7 +95,7 @@ export class RxStomp {
    *
    * Maps to: [Client#onUnhandledFrame]{@link Client#onUnhandledFrame}
    */
-  public unhandledFrame$: Subject<IFrame>;
+  public readonly unhandledFrame$: Subject<IFrame>;
 
   /**
    * STOMP brokers can be requested to notify when an operation is actually completed.
@@ -107,7 +107,7 @@ export class RxStomp {
    *
    * Maps to: [Client#onUnhandledReceipt]{@link Client#onUnhandledReceipt}
    */
-  public unhandledReceipts$: Subject<IFrame>;
+  public readonly unhandledReceipts$: Subject<IFrame>;
 
   /**
    * It will stream all ERROR frames received from the STOMP Broker.
@@ -120,7 +120,7 @@ export class RxStomp {
    *
    * Maps to: [Client#onStompError]{@link Client#onStompError}
    */
-  public stompErrors$: Subject<IFrame>;
+  public readonly stompErrors$: Subject<IFrame>;
 
   /**
    * It will stream all web socket errors.
@@ -130,7 +130,7 @@ export class RxStomp {
    *
    * Maps to: [Client#onWebSocketError]{@link Client#onWebSocketError}
    */
-  public webSocketErrors$: Subject<Event>;
+  public readonly webSocketErrors$: Subject<Event>;
 
   /**
    * Internal array to hold locally queued messages when STOMP broker is not connected.

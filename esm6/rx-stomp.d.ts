@@ -28,14 +28,14 @@ export declare class RxStomp {
      * It is a BehaviorSubject and will emit current status immediately. This will typically get
      * used to show current status to the end user.
      */
-    connectionState$: BehaviorSubject<RxStompState>;
+    readonly connectionState$: BehaviorSubject<RxStompState>;
     /**
      * Will trigger when connection is established.
      * It will trigger every time a (re)connection occurs.
      * If it is already connected it will trigger immediately.
      * You can safely ignore the value, as it will always be `StompState.OPEN`
      */
-    connected$: Observable<RxStompState>;
+    readonly connected$: Observable<RxStompState>;
     /**
      * These will be triggered before connectionState$ and connected$.
      * During a reconnect, tt will allow subscriptions to be reinstated before sending
@@ -48,7 +48,7 @@ export declare class RxStomp {
      * If the STOMP connection has already been established it will trigger immediately.
      * It will trigger for each reconnection.
      */
-    serverHeaders$: Observable<StompHeaders>;
+    readonly serverHeaders$: Observable<StompHeaders>;
     protected _serverHeadersBehaviourSubject$: BehaviorSubject<null | StompHeaders>;
     /**
      * This function will be called for any unhandled messages.
@@ -63,7 +63,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#onUnhandledMessage]{@link Client#onUnhandledMessage}
      */
-    unhandledMessage$: Subject<IMessage>;
+    readonly unhandledMessage$: Subject<IMessage>;
     /**
      * This function will be called for any unhandled frame.
      * Normally you should receive anything here unless it is non compliant STOMP broker
@@ -75,7 +75,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#onUnhandledFrame]{@link Client#onUnhandledFrame}
      */
-    unhandledFrame$: Subject<IFrame>;
+    readonly unhandledFrame$: Subject<IFrame>;
     /**
      * STOMP brokers can be requested to notify when an operation is actually completed.
      * Prefer using [RxStomp#watchForReceipt]{@link RxStomp#watchForReceipt}.
@@ -86,7 +86,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#onUnhandledReceipt]{@link Client#onUnhandledReceipt}
      */
-    unhandledReceipts$: Subject<IFrame>;
+    readonly unhandledReceipts$: Subject<IFrame>;
     /**
      * It will stream all ERROR frames received from the STOMP Broker.
      * A compliant STOMP Broker will close the connection after this type of frame.
@@ -98,7 +98,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#onStompError]{@link Client#onStompError}
      */
-    stompErrors$: Subject<IFrame>;
+    readonly stompErrors$: Subject<IFrame>;
     /**
      * It will stream all web socket errors.
      *
@@ -107,7 +107,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#onWebSocketError]{@link Client#onWebSocketError}
      */
-    webSocketErrors$: Subject<Event>;
+    readonly webSocketErrors$: Subject<Event>;
     /**
      * Internal array to hold locally queued messages when STOMP broker is not connected.
      */
