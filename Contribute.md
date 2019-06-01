@@ -41,7 +41,7 @@ Instructions on setting up development environment:
 ├── bin/                     -- Scripts invoked from `npm` tasks
 ├── bundles/                 -- Generated code browsers
 ├── esm5/                    -- Generated ES5 modules
-├── esm6/                    -- Generated ES5 modules
+├── esm6/                    -- Generated ES6 modules
 ├── index.d.ts
 ├── karma.conf.js
 ├── package-lock.json
@@ -82,28 +82,44 @@ clean - Remove generated built artifacts
 build-tsc - Internally used by `npm run build`
 build-webpack - Internally used by `npm run build`
 build - Build three variants - ES5, ES6, and UMD
-doc - Generate docs
-doc-serve - Generate docs and watch for changes
-karma - Rune test in browsers
+karma - Run tests in browsers
+lint - run tslint
 ```
 
 ### Basic development workflow
 
-1. Checkout a new branch.
+1. Checkout a new branch of `develop`.
 1. Make code changes (src/specs)
 1. Build:
     ```bash
     $ npm run build
     ```
 1. Run tests:
-    - To run tests using nodejs:
-        ```bash
-        $ npm run test
-        ```
-    - To run tests using Chrome:
+    - To run tests using Headless Chrome:
         ```bash
         $ npm run karma
         ```
-    - _**Caution:** As both browser and nodejs use same set of test cases and same queue
-      names. So, running both together may cause unexpected failures._
-1. Please follow GitHub guidelines. Raise an issue if you are unclear.
+    - To run code style check
+        ```bash
+        $ npm run lint
+        ```
+1. Documentation is generated centrally for `stompjs`, `rx-stomp`
+   and `ng2-stompjs`.
+   Follow required https://compodoc.app/ standards in comments.
+
+### Creating a Pull Request
+
+1. Please exclude generated files from the commit
+   (`bundles`, `esm5` and `esm6`) folders.
+   These will be generated during merge and release process.
+1. Please ensure that following passes successfully:
+       ```bash
+        $ npm run lint
+        $ npm run karma
+        ```
+1. Please follow GitHub guidelines to raise a PR against `develop` branch.
+1. Travis CI will run tests against a freshly installed RabbitMQ.
+1. Travis CI will also test current `ng2-stompjs` against this build.
+   Failing this part of the tests itself is not an issue, it only suggests
+   that a coordinated release of both libraries might be needed.
+1. Raise an issue if you are unclear.
