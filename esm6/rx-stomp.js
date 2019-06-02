@@ -269,7 +269,7 @@ var RxStomp = /** @class */ (function () {
      * ```
      *
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
-     * publish queued messages as soon as the broker gets connected if enabled in config
+     * publish queued messages as soon as the broker gets connected.
      *
      * Maps to: [Client#publish]{@link Client#publish}
      */
@@ -277,12 +277,9 @@ var RxStomp = /** @class */ (function () {
         if (this.connected()) {
             this._stompClient.publish(parameters);
         }
-        else if (parameters.retryIfDisconnected != null && parameters.retryIfDisconnected) {
+        else {
             this._debug("Not connected, queueing");
             this._queuedMessages.push(parameters);
-        }
-        else {
-            throw new Error('Cannot publish while broker is not connected');
         }
     };
     /** It will send queued messages. */

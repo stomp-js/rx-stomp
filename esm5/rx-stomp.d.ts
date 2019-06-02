@@ -1,7 +1,6 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Client, debugFnType, IFrame, IMessage, publishParams, StompHeaders } from '@stomp/stompjs';
 import { RxStompConfig } from './rx-stomp-config';
-import { IExtendedPublishParams } from './rx-stomp-extendedpublishparams';
 import { RxStompState } from './rx-stomp-state';
 /**
  * This is the main Stomp Client.
@@ -223,11 +222,11 @@ export declare class RxStomp {
      * ```
      *
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
-     * publish queued messages as soon as the broker gets connected if enabled in config
+     * publish queued messages as soon as the broker gets connected.
      *
      * Maps to: [Client#publish]{@link Client#publish}
      */
-    publish(parameters: IExtendedPublishParams): void;
+    publish(parameters: publishParams): void;
     /** It will send queued messages. */
     protected _sendQueuedMessages(): void;
     /**
