@@ -164,7 +164,7 @@ describe('Subscribe & Publish', () => {
     });
 
     describe('When providing retry flag', () => {
-      it('should not be able to publish even before STOMP is connected', (done) => {
+      it('should not be able to publish even before STOMP is connected', () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 02' + Math.random();
