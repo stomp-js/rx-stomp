@@ -360,6 +360,7 @@ export class RxStomp {
    * When `false`, this function will raise an error if message could not be sent immediately.
    *
    * Maps to: [Client#publish]{@link Client#publish}
+   *
    * See: {@link IRxStompPublishParams} and {@link IPublishParams}
    *
    * ```javascript
