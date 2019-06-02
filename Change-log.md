@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.3.1 (2019-06-02)
+
+* Updates in contributing guidelines.
+* Mark streams as ReadOnly in RxStomp.
+  See [rx-stomp/pull/93](https://github.com/stomp-js/rx-stomp/pull/93).
+  Many thanks [Ray Booysen](https://github.com/raybooysen).
+* Option to not enqueue a message if broker is not connected.
+  See [rx-stomp/pull/94](https://github.com/stomp-js/rx-stomp/pull/94).
+  Many thanks [Ray Booysen](https://github.com/raybooysen).
+
 ## 0.3.0-beta.1 (2019-01-20)
 
 * Promote 0.3.0-beta.1 to 0.3.0

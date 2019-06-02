@@ -46,6 +46,7 @@ If you want to understand the code, develop, or contribute. Please visit
 - [Deepak Kumar](https://github.com/kum-deepak)
 - Astha Deep
 - [Michel Promonet](https://github.com/mpromonet)
+- [Ray Booysen](https://github.com/raybooysen)
 - Everyone involved at https://github.com/stomp-js/stomp-websocket
   and https://github.com/stomp-js/stompjs
 
