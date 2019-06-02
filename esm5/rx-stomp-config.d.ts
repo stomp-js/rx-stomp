@@ -5,7 +5,7 @@ import { debugFnType, StompHeaders, Versions } from '@stomp/stompjs';
  *
  * All the attributes of this calls are optional.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 export declare class RxStompConfig {
     /**

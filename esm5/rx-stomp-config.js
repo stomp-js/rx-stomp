@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  * All the attributes of this calls are optional.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStompConfig = /** @class */ (function () {
     function RxStompConfig() {

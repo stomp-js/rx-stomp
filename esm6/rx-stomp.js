@@ -251,7 +251,15 @@ var RxStomp = /** @class */ (function () {
      * Caution: The broker will, most likely, report an error and disconnect if message body has NULL octet(s)
      * and `content-length` header is missing.
      *
-     * See: {@link publishParams}
+     * The message will get locally queued if the STOMP broker is not connected. It will attempt to
+     * publish queued messages as soon as the broker gets connected.
+     * Please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
+     * in the parameters.
+     * When `false`, this function will raise an error if message could not be sent immediately.
+     *
+     * Maps to: [Client#publish]{@link Client#publish}
+     *
+     * See: {@link IRxStompPublishParams} and {@link IPublishParams}
      *
      * ```javascript
      *        rxStomp.publish({destination: "/queue/test", headers: {priority: 9}, body: "Hello, STOMP"});
@@ -267,19 +275,21 @@ var RxStomp = /** @class */ (function () {
      *        rxStomp.publish({destination: '/topic/special', binaryBody: binaryData,
      *                         headers: {'content-type': 'application/octet-stream'}});
      * ```
-     *
-     * The message will get locally queued if the STOMP broker is not connected. It will attempt to
-     * publish queued messages as soon as the broker gets connected.
-     *
-     * Maps to: [Client#publish]{@link Client#publish}
      */
     RxStomp.prototype.publish = function (parameters) {
+        // retry behaviour is defaulted to true
+        var shouldRetry = parameters.retryIfDisconnected == null
+            ? true
+            : parameters.retryIfDisconnected;
         if (this.connected()) {
             this._stompClient.publish(parameters);
         }
-        else {
+        else if (shouldRetry) {
             this._debug("Not connected, queueing");
             this._queuedMessages.push(parameters);
+        }
+        else {
+            throw new Error('Cannot publish while broker is not connected');
         }
     };
     /** It will send queued messages. */

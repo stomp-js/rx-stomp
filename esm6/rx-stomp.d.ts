@@ -1,6 +1,7 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Client, debugFnType, IFrame, IMessage, publishParams, StompHeaders } from '@stomp/stompjs';
 import { RxStompConfig } from './rx-stomp-config';
+import { IRxStompPublishParams } from './rx-stomp-publish-params';
 import { RxStompState } from './rx-stomp-state';
 /**
  * This is the main Stomp Client.
@@ -204,7 +205,15 @@ export declare class RxStomp {
      * Caution: The broker will, most likely, report an error and disconnect if message body has NULL octet(s)
      * and `content-length` header is missing.
      *
-     * See: {@link publishParams}
+     * The message will get locally queued if the STOMP broker is not connected. It will attempt to
+     * publish queued messages as soon as the broker gets connected.
+     * Please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
+     * in the parameters.
+     * When `false`, this function will raise an error if message could not be sent immediately.
+     *
+     * Maps to: [Client#publish]{@link Client#publish}
+     *
+     * See: {@link IRxStompPublishParams} and {@link IPublishParams}
      *
      * ```javascript
      *        rxStomp.publish({destination: "/queue/test", headers: {priority: 9}, body: "Hello, STOMP"});
@@ -220,13 +229,8 @@ export declare class RxStomp {
      *        rxStomp.publish({destination: '/topic/special', binaryBody: binaryData,
      *                         headers: {'content-type': 'application/octet-stream'}});
      * ```
-     *
-     * The message will get locally queued if the STOMP broker is not connected. It will attempt to
-     * publish queued messages as soon as the broker gets connected.
-     *
-     * Maps to: [Client#publish]{@link Client#publish}
      */
-    publish(parameters: publishParams): void;
+    publish(parameters: IRxStompPublishParams): void;
     /** It will send queued messages. */
     protected _sendQueuedMessages(): void;
     /**

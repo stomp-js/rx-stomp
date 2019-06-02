@@ -1,4 +1,339 @@
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("@stomp/stompjs"), require("rxjs"), require("rxjs/operators"));
+	else if(typeof define === 'function' && define.amd)
+		define("RxStomp", ["@stomp/stompjs", "rxjs", "rxjs/operators"], factory);
+	else if(typeof exports === 'object')
+		exports["RxStomp"] = factory(require("@stomp/stompjs"), require("rxjs"), require("rxjs/operators"));
+	else
+		root["RxStomp"] = factory(root["StompJs"], root["rxjs"], root["rxjs"]["operators"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE__stomp_stompjs__, __WEBPACK_EXTERNAL_MODULE_rxjs__, __WEBPACK_EXTERNAL_MODULE_rxjs_operators__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./node_modules/angular2-uuid/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/angular2-uuid/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
+
+var UUID = (function () {
+    function UUID() {
+        // no-op
+    }
+    UUID.UUID = function () {
+        if (typeof (window) !== "undefined" && typeof (window.crypto) !== "undefined" && typeof (window.crypto.getRandomValues) !== "undefined") {
+            // If we have a cryptographically secure PRNG, use that
+            // http://stackoverflow.com/questions/6906916/collisions-when-generating-uuids-in-javascript
+            var buf = new Uint16Array(8);
+            window.crypto.getRandomValues(buf);
+            return (this.pad4(buf[0]) + this.pad4(buf[1]) + "-" + this.pad4(buf[2]) + "-" + this.pad4(buf[3]) + "-" + this.pad4(buf[4]) + "-" + this.pad4(buf[5]) + this.pad4(buf[6]) + this.pad4(buf[7]));
+        }
+        else {
+            // Otherwise, just use Math.random
+            // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+            // https://stackoverflow.com/questions/11605068/why-does-jshint-argue-against-bitwise-operators-how-should-i-express-this-code
+            return this.random4() + this.random4() + "-" + this.random4() + "-" + this.random4() + "-" +
+                this.random4() + "-" + this.random4() + this.random4() + this.random4();
+        }
+    };
+    UUID.pad4 = function (num) {
+        var ret = num.toString(16);
+        while (ret.length < 4) {
+            ret = "0" + ret;
+        }
+        return ret;
+    };
+    UUID.random4 = function () {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    };
+    return UUID;
+}());
+exports.UUID = UUID;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./rx-stomp-config */ "./src/rx-stomp-config.ts"));
+__export(__webpack_require__(/*! ./rx-stomp */ "./src/rx-stomp.ts"));
+__export(__webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts"));
+__export(__webpack_require__(/*! ./rx-stomp-rpc-config */ "./src/rx-stomp-rpc-config.ts"));
+__export(__webpack_require__(/*! ./rx-stomp-rpc */ "./src/rx-stomp-rpc.ts"));
+
+
+/***/ }),
+
+/***/ "./src/rx-stomp-config.ts":
+/*!********************************!*\
+  !*** ./src/rx-stomp-config.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Represents a configuration object for RxSTOMP.
+ * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
+ *
+ * All the attributes of this calls are optional.
+ *
+ * Part of `@stomp/rx-stomp`
+ */
+var RxStompConfig = /** @class */ (function () {
+    function RxStompConfig() {
+    }
+    return RxStompConfig;
+}());
+exports.RxStompConfig = RxStompConfig;
+
+
+/***/ }),
+
+/***/ "./src/rx-stomp-rpc-config.ts":
+/*!************************************!*\
+  !*** ./src/rx-stomp-rpc-config.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * RPC Config. See the guide for example.
+ */
+var RxStompRPCConfig = /** @class */ (function () {
+    function RxStompRPCConfig() {
+    }
+    return RxStompRPCConfig;
+}());
+exports.RxStompRPCConfig = RxStompRPCConfig;
+
+
+/***/ }),
+
+/***/ "./src/rx-stomp-rpc.ts":
+/*!*****************************!*\
+  !*** ./src/rx-stomp-rpc.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+var operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+var angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/angular2-uuid/index.js");
+/**
+ * An implementation of Remote Procedure Call (RPC) using messaging.
+ *
+ * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ *
+ * Prat of `@stomp/rx-stomp`
+ */
+var RxStompRPC = /** @class */ (function () {
+    /**
+     * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+     */
+    function RxStompRPC(rxStomp, stompRPCConfig) {
+        var _this = this;
+        this.rxStomp = rxStomp;
+        this.stompRPCConfig = stompRPCConfig;
+        this._replyQueueName = '/temp-queue/rpc-replies';
+        this._setupReplyQueue = function () {
+            return _this.rxStomp.unhandledMessage$;
+        };
+        if (stompRPCConfig) {
+            if (stompRPCConfig.replyQueueName) {
+                this._replyQueueName = stompRPCConfig.replyQueueName;
+            }
+            if (stompRPCConfig.setupReplyQueue) {
+                this._setupReplyQueue = stompRPCConfig.setupReplyQueue;
+            }
+        }
+    }
+    /**
+     * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+     */
+    RxStompRPC.prototype.rpc = function (params) {
+        // We know there will be only one message in reply
+        return this.stream(params).pipe(operators_1.first());
+    };
+    /**
+     * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+     */
+    RxStompRPC.prototype.stream = function (params) {
+        var _this = this;
+        var headers = Object.assign({}, params.headers || {});
+        var destination = params.destination, body = params.body, binaryBody = params.binaryBody;
+        if (!this._repliesObservable) {
+            this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+        }
+        return rxjs_1.Observable.create(function (rpcObserver) {
+            var defaultMessagesSubscription;
+            var correlationId = angular2_uuid_1.UUID.UUID();
+            defaultMessagesSubscription = _this._repliesObservable.pipe(operators_1.filter(function (message) {
+                return message.headers['correlation-id'] === correlationId;
+            })).subscribe(function (message) {
+                rpcObserver.next(message);
+            });
+            // send an RPC request
+            headers['reply-to'] = _this._replyQueueName;
+            headers['correlation-id'] = correlationId;
+            _this.rxStomp.publish({ destination: destination, body: body, binaryBody: binaryBody, headers: headers });
+            return function () {
+                defaultMessagesSubscription.unsubscribe();
+            };
+        });
+    };
+    return RxStompRPC;
+}());
+exports.RxStompRPC = RxStompRPC;
+
+
+/***/ }),
+
+/***/ "./src/rx-stomp-state.ts":
+/*!*******************************!*\
+  !*** ./src/rx-stomp-state.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Possible states for the RxStomp
+ *
+ * Prat of `@stomp/rx-stomp`
+ */
+var RxStompState;
+(function (RxStompState) {
+    RxStompState[RxStompState["CONNECTING"] = 0] = "CONNECTING";
+    RxStompState[RxStompState["OPEN"] = 1] = "OPEN";
+    RxStompState[RxStompState["CLOSING"] = 2] = "CLOSING";
+    RxStompState[RxStompState["CLOSED"] = 3] = "CLOSED";
+})(RxStompState = exports.RxStompState || (exports.RxStompState = {}));
+
+
+/***/ }),
+
+/***/ "./src/rx-stomp.ts":
+/*!*************************!*\
+  !*** ./src/rx-stomp.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,10 +370,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = require("rxjs");
-var operators_1 = require("rxjs/operators");
-var stompjs_1 = require("@stomp/stompjs");
-var rx_stomp_state_1 = require("./rx-stomp-state");
+var rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+var operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+var stompjs_1 = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
+var rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
 /**
  * This is the main Stomp Client.
  * Typically you will create an instance of this to connect to the STOMP broker.
@@ -413,4 +748,55 @@ var RxStomp = /** @class */ (function () {
     return RxStomp;
 }());
 exports.RxStomp = RxStomp;
-//# sourceMappingURL=rx-stomp.js.map
+
+
+/***/ }),
+
+/***/ 0:
+/*!****************************!*\
+  !*** multi ./src/index.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! /home/kdeepak/MyWork/Tech/stomp/rx-stomp/src/index.ts */"./src/index.ts");
+
+
+/***/ }),
+
+/***/ "@stomp/stompjs":
+/*!*******************************************************************************************************************!*\
+  !*** external {"commonjs":"@stomp/stompjs","commonjs2":"@stomp/stompjs","amd":"@stomp/stompjs","root":"StompJs"} ***!
+  \*******************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__stomp_stompjs__;
+
+/***/ }),
+
+/***/ "rxjs":
+/*!************************************************************************************!*\
+  !*** external {"root":["rxjs"],"commonjs":"rxjs","commonjs2":"rxjs","amd":"rxjs"} ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs__;
+
+/***/ }),
+
+/***/ "rxjs/operators":
+/*!******************************************************************************************************************************!*\
+  !*** external {"root":["rxjs","operators"],"commonjs":"rxjs/operators","commonjs2":"rxjs/operators","amd":"rxjs/operators"} ***!
+  \******************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs_operators__;
+
+/***/ })
+
+/******/ });
+});
+//# sourceMappingURL=rx-stomp.umd.js.map
