@@ -1,3 +1,4 @@
+
 # RxStomp
 
 [![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp)
@@ -16,6 +17,14 @@ This has been developed using TypeScript and includes typing information in the 
 ## TypeScript definitions
 
 The npm package includes TypeScript definitions, so there is no need no install it separately.
+
+## Installation
+
+The library is distributed as UMD and can be used in various methods:
+
+ 1. NPM - `npm install @stomp/rx-stomp`
+ 2. Yarn - `yarn add @stomp/rx-stomp`
+ 3. Script - available on various CDNs, import both rx-stomp and stomp
 
 ## Usage
 
