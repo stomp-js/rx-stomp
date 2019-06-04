@@ -26,6 +26,9 @@ The library is distributed as UMD and can be used in various methods:
  2. Yarn - `yarn add @stomp/rx-stomp`
  3. Script - available on various CDNs, import both rx-stomp and stomp
 
+Additionally, rxjs^6.0 needs to be installed.
+
+
 ## Usage
 
 This module is distributed as UMD, this allows usage easy from NodeJs `require`,
