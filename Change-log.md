@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.2 (2019-06-12)
+
+* Supports `stompjs@5.4.2`.
+
 ## 0.3.1 (2019-06-02)
 
 * Updates in contributing guidelines.
