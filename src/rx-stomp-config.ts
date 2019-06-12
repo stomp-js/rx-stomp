@@ -107,6 +107,11 @@ export class RxStompConfig {
   public forceBinaryWSFrames?: boolean;
 
   /**
+   * See [Client#appendMissingNULLonIncoming]{@link Client#appendMissingNULLonIncoming}.
+   */
+  public appendMissingNULLonIncoming?: boolean;
+
+  /**
    * Maps to: [Client#maxWebSocketChunkSize]{@link Client#maxWebSocketChunkSize}.
    */
   public maxWebSocketChunkSize?: number;
