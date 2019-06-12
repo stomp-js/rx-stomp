@@ -235,7 +235,7 @@ var angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/a
  *
  * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStompRPC = /** @class */ (function () {
     /**
@@ -312,7 +312,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Possible states for the RxStomp
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStompState;
 (function (RxStompState) {
@@ -391,7 +391,7 @@ var rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-sto
  *
  * RxStomp also tries to transparently handle connection failures.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStomp = /** @class */ (function () {
     /**

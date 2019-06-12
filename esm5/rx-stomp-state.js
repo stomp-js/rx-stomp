@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Possible states for the RxStomp
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStompState;
 (function (RxStompState) {

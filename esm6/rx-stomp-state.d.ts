@@ -1,7 +1,7 @@
 /**
  * Possible states for the RxStomp
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 export declare enum RxStompState {
     CONNECTING = 0,

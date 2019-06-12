@@ -54,7 +54,7 @@ import { RxStompState } from './rx-stomp-state';
  *
  * RxStomp also tries to transparently handle connection failures.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 var RxStomp = /** @class */ (function () {
     /**
