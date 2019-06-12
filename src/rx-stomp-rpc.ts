@@ -13,7 +13,7 @@ import {RxStompRPCConfig, setupReplyQueueFnType} from './rx-stomp-rpc-config';
  *
  * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
  *
- * Prat of `@stomp/rx-stomp`
+ * Part of `@stomp/rx-stomp`
  */
 export class RxStompRPC {
   private _replyQueueName = '/temp-queue/rpc-replies';
