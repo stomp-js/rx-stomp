@@ -39,7 +39,8 @@ export class RxStompRPC {
   }
 
   /**
-   * Make an RPC request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
+   * Make an RPC request.
+   * See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
    *
    * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
    */
