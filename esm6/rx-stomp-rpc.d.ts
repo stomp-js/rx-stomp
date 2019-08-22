@@ -21,10 +21,15 @@ export declare class RxStompRPC {
     constructor(rxStomp: RxStomp, stompRPCConfig?: RxStompRPCConfig);
     /**
      * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+     *
+     * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
     rpc(params: publishParams): Observable<IMessage>;
     /**
      * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+     *
+     * Note: This call internally takes care of generating a correlation id,
+     * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
     stream(params: publishParams): Observable<IMessage>;
 }

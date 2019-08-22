@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.3 (2019-08-22)
+
+* Support for user supplied correlation id in RxStompRPC.
+  Fixes [#129](https://github.com/stomp-js/rx-stomp/issues/129).
+
 ## 0.3.2 (2019-06-12)
 
 * Supports `stompjs@5.4.2`.

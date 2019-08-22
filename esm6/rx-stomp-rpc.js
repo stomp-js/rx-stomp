@@ -31,6 +31,8 @@ var RxStompRPC = /** @class */ (function () {
     }
     /**
      * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+     *
+     * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
     RxStompRPC.prototype.rpc = function (params) {
         // We know there will be only one message in reply
@@ -38,6 +40,9 @@ var RxStompRPC = /** @class */ (function () {
     };
     /**
      * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+     *
+     * Note: This call internally takes care of generating a correlation id,
+     * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
     RxStompRPC.prototype.stream = function (params) {
         var _this = this;
@@ -48,7 +53,7 @@ var RxStompRPC = /** @class */ (function () {
         }
         return Observable.create(function (rpcObserver) {
             var defaultMessagesSubscription;
-            var correlationId = UUID.UUID();
+            var correlationId = headers['correlation-id'] || UUID.UUID();
             defaultMessagesSubscription = _this._repliesObservable.pipe(filter(function (message) {
                 return message.headers['correlation-id'] === correlationId;
             })).subscribe(function (message) {
