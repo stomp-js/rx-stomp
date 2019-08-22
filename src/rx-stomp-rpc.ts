@@ -11,7 +11,7 @@ import {RxStompRPCConfig, setupReplyQueueFnType} from './rx-stomp-rpc-config';
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
- * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ * Please see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
  *
  * Part of `@stomp/rx-stomp`
  */
@@ -25,7 +25,7 @@ export class RxStompRPC {
   private _repliesObservable: Observable<IMessage>;
 
   /**
-   * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+   * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
    */
   constructor(private rxStomp: RxStomp, private stompRPCConfig?: RxStompRPCConfig) {
     if (stompRPCConfig) {
@@ -39,7 +39,7 @@ export class RxStompRPC {
   }
 
   /**
-   * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+   * Make an RPC request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
    *
    * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
    */
@@ -49,7 +49,7 @@ export class RxStompRPC {
   }
 
   /**
-   * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+   * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html).
    *
    * Note: This call internally takes care of generating a correlation id,
    * however, if `correlation-id` is passed via `headers`, that will be used instead.
