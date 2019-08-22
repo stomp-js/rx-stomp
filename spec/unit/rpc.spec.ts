@@ -55,6 +55,19 @@ describe('RPC', () => {
     });
   });
 
+  it('RPC with custom correlation-id', (done) => {
+    // Watch for RPC response
+
+    const msg = 'Hello';
+    const customCorrelationId = `custom-${UUID.UUID()}`;
+    const headers = {'correlation-id': customCorrelationId};
+    rxStompRPC.rpc({destination: myRPCEndPoint, body: msg, headers}).subscribe((message: Message) => {
+      expect(message.body).toEqual(msg);
+      expect(message.headers['correlation-id']).toEqual(customCorrelationId);
+      done();
+    });
+  });
+
   it('RPC with binary payload', (done) => {
     // Watch for RPC response
 

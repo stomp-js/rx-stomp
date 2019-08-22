@@ -40,6 +40,8 @@ export class RxStompRPC {
 
   /**
    * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+   *
+   * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
    */
   public rpc(params: publishParams): Observable<IMessage> {
     // We know there will be only one message in reply
@@ -48,6 +50,9 @@ export class RxStompRPC {
 
   /**
    * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+   *
+   * Note: This call internally takes care of generating a correlation id,
+   * however, if `correlation-id` is passed via `headers`, that will be used instead.
    */
   public stream(params: publishParams): Observable<IMessage> {
     const headers: StompHeaders = (Object as any).assign({}, params.headers || {});
@@ -61,7 +66,7 @@ export class RxStompRPC {
       (rpcObserver: Observer<IMessage>) => {
         let defaultMessagesSubscription: Subscription;
 
-        const correlationId = UUID.UUID();
+        const correlationId = headers['correlation-id'] || UUID.UUID();
 
         defaultMessagesSubscription = this._repliesObservable.pipe(filter((message: IMessage) => {
           return message.headers['correlation-id'] === correlationId;
