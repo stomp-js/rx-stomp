@@ -23,6 +23,10 @@ describe('Connection', () => {
     rxStomp = null;
   });
 
+  it('should be active', () => {
+    expect(rxStomp.active).toBe(true);
+  });
+
   it('should connect', (done) => {
     rxStomp.connected$.subscribe(() => {
       done();

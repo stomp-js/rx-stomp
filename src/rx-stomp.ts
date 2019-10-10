@@ -333,6 +333,15 @@ export class RxStomp {
   }
 
   /**
+   * If the client is active (connected or going to reconnect).
+   *
+   *  Maps to: [Client#active]{@link Client#active}
+   */
+  get active(): boolean {
+    return this.stompClient.active;
+  }
+
+  /**
    * Send a message to a named destination. Refer to your STOMP broker documentation for types
    * and naming of destinations.
    *

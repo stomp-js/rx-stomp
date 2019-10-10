@@ -32,6 +32,10 @@ describe('Deactivate', () => {
     it('and not reconnect', () => {
       expect(rxStomp.connectionState$.getValue()).toEqual(RxStompState.CLOSED);
     });
+
+    it('should be inactive', () => {
+      expect(rxStomp.active).toBe(false);
+    });
   });
 
   describe('should deactivate even when underlying connection is not there', () => {
