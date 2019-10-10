@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.4 (2019-10-10)
+
+* Fix webpack config - window not defined in nodejs.
+* Expose `active` property.
+
 ## 0.3.3 (2019-08-22)
 
 * Support for user supplied correlation id in RxStompRPC.
