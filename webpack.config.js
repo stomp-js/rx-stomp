@@ -24,6 +24,7 @@ const config = {
     filename: '[name].umd.js',
     libraryTarget: 'umd',
     library: 'RxStomp',
+    globalObject: `typeof self !== 'undefined' ? self : this`,
     umdNamedDefine: true
   },
   mode: 'development',
