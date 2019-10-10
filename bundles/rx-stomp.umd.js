@@ -7,7 +7,7 @@
 		exports["RxStomp"] = factory(require("@stomp/stompjs"), require("rxjs"), require("rxjs/operators"));
 	else
 		root["RxStomp"] = factory(root["StompJs"], root["rxjs"], root["rxjs"]["operators"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__stomp_stompjs__, __WEBPACK_EXTERNAL_MODULE_rxjs__, __WEBPACK_EXTERNAL_MODULE_rxjs_operators__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE__stomp_stompjs__, __WEBPACK_EXTERNAL_MODULE_rxjs__, __WEBPACK_EXTERNAL_MODULE_rxjs_operators__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -233,13 +233,13 @@ var angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/a
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
- * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ * Please see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
  *
  * Part of `@stomp/rx-stomp`
  */
 var RxStompRPC = /** @class */ (function () {
     /**
-     * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
      */
     function RxStompRPC(rxStomp, stompRPCConfig) {
         var _this = this;
@@ -259,7 +259,8 @@ var RxStompRPC = /** @class */ (function () {
         }
     }
     /**
-     * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+     * Make an RPC request.
+     * See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
      *
      * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
@@ -268,7 +269,7 @@ var RxStompRPC = /** @class */ (function () {
         return this.stream(params).pipe(operators_1.first());
     };
     /**
-     * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html).
      *
      * Note: This call internally takes care of generating a correlation id,
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
@@ -340,10 +341,11 @@ var RxStompState;
 "use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -572,6 +574,18 @@ var RxStomp = /** @class */ (function () {
     RxStomp.prototype.connected = function () {
         return this.connectionState$.getValue() === rx_stomp_state_1.RxStompState.OPEN;
     };
+    Object.defineProperty(RxStomp.prototype, "active", {
+        /**
+         * If the client is active (connected or going to reconnect).
+         *
+         *  Maps to: [Client#active]{@link Client#active}
+         */
+        get: function () {
+            return this.stompClient.active;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Send a message to a named destination. Refer to your STOMP broker documentation for types
      * and naming of destinations.

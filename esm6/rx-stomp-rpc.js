@@ -4,13 +4,13 @@ import { UUID } from 'angular2-uuid';
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
- * Please see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+ * Please see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
  *
  * Part of `@stomp/rx-stomp`
  */
 var RxStompRPC = /** @class */ (function () {
     /**
-     * Create an instance, see the [guide](../additional-documentation/rpc---remote-procedure-call.html) for details.
+     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
      */
     function RxStompRPC(rxStomp, stompRPCConfig) {
         var _this = this;
@@ -30,7 +30,8 @@ var RxStompRPC = /** @class */ (function () {
         }
     }
     /**
-     * Make an RPC request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html) for example.
+     * Make an RPC request.
+     * See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
      *
      * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
@@ -39,7 +40,7 @@ var RxStompRPC = /** @class */ (function () {
         return this.stream(params).pipe(first());
     };
     /**
-     * Make an RPC stream request. See the [guide](../additional-documentation/rpc---remote-procedure-call.html).
+     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html).
      *
      * Note: This call internally takes care of generating a correlation id,
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
