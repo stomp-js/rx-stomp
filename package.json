@@ -46,7 +46,7 @@
     "karma-typescript": "^4.1.0",
     "rxjs": "^6.3.3",
     "text-encoding": "^0.7.0",
-    "tslint": "^5.11.0",
+    "tslint": "^6.0.0",
     "typescript": "^3.2.1",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8",
