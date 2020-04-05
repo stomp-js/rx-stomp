@@ -153,7 +153,7 @@ export class RxStomp {
   /**
    * Before connect
    */
-  protected _beforeConnect: () => void;
+  protected _beforeConnect: (client: RxStomp) => void|Promise<void>;
 
   /**
    * Will be assigned during configuration, no-op otherwise
@@ -268,7 +268,7 @@ export class RxStomp {
         this._changeState(RxStompState.CONNECTING);
 
         // Call handler
-        await this._beforeConnect();
+        await this._beforeConnect(this);
       },
       onConnect: (frame: IFrame) => {
         this._serverHeadersBehaviourSubject$.next(frame.headers);

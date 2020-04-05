@@ -43,10 +43,10 @@ describe('Connection', () => {
     // The configuration is set in async beforeConnect
     rxStomp = new RxStomp();
 
-    const beforeConnect = () => {
+    const beforeConnect = (client: RxStomp) => {
       return new Promise<void>(((resolve, reject) => {
         setTimeout(() => {
-          rxStomp.configure(defaultConfig());
+          client.configure(defaultConfig());
           resolve();
         }, 200);
       }));
