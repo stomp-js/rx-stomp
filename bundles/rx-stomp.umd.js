@@ -510,7 +510,7 @@ var RxStomp = /** @class */ (function () {
                         case 0:
                             this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
                             // Call handler
-                            return [4 /*yield*/, this._beforeConnect()];
+                            return [4 /*yield*/, this._beforeConnect(this)];
                         case 1:
                             // Call handler
                             _a.sent();
@@ -609,7 +609,8 @@ var RxStomp = /** @class */ (function () {
      *
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
      * publish queued messages as soon as the broker gets connected.
-     * Please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
+     * If you do not want that behavior,
+     * please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
      * in the parameters.
      * When `false`, this function will raise an error if message could not be sent immediately.
      *

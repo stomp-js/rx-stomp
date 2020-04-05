@@ -125,7 +125,7 @@ export declare class RxStomp {
     /**
      * Before connect
      */
-    protected _beforeConnect: () => void;
+    protected _beforeConnect: (client: RxStomp) => void | Promise<void>;
     /**
      * Will be assigned during configuration, no-op otherwise
      */
@@ -213,7 +213,8 @@ export declare class RxStomp {
      *
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
      * publish queued messages as soon as the broker gets connected.
-     * Please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
+     * If you do not want that behavior,
+     * please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
      * in the parameters.
      * When `false`, this function will raise an error if message could not be sent immediately.
      *

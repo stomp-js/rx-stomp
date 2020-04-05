@@ -1,4 +1,5 @@
 import { debugFnType, StompHeaders, Versions } from '@stomp/stompjs';
+import { RxStomp } from './rx-stomp';
 /**
  * Represents a configuration object for RxSTOMP.
  * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
@@ -133,5 +134,5 @@ export declare class RxStompConfig {
      *
      * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
      */
-    beforeConnect?: () => void | Promise<void>;
+    beforeConnect?: (client: RxStomp) => void | Promise<void>;
 }
