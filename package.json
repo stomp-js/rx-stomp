@@ -1,6 +1,6 @@
 {
   "name": "@stomp/rx-stomp",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "RxJS STOMP client for Javascript and Typescript",
   "scripts": {
     "clean": "rm -rf bundles esm5 esm6",

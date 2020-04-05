@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.5 (2020-04-05)
+
+* Pass `client` to beforeConnect callback.
+  Fixes [#204](https://github.com/stomp-js/rx-stomp/issues/204).
+
 ## 0.3.4 (2019-10-10)
 
 * Fix webpack config - window not defined in nodejs.
