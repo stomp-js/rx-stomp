@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.6 (TBD)
+
+* Update documentation links as per new URL structure without dates.
+
 ## 0.3.5 (2020-04-05)
 
 * Pass `client` to beforeConnect callback.
