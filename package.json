@@ -4,9 +4,8 @@
   "description": "RxJS STOMP client for Javascript and Typescript",
   "scripts": {
     "clean": "rm -rf bundles esm5 esm6",
-    "build-tsc": "tsc -m es6 --outDir esm6",
     "build-webpack": "webpack && webpack --mode=production --output-filename=rx-stomp.umd.min.js",
-    "build": "npm run clean && tsc && npm run build-tsc && npm run build-webpack",
+    "build": "npm run clean && tsc && npm run build-webpack",
     "karma": "karma start --single-run",
     "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
     "prepublishOnly": "npm run lint && npm run karma && npm run build"
@@ -53,8 +52,7 @@
     "webpack-rxjs-externals": "^2.0.0",
     "websocket": "^1.0.26"
   },
-  "esm5": "./esm5/index.js",
-  "esm6": "./esm6/index.js",
+  "module": "./esm6/index.js",
   "main": "bundles/rx-stomp.umd.js",
   "typings": "index.d.ts",
   "sideEffects": false
