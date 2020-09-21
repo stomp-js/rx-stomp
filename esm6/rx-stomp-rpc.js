@@ -1,24 +1,25 @@
-import { Observable } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-import { UUID } from 'angular2-uuid';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const rxjs_1 = require("rxjs");
+const operators_1 = require("rxjs/operators");
+const angular2_uuid_1 = require("angular2-uuid");
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
- * Please see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
+ * Please see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
  *
  * Part of `@stomp/rx-stomp`
  */
-var RxStompRPC = /** @class */ (function () {
+class RxStompRPC {
     /**
-     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
+     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
      */
-    function RxStompRPC(rxStomp, stompRPCConfig) {
-        var _this = this;
+    constructor(rxStomp, stompRPCConfig) {
         this.rxStomp = rxStomp;
         this.stompRPCConfig = stompRPCConfig;
         this._replyQueueName = '/temp-queue/rpc-replies';
-        this._setupReplyQueue = function () {
-            return _this.rxStomp.unhandledMessage$;
+        this._setupReplyQueue = () => {
+            return this.rxStomp.unhandledMessage$;
         };
         if (stompRPCConfig) {
             if (stompRPCConfig.replyQueueName) {
@@ -31,45 +32,43 @@ var RxStompRPC = /** @class */ (function () {
     }
     /**
      * Make an RPC request.
-     * See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
+     * See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for example.
      *
      * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
-    RxStompRPC.prototype.rpc = function (params) {
+    rpc(params) {
         // We know there will be only one message in reply
-        return this.stream(params).pipe(first());
-    };
+        return this.stream(params).pipe(operators_1.first());
+    }
     /**
-     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html).
+     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
      *
      * Note: This call internally takes care of generating a correlation id,
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
-    RxStompRPC.prototype.stream = function (params) {
-        var _this = this;
-        var headers = Object.assign({}, params.headers || {});
-        var destination = params.destination, body = params.body, binaryBody = params.binaryBody;
+    stream(params) {
+        const headers = Object.assign({}, params.headers || {});
+        const { destination, body, binaryBody } = params;
         if (!this._repliesObservable) {
             this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
         }
-        return Observable.create(function (rpcObserver) {
-            var defaultMessagesSubscription;
-            var correlationId = headers['correlation-id'] || UUID.UUID();
-            defaultMessagesSubscription = _this._repliesObservable.pipe(filter(function (message) {
+        return rxjs_1.Observable.create((rpcObserver) => {
+            let defaultMessagesSubscription;
+            const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
+            defaultMessagesSubscription = this._repliesObservable.pipe(operators_1.filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
-            })).subscribe(function (message) {
+            })).subscribe((message) => {
                 rpcObserver.next(message);
             });
             // send an RPC request
-            headers['reply-to'] = _this._replyQueueName;
+            headers['reply-to'] = this._replyQueueName;
             headers['correlation-id'] = correlationId;
-            _this.rxStomp.publish({ destination: destination, body: body, binaryBody: binaryBody, headers: headers });
-            return function () {
+            this.rxStomp.publish({ destination, body, binaryBody, headers });
+            return () => {
                 defaultMessagesSubscription.unsubscribe();
             };
         });
-    };
-    return RxStompRPC;
-}());
-export { RxStompRPC };
+    }
+}
+exports.RxStompRPC = RxStompRPC;
 //# sourceMappingURL=rx-stomp-rpc.js.map

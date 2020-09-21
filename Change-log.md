@@ -1,7 +1,9 @@
 # Change Log
 
-## 0.3.6 (TBD)
+## 1.0.0
 
+* Generate only ES2017 and UMD packages.
+* Concept of `discardWebsocketOnCommFailure`.
 * Update documentation links as per new URL structure without dates.
 
 ## 0.3.5 (2020-04-05)

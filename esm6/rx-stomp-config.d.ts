@@ -105,6 +105,10 @@ export declare class RxStompConfig {
      */
     maxWebSocketChunkSize?: number;
     /**
+     * Maps to: [Client#discardWebsocketOnCommFailure]{@link Client#discardWebsocketOnCommFailure}.
+     */
+    discardWebsocketOnCommFailure?: boolean;
+    /**
      * Connection headers, important keys - `login`, `passcode`, `host`.
      * Though STOMP 1.2 standard marks these keys to be present, check your broker documentation for
      * details specific to your broker.
@@ -131,6 +135,8 @@ export declare class RxStompConfig {
      * In that case connect will be called only after the Promise is resolved.
      * This can be used to reliably fetch credentials, access token etc. from some other service
      * in an asynchronous way.
+     *
+     * As of 0.3.5, this callback will receive [RxStomp](@link RxStomp) as parameter.
      *
      * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
      */

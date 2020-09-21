@@ -184,11 +184,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  * Part of `@stomp/rx-stomp`
  */
-var RxStompConfig = /** @class */ (function () {
-    function RxStompConfig() {
-    }
-    return RxStompConfig;
-}());
+class RxStompConfig {
+}
 exports.RxStompConfig = RxStompConfig;
 
 
@@ -207,11 +204,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * RPC Config. See the guide for example.
  */
-var RxStompRPCConfig = /** @class */ (function () {
-    function RxStompRPCConfig() {
-    }
-    return RxStompRPCConfig;
-}());
+class RxStompRPCConfig {
+}
 exports.RxStompRPCConfig = RxStompRPCConfig;
 
 
@@ -227,27 +221,26 @@ exports.RxStompRPCConfig = RxStompRPCConfig;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
-var operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
-var angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/angular2-uuid/index.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+const operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+const angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/angular2-uuid/index.js");
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
- * Please see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
+ * Please see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
  *
  * Part of `@stomp/rx-stomp`
  */
-var RxStompRPC = /** @class */ (function () {
+class RxStompRPC {
     /**
-     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for details.
+     * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
      */
-    function RxStompRPC(rxStomp, stompRPCConfig) {
-        var _this = this;
+    constructor(rxStomp, stompRPCConfig) {
         this.rxStomp = rxStomp;
         this.stompRPCConfig = stompRPCConfig;
         this._replyQueueName = '/temp-queue/rpc-replies';
-        this._setupReplyQueue = function () {
-            return _this.rxStomp.unhandledMessage$;
+        this._setupReplyQueue = () => {
+            return this.rxStomp.unhandledMessage$;
         };
         if (stompRPCConfig) {
             if (stompRPCConfig.replyQueueName) {
@@ -260,46 +253,44 @@ var RxStompRPC = /** @class */ (function () {
     }
     /**
      * Make an RPC request.
-     * See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html) for example.
+     * See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for example.
      *
      * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
-    RxStompRPC.prototype.rpc = function (params) {
+    rpc(params) {
         // We know there will be only one message in reply
         return this.stream(params).pipe(operators_1.first());
-    };
+    }
     /**
-     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/2018/10/12/remote-procedure-call.html).
+     * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
      *
      * Note: This call internally takes care of generating a correlation id,
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
-    RxStompRPC.prototype.stream = function (params) {
-        var _this = this;
-        var headers = Object.assign({}, params.headers || {});
-        var destination = params.destination, body = params.body, binaryBody = params.binaryBody;
+    stream(params) {
+        const headers = Object.assign({}, params.headers || {});
+        const { destination, body, binaryBody } = params;
         if (!this._repliesObservable) {
             this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
         }
-        return rxjs_1.Observable.create(function (rpcObserver) {
-            var defaultMessagesSubscription;
-            var correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
-            defaultMessagesSubscription = _this._repliesObservable.pipe(operators_1.filter(function (message) {
+        return rxjs_1.Observable.create((rpcObserver) => {
+            let defaultMessagesSubscription;
+            const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
+            defaultMessagesSubscription = this._repliesObservable.pipe(operators_1.filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
-            })).subscribe(function (message) {
+            })).subscribe((message) => {
                 rpcObserver.next(message);
             });
             // send an RPC request
-            headers['reply-to'] = _this._replyQueueName;
+            headers['reply-to'] = this._replyQueueName;
             headers['correlation-id'] = correlationId;
-            _this.rxStomp.publish({ destination: destination, body: body, binaryBody: binaryBody, headers: headers });
-            return function () {
+            this.rxStomp.publish({ destination, body, binaryBody, headers });
+            return () => {
                 defaultMessagesSubscription.unsubscribe();
             };
         });
-    };
-    return RxStompRPC;
-}());
+    }
+}
 exports.RxStompRPC = RxStompRPC;
 
 
@@ -340,47 +331,11 @@ var RxStompState;
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
-var operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
-var stompjs_1 = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
-var rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+const operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+const stompjs_1 = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
+const rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
 /**
  * This is the main Stomp Client.
  * Typically you will create an instance of this to connect to the STOMP broker.
@@ -400,38 +355,37 @@ var rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-sto
  *
  * Part of `@stomp/rx-stomp`
  */
-var RxStomp = /** @class */ (function () {
+class RxStomp {
     /**
      * Constructor
      */
-    function RxStomp() {
-        var _this = this;
+    constructor() {
         /**
          * Internal array to hold locally queued messages when STOMP broker is not connected.
          */
         this._queuedMessages = [];
         this._stompClient = new stompjs_1.Client();
-        var noOp = function () { };
+        const noOp = () => { };
         // Before connect is no op by default
         this._beforeConnect = noOp;
         // debug is no-op by default
         this._debug = noOp;
         // Initial state is CLOSED
         this._connectionStatePre$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this._connectedPre$ = this._connectionStatePre$.pipe(operators_1.filter(function (currentState) {
+        this._connectedPre$ = this._connectionStatePre$.pipe(operators_1.filter((currentState) => {
             return currentState === rx_stomp_state_1.RxStompState.OPEN;
         }));
         // Initial state is CLOSED
         this.connectionState$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this.connected$ = this.connectionState$.pipe(operators_1.filter(function (currentState) {
+        this.connected$ = this.connectionState$.pipe(operators_1.filter((currentState) => {
             return currentState === rx_stomp_state_1.RxStompState.OPEN;
         }));
         // Setup sending queuedMessages
-        this.connected$.subscribe(function () {
-            _this._sendQueuedMessages();
+        this.connected$.subscribe(() => {
+            this._sendQueuedMessages();
         });
         this._serverHeadersBehaviourSubject$ = new rxjs_1.BehaviorSubject(null);
-        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(operators_1.filter(function (headers) {
+        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(operators_1.filter((headers) => {
             return headers !== null;
         }));
         this.stompErrors$ = new rxjs_1.Subject();
@@ -440,20 +394,16 @@ var RxStomp = /** @class */ (function () {
         this.unhandledFrame$ = new rxjs_1.Subject();
         this.webSocketErrors$ = new rxjs_1.Subject();
     }
-    Object.defineProperty(RxStomp.prototype, "stompClient", {
-        /**
-         * Instance of actual
-         * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
-         * {@link Client}.
-         *
-         * **Be careful in calling methods on it directly - you may get unintended consequences.**
-         */
-        get: function () {
-            return this._stompClient;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    /**
+     * Instance of actual
+     * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
+     * {@link Client}.
+     *
+     * **Be careful in calling methods on it directly - you may get unintended consequences.**
+     */
+    get stompClient() {
+        return this._stompClient;
+    }
     /**
      * Set configuration. This method may be called multiple times.
      * Each call will add to the existing configuration.
@@ -480,8 +430,8 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: [Client#configure]{@link Client#configure}
      */
-    RxStomp.prototype.configure = function (rxStompConfig) {
-        var stompConfig = Object.assign({}, rxStompConfig);
+    configure(rxStompConfig) {
+        const stompConfig = Object.assign({}, rxStompConfig);
         if (stompConfig.beforeConnect) {
             this._beforeConnect = stompConfig.beforeConnect;
             delete stompConfig.beforeConnect;
@@ -491,7 +441,7 @@ var RxStomp = /** @class */ (function () {
         if (stompConfig.debug) {
             this._debug = stompConfig.debug;
         }
-    };
+    }
     /**
      * Initiate the connection with the broker.
      * If the connection breaks, as per [RxStompConfig#reconnectDelay]{@link RxStompConfig#reconnectDelay},
@@ -501,51 +451,41 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: [Client#activate]{@link Client#activate}
      */
-    RxStomp.prototype.activate = function () {
-        var _this = this;
+    activate() {
         this._stompClient.configure({
-            beforeConnect: function () { return __awaiter(_this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
-                            // Call handler
-                            return [4 /*yield*/, this._beforeConnect(this)];
-                        case 1:
-                            // Call handler
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            }); },
-            onConnect: function (frame) {
-                _this._serverHeadersBehaviourSubject$.next(frame.headers);
+            beforeConnect: async () => {
+                this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
+                // Call handler
+                await this._beforeConnect(this);
+            },
+            onConnect: (frame) => {
+                this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
-                _this._changeState(rx_stomp_state_1.RxStompState.OPEN);
+                this._changeState(rx_stomp_state_1.RxStompState.OPEN);
             },
-            onStompError: function (frame) {
+            onStompError: (frame) => {
                 // Trigger the frame subject
-                _this.stompErrors$.next(frame);
+                this.stompErrors$.next(frame);
             },
-            onWebSocketClose: function () {
-                _this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
+            onWebSocketClose: () => {
+                this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
             },
-            onUnhandledMessage: function (message) {
-                _this.unhandledMessage$.next(message);
+            onUnhandledMessage: (message) => {
+                this.unhandledMessage$.next(message);
             },
-            onUnhandledReceipt: function (frame) {
-                _this.unhandledReceipts$.next(frame);
+            onUnhandledReceipt: (frame) => {
+                this.unhandledReceipts$.next(frame);
             },
-            onUnhandledFrame: function (frame) {
-                _this.unhandledFrame$.next(frame);
+            onUnhandledFrame: (frame) => {
+                this.unhandledFrame$.next(frame);
             },
-            onWebSocketError: function (evt) {
-                _this.webSocketErrors$.next(evt);
+            onWebSocketError: (evt) => {
+                this.webSocketErrors$.next(evt);
             }
         });
         // Attempt connection
         this._stompClient.activate();
-    };
+    }
     /**
      * Disconnect if connected and stop auto reconnect loop.
      * Appropriate callbacks will be invoked if underlying STOMP connection was connected.
@@ -554,10 +494,10 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    RxStomp.prototype.deactivate = function () {
+    deactivate() {
         // Disconnect if connected. Callback will set CLOSED state
         this._stompClient.deactivate();
-        var stompState = this.connectionState$.getValue();
+        const stompState = this.connectionState$.getValue();
         if (stompState === rx_stomp_state_1.RxStompState.OPEN) {
             // Notify observers that we are disconnecting!
             this._changeState(rx_stomp_state_1.RxStompState.CLOSING);
@@ -567,25 +507,21 @@ var RxStomp = /** @class */ (function () {
             // Notify observers that we are disconnecting!
             this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
         }
-    };
+    }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
      */
-    RxStomp.prototype.connected = function () {
+    connected() {
         return this.connectionState$.getValue() === rx_stomp_state_1.RxStompState.OPEN;
-    };
-    Object.defineProperty(RxStomp.prototype, "active", {
-        /**
-         * If the client is active (connected or going to reconnect).
-         *
-         *  Maps to: [Client#active]{@link Client#active}
-         */
-        get: function () {
-            return this.stompClient.active;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    }
+    /**
+     * If the client is active (connected or going to reconnect).
+     *
+     *  Maps to: [Client#active]{@link Client#active}
+     */
+    get active() {
+        return this.stompClient.active;
+    }
     /**
      * Send a message to a named destination. Refer to your STOMP broker documentation for types
      * and naming of destinations.
@@ -633,36 +569,35 @@ var RxStomp = /** @class */ (function () {
      *                         headers: {'content-type': 'application/octet-stream'}});
      * ```
      */
-    RxStomp.prototype.publish = function (parameters) {
+    publish(parameters) {
         // retry behaviour is defaulted to true
-        var shouldRetry = parameters.retryIfDisconnected == null
+        const shouldRetry = parameters.retryIfDisconnected == null
             ? true
             : parameters.retryIfDisconnected;
         if (this.connected()) {
             this._stompClient.publish(parameters);
         }
         else if (shouldRetry) {
-            this._debug("Not connected, queueing");
+            this._debug(`Not connected, queueing`);
             this._queuedMessages.push(parameters);
         }
         else {
             throw new Error('Cannot publish while broker is not connected');
         }
-    };
+    }
     /** It will send queued messages. */
-    RxStomp.prototype._sendQueuedMessages = function () {
-        var queuedMessages = this._queuedMessages;
+    _sendQueuedMessages() {
+        const queuedMessages = this._queuedMessages;
         this._queuedMessages = [];
         if (queuedMessages.length === 0) {
             return;
         }
-        this._debug("Will try sending  " + queuedMessages.length + " queued message(s)");
-        for (var _i = 0, queuedMessages_1 = queuedMessages; _i < queuedMessages_1.length; _i++) {
-            var queuedMessage = queuedMessages_1[_i];
-            this._debug("Attempting to send " + queuedMessage);
+        this._debug(`Will try sending  ${queuedMessages.length} queued message(s)`);
+        for (const queuedMessage of queuedMessages) {
+            this._debug(`Attempting to send ${queuedMessage}`);
             this.publish(queuedMessage);
         }
-    };
+    }
     /**
      * It will subscribe to server message queues
      *
@@ -679,9 +614,7 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: [Client#subscribe]{@link Client#subscribe}
      */
-    RxStomp.prototype.watch = function (destination, headers) {
-        var _this = this;
-        if (headers === void 0) { headers = {}; }
+    watch(destination, headers = {}) {
         /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
          *
          * We need to activate the underlying subscription immediately if Stomp is connected. If not it should
@@ -694,32 +627,32 @@ var RxStomp = /** @class */ (function () {
          * The observable that we return to caller remains same across all reconnects, so no special handling needed at
          * the message subscriber.
          */
-        this._debug("Request to subscribe " + destination);
+        this._debug(`Request to subscribe ${destination}`);
         // By default auto acknowledgement of messages
         if (!headers.ack) {
             headers.ack = 'auto';
         }
-        var coldObservable = rxjs_1.Observable.create(function (messages) {
+        const coldObservable = rxjs_1.Observable.create((messages) => {
             /*
              * These variables will be used as part of the closure and work their magic during unsubscribe
              */
-            var stompSubscription;
-            var stompConnectedSubscription;
-            stompConnectedSubscription = _this._connectedPre$.subscribe(function () {
-                _this._debug("Will subscribe to " + destination);
-                stompSubscription = _this._stompClient.subscribe(destination, function (message) {
+            let stompSubscription;
+            let stompConnectedSubscription;
+            stompConnectedSubscription = this._connectedPre$.subscribe(() => {
+                this._debug(`Will subscribe to ${destination}`);
+                stompSubscription = this._stompClient.subscribe(destination, (message) => {
                     messages.next(message);
                 }, headers);
             });
-            return function () {
-                _this._debug("Stop watching connection state (for " + destination + ")");
+            return () => {
+                this._debug(`Stop watching connection state (for ${destination})`);
                 stompConnectedSubscription.unsubscribe();
-                if (_this.connected()) {
-                    _this._debug("Will unsubscribe from " + destination + " at Stomp");
+                if (this.connected()) {
+                    this._debug(`Will unsubscribe from ${destination} at Stomp`);
                     stompSubscription.unsubscribe();
                 }
                 else {
-                    _this._debug("Stomp not connected, no need to unsubscribe from " + destination + " at Stomp");
+                    this._debug(`Stomp not connected, no need to unsubscribe from ${destination} at Stomp`);
                 }
             };
         });
@@ -729,7 +662,7 @@ var RxStomp = /** @class */ (function () {
          * A long but good explanatory article at https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339
          */
         return coldObservable.pipe(operators_1.share());
-    };
+    }
     /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
      * To request an acknowledgement, a `receipt` header needs to be sent with the actual request.
@@ -758,15 +691,14 @@ var RxStomp = /** @class */ (function () {
      *
      * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
      */
-    RxStomp.prototype.watchForReceipt = function (receiptId, callback) {
+    watchForReceipt(receiptId, callback) {
         this._stompClient.watchForReceipt(receiptId, callback);
-    };
-    RxStomp.prototype._changeState = function (state) {
+    }
+    _changeState(state) {
         this._connectionStatePre$.next(state);
         this.connectionState$.next(state);
-    };
-    return RxStomp;
-}());
+    }
+}
 exports.RxStomp = RxStomp;
 
 
