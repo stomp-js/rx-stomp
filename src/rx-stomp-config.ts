@@ -118,6 +118,11 @@ export class RxStompConfig {
   public maxWebSocketChunkSize?: number;
 
   /**
+   * Maps to: [Client#discardWebsocketOnCommFailure]{@link Client#discardWebsocketOnCommFailure}.
+   */
+  public discardWebsocketOnCommFailure?: boolean;
+
+  /**
    * Connection headers, important keys - `login`, `passcode`, `host`.
    * Though STOMP 1.2 standard marks these keys to be present, check your broker documentation for
    * details specific to your broker.
