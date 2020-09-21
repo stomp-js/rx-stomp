@@ -4,4 +4,5 @@
 # Installed dependencies
 node_modules
 
+# Build/test files
 tmp
