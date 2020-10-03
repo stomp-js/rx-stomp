@@ -1,27 +1,27 @@
-import {skip, take} from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 
 import 'jasmine';
 
-import {RxStomp} from '../../src';
+import { RxStomp } from '../../src';
 
-import {disconnectRxStompAndEnsure} from '../helpers/helpers';
-import {defaultConfig} from '../helpers/rx-stomp-factory';
+import { disconnectRxStompAndEnsure } from '../helpers/helpers';
+import { defaultConfig } from '../helpers/rx-stomp-factory';
 
 describe('Connection', () => {
   let rxStomp: RxStomp;
 
   // Disconnect and wait till it actually disconnects
-  afterEach((done) => {
+  afterEach(done => {
     disconnectRxStompAndEnsure(rxStomp, done);
     rxStomp = null;
   });
 
-  it('should call beforeConnect', (done) => {
+  it('should call beforeConnect', done => {
     rxStomp = new RxStomp();
     rxStomp.configure(defaultConfig());
 
     const beforeConnect = jasmine.createSpy();
-    rxStomp.configure({beforeConnect});
+    rxStomp.configure({ beforeConnect });
 
     rxStomp.activate();
 
@@ -38,21 +38,21 @@ describe('Connection', () => {
     });
   });
 
-  it('should allow async beforeConnect', (done) => {
+  it('should allow async beforeConnect', done => {
     // In this test, initially there is no valid configuration to connect to the broker
     // The configuration is set in async beforeConnect
     rxStomp = new RxStomp();
 
     const beforeConnect = (client: RxStomp) => {
-      return new Promise<void>(((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         setTimeout(() => {
           client.configure(defaultConfig());
           resolve();
         }, 200);
-      }));
+      });
     };
 
-    rxStomp.configure({beforeConnect});
+    rxStomp.configure({ beforeConnect });
     rxStomp.activate();
     rxStomp.connected$.subscribe(() => {
       done();

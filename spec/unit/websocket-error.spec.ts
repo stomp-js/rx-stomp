@@ -1,27 +1,27 @@
-import {skip, take} from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 
 import 'jasmine';
 
-import {RxStomp} from '../../src';
+import { RxStomp } from '../../src';
 
-import {disconnectRxStompAndEnsure} from '../helpers/helpers';
-import {defaultConfig} from '../helpers/rx-stomp-factory';
+import { disconnectRxStompAndEnsure } from '../helpers/helpers';
+import { defaultConfig } from '../helpers/rx-stomp-factory';
 
 describe('WebSocket Error', () => {
   let rxStomp: RxStomp;
 
   // Disconnect and wait till it actually disconnects
-  afterEach((done) => {
+  afterEach(done => {
     disconnectRxStompAndEnsure(rxStomp, done);
     rxStomp = null;
   });
 
-  it('should trigger webSocketErrors$', (done) => {
+  it('should trigger webSocketErrors$', done => {
     rxStomp = new RxStomp();
     rxStomp.configure(defaultConfig());
 
     // Invalid URL
-    rxStomp.configure({brokerURL: 'ws://127.0.0.1:15600/ws'});
+    rxStomp.configure({ brokerURL: 'ws://127.0.0.1:15600/ws' });
 
     rxStomp.activate();
 
@@ -30,7 +30,7 @@ describe('WebSocket Error', () => {
       expect(true).toEqual(false);
     });
 
-    rxStomp.webSocketErrors$.subscribe((evt) => {
+    rxStomp.webSocketErrors$.subscribe(evt => {
       expect(evt).toBeTruthy();
       done();
     });

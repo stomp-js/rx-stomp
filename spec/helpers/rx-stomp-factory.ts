@@ -11,7 +11,7 @@ export function defaultConfig(): RxStompConfig {
     // Typical keys: login, passcode, host
     connectHeaders: {
       login: 'guest',
-      passcode: 'guest'
+      passcode: 'guest',
     },
 
     // How often to heartbeat?
@@ -27,7 +27,7 @@ export function defaultConfig(): RxStompConfig {
     // Will log diagnostics on console
     debug: (msg: string): void => {
       console.log(new Date(), msg);
-    }
+    },
   };
 }
 

@@ -1,4 +1,3 @@
-
 export function randomText(): string {
   return '' + Math.random();
 }

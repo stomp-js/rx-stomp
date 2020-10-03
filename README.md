@@ -1,4 +1,3 @@
-
 # RxStomp
 
 [![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp)
@@ -22,12 +21,11 @@ The npm package includes TypeScript definitions, so there is no need no install 
 
 The library is distributed as UMD and can be used in various methods:
 
- 1. NPM - `npm install @stomp/rx-stomp`
- 2. Yarn - `yarn add @stomp/rx-stomp`
- 3. Script - available on various CDNs, import both rx-stomp and stomp
+1.  NPM - `npm install @stomp/rx-stomp`
+2.  Yarn - `yarn add @stomp/rx-stomp`
+3.  Script - available on various CDNs, import both rx-stomp and stomp
 
 Additionally, rxjs^6.0 needs to be installed.
-
 
 ## Usage
 
@@ -36,7 +34,7 @@ ES6/typescript `import` or directly including as script in HTML.
 
 See samples at: [https://github.com/stomp-js/samples/](https://github.com/stomp-js/samples/).
 
-API documentation at: 
+API documentation at:
 [https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html](https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html).
 
 Before installing please check:
@@ -49,7 +47,7 @@ Please visit [Change Log](Change-log.md).
 ## Contributing
 
 If you want to understand the code, develop, or contribute. Please visit
-[How to contribute](Contribute.md). 
+[How to contribute](Contribute.md).
 
 ## Authors
 

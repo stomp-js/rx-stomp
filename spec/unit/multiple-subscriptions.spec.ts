@@ -7,20 +7,23 @@ import { map } from 'rxjs/operators';
 import { RxStomp } from '../../src';
 
 import { Subscription } from 'rxjs';
-import { disconnectRxStompAndEnsure, ensureRxStompConnected } from '../helpers/helpers';
+import {
+  disconnectRxStompAndEnsure,
+  ensureRxStompConnected,
+} from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Multiple Queues', () => {
   let rxStomp: RxStomp;
 
   // Wait till RxStomp is actually connected
-  beforeEach((done) => {
+  beforeEach(done => {
     rxStomp = rxStompFactory();
     ensureRxStompConnected(rxStomp, done);
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach((done) => {
+  afterEach(done => {
     disconnectRxStompAndEnsure(rxStomp, done);
     rxStomp = null;
   });
@@ -34,7 +37,7 @@ describe('Multiple Queues', () => {
 
     const handlers = {
       handler1: () => {},
-      handler2: () => {}
+      handler2: () => {},
     };
 
     let spyHandler1: jasmine.Spy;
@@ -46,14 +49,16 @@ describe('Multiple Queues', () => {
     });
 
     // Subscribe to both queues
-    beforeEach((done) => {
-      queSubscription1 = rxStomp.watch(queueName1).pipe(
-        map((message) => message.body)
-      ).subscribe(spyHandler1);
+    beforeEach(done => {
+      queSubscription1 = rxStomp
+        .watch(queueName1)
+        .pipe(map(message => message.body))
+        .subscribe(spyHandler1);
 
-      queSubscription2 = rxStomp.watch(queueName2).pipe(
-        map((message) => message.body)
-      ).subscribe(spyHandler2);
+      queSubscription2 = rxStomp
+        .watch(queueName2)
+        .pipe(map(message => message.body))
+        .subscribe(spyHandler2);
 
       setTimeout(() => {
         done();
@@ -61,9 +66,9 @@ describe('Multiple Queues', () => {
     });
 
     // Send one message to each queue and verify that these are received in respective subscriptions
-    beforeEach((done) => {
-      rxStomp.publish({destination: queueName1, body: 'Message 01-01'});
-      rxStomp.publish({destination: queueName2, body: 'Message 02-01'});
+    beforeEach(done => {
+      rxStomp.publish({ destination: queueName1, body: 'Message 01-01' });
+      rxStomp.publish({ destination: queueName2, body: 'Message 02-01' });
 
       setTimeout(() => {
         expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
@@ -79,7 +84,7 @@ describe('Multiple Queues', () => {
     });
 
     describe('unsubscribe both queues', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         queSubscription1.unsubscribe();
         queSubscription2.unsubscribe();
         setTimeout(() => {
@@ -87,9 +92,9 @@ describe('Multiple Queues', () => {
         }, 100);
       });
 
-      it('should not receive message in any of the  queues', (done) => {
-        rxStomp.publish({destination: queueName1, body: 'Message 01-02'});
-        rxStomp.publish({destination: queueName2, body: 'Message 02-02'});
+      it('should not receive message in any of the  queues', done => {
+        rxStomp.publish({ destination: queueName1, body: 'Message 01-02' });
+        rxStomp.publish({ destination: queueName2, body: 'Message 02-02' });
 
         setTimeout(() => {
           expect(spyHandler1.calls.count()).toBe(1);

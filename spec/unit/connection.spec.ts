@@ -18,7 +18,7 @@ describe('Connection', () => {
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach((done) => {
+  afterEach(done => {
     disconnectRxStompAndEnsure(rxStomp, done);
     rxStomp = null;
   });
@@ -27,25 +27,23 @@ describe('Connection', () => {
     expect(rxStomp.active).toBe(true);
   });
 
-  it('should connect', (done) => {
+  it('should connect', done => {
     rxStomp.connected$.subscribe(() => {
       done();
     });
   });
 
-  it('should receive server headers', (done) => {
-    rxStomp.serverHeaders$
-      .subscribe((headers: StompHeaders) => {
-        // Check that we have received at least one key in header
-        expect(Object.keys(headers).length).toBeGreaterThan(0);
+  it('should receive server headers', done => {
+    rxStomp.serverHeaders$.subscribe((headers: StompHeaders) => {
+      // Check that we have received at least one key in header
+      expect(Object.keys(headers).length).toBeGreaterThan(0);
 
-        // Subscribe again, we should get the same set of headers
-        // (as per specifications, if STOMP has already connected it should immediately trigger)
-        rxStomp.serverHeaders$
-          .subscribe((headers1: StompHeaders) => {
-            expect(headers1).toEqual(headers);
-            done();
-          });
+      // Subscribe again, we should get the same set of headers
+      // (as per specifications, if STOMP has already connected it should immediately trigger)
+      rxStomp.serverHeaders$.subscribe((headers1: StompHeaders) => {
+        expect(headers1).toEqual(headers);
+        done();
       });
+    });
   });
 });

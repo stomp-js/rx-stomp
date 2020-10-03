@@ -1,6 +1,6 @@
 const webpackRxjsExternals = require('webpack-rxjs-externals');
 const path = require('path');
-const webpack = require("webpack");
+const webpack = require('webpack');
 
 const PATHS = {
   entryPoint: path.resolve(__dirname, 'src/index.ts'),
@@ -13,7 +13,7 @@ const config = {
   // the name to filter the second entry point for applying code
   // minification via UglifyJS
   entry: {
-    'rx-stomp': [PATHS.entryPoint]
+    'rx-stomp': [PATHS.entryPoint],
   },
   // The output defines how and where we want the bundles. The special
   // value `[name]` in `filename` tell Webpack to use the name we defined above.
@@ -25,13 +25,13 @@ const config = {
     libraryTarget: 'umd',
     library: 'RxStomp',
     globalObject: `typeof self !== 'undefined' ? self : this`,
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   mode: 'development',
   // Add resolve for `tsx` and `ts` files, otherwise Webpack would
   // only look for common JavaScript file extension (.js)
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js'],
   },
   externals: [
     webpackRxjsExternals(),
@@ -40,9 +40,9 @@ const config = {
         commonjs: '@stomp/stompjs',
         commonjs2: '@stomp/stompjs',
         amd: '@stomp/stompjs',
-        root: 'StompJs'
-      }
-    }
+        root: 'StompJs',
+      },
+    },
   ],
   // Activate source maps for the bundles in order to preserve the original
   // source when the user debugs the application
@@ -55,11 +55,10 @@ const config = {
         exclude: /node_modules/,
         query: {
           declaration: false,
-        }
-      }
-    ]
-  }
-
+        },
+      },
+    ],
+  },
 };
 
 module.exports = config;

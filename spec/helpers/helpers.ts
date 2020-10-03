@@ -3,7 +3,7 @@
 import 'jasmine';
 
 // Helper functions
-import {RxStomp, RxStompState} from '../../src';
+import { RxStomp, RxStompState } from '../../src';
 
 export function ensureRxStompConnected(rxStomp: RxStomp, done: any) {
   rxStomp.connected$.subscribe((state: RxStompState) => {

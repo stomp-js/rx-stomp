@@ -1,9 +1,8 @@
 // Karma configuration
 // Generated on Thu Jul 05 2018 16:43:26 GMT+0530 (IST)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
-
     plugins: [
       require('@chiragrupani/karma-chromium-edge-launcher'),
       require('karma-chrome-launcher'),
@@ -19,33 +18,26 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', "karma-typescript"],
-
+    frameworks: ['jasmine', 'karma-typescript'],
 
     // list of files / patterns to load in the browser
-    files: [
-      'src/**/*.ts',
-      'spec/**/*.ts'
-    ],
-
+    files: ['src/**/*.ts', 'spec/**/*.ts'],
 
     // list of files / patterns to exclude
-    exclude: [
-    ],
-
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "**/*.ts": "karma-typescript"
+      '**/*.ts': 'karma-typescript',
     },
 
     karmaTypescriptConfig: {
       include: {
-        mode: "merge",
-        values: ["spec/**/*.ts"]
+        mode: 'merge',
+        values: ['spec/**/*.ts'],
       },
-      tsconfig: "./tsconfig.json",
+      tsconfig: './tsconfig.json',
     },
 
     // test results reporter to use
@@ -53,23 +45,18 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['summary'],
 
-
     // web server port
     port: 9876,
 
-
     // enable / disable colors in the output (reporters and logs)
     colors: true,
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
@@ -85,8 +72,8 @@ module.exports = function(config) {
           '--headless',
           '--disable-gpu',
           // Without a remote debugging port, Google Chrome exits immediately.
-          ' --remote-debugging-port=9222'
-        ]
+          ' --remote-debugging-port=9222',
+        ],
       },
       FirefoxHeadless: {
         base: 'Firefox',
@@ -100,6 +87,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: 1
-  })
+    concurrency: 1,
+  });
 };

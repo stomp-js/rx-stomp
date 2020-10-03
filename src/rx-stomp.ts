@@ -1,6 +1,12 @@
-import {BehaviorSubject, Observable, Observer, Subject, Subscription} from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Observer,
+  Subject,
+  Subscription,
+} from 'rxjs';
 
-import {filter, share} from 'rxjs/operators';
+import { filter, share } from 'rxjs/operators';
 
 import {
   Client,
@@ -10,12 +16,12 @@ import {
   publishParams,
   StompConfig,
   StompHeaders,
-  StompSubscription
+  StompSubscription,
 } from '@stomp/stompjs';
 
-import {RxStompConfig} from './rx-stomp-config';
-import {IRxStompPublishParams} from './rx-stomp-publish-params';
-import {RxStompState} from './rx-stomp-state';
+import { RxStompConfig } from './rx-stomp-config';
+import { IRxStompPublishParams } from './rx-stomp-publish-params';
+import { RxStompState } from './rx-stomp-state';
 
 /**
  * This is the main Stomp Client.
@@ -153,7 +159,7 @@ export class RxStomp {
   /**
    * Before connect
    */
-  protected _beforeConnect: (client: RxStomp) => void|Promise<void>;
+  protected _beforeConnect: (client: RxStomp) => void | Promise<void>;
 
   /**
    * Will be assigned during configuration, no-op otherwise
@@ -175,7 +181,9 @@ export class RxStomp {
     this._debug = noOp;
 
     // Initial state is CLOSED
-    this._connectionStatePre$ = new BehaviorSubject<RxStompState>(RxStompState.CLOSED);
+    this._connectionStatePre$ = new BehaviorSubject<RxStompState>(
+      RxStompState.CLOSED
+    );
 
     this._connectedPre$ = this._connectionStatePre$.pipe(
       filter((currentState: RxStompState) => {
@@ -184,7 +192,9 @@ export class RxStomp {
     );
 
     // Initial state is CLOSED
-    this.connectionState$ = new BehaviorSubject<RxStompState>(RxStompState.CLOSED);
+    this.connectionState$ = new BehaviorSubject<RxStompState>(
+      RxStompState.CLOSED
+    );
 
     this.connected$ = this.connectionState$.pipe(
       filter((currentState: RxStompState) => {
@@ -197,7 +207,9 @@ export class RxStomp {
       this._sendQueuedMessages();
     });
 
-    this._serverHeadersBehaviourSubject$ = new BehaviorSubject<null | StompHeaders>(null);
+    this._serverHeadersBehaviourSubject$ = new BehaviorSubject<null | StompHeaders>(
+      null
+    );
 
     this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(
       filter((headers: null | StompHeaders) => {
@@ -294,7 +306,7 @@ export class RxStomp {
       },
       onWebSocketError: (evt: Event) => {
         this.webSocketErrors$.next(evt);
-      }
+      },
     });
 
     // Attempt connection
@@ -390,9 +402,10 @@ export class RxStomp {
    */
   public publish(parameters: IRxStompPublishParams): void {
     // retry behaviour is defaulted to true
-    const shouldRetry = parameters.retryIfDisconnected == null
-      ? true
-      : parameters.retryIfDisconnected;
+    const shouldRetry =
+      parameters.retryIfDisconnected == null
+        ? true
+        : parameters.retryIfDisconnected;
 
     if (this.connected()) {
       this._stompClient.publish(parameters);
@@ -437,8 +450,10 @@ export class RxStomp {
    *
    * Maps to: [Client#subscribe]{@link Client#subscribe}
    */
-  public watch(destination: string, headers: StompHeaders = {}): Observable<IMessage> {
-
+  public watch(
+    destination: string,
+    headers: StompHeaders = {}
+  ): Observable<IMessage> {
     /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
      *
      * We need to activate the underlying subscription immediately if Stomp is connected. If not it should
@@ -458,35 +473,40 @@ export class RxStomp {
       headers.ack = 'auto';
     }
 
-    const coldObservable = Observable.create(
-      (messages: Observer<IMessage>) => {
-        /*
-         * These variables will be used as part of the closure and work their magic during unsubscribe
-         */
-        let stompSubscription: StompSubscription;
+    const coldObservable = Observable.create((messages: Observer<IMessage>) => {
+      /*
+       * These variables will be used as part of the closure and work their magic during unsubscribe
+       */
+      let stompSubscription: StompSubscription;
 
-        let stompConnectedSubscription: Subscription;
+      let stompConnectedSubscription: Subscription;
 
-        stompConnectedSubscription = this._connectedPre$.subscribe(() => {
-          this._debug(`Will subscribe to ${destination}`);
-          stompSubscription = this._stompClient.subscribe(destination, (message: IMessage) => {
-              messages.next(message);
-            },
-            headers);
-        });
-
-        return () => { /* cleanup function, will be called when no subscribers are left */
-          this._debug(`Stop watching connection state (for ${destination})`);
-          stompConnectedSubscription.unsubscribe();
-
-          if (this.connected()) {
-            this._debug(`Will unsubscribe from ${destination} at Stomp`);
-            stompSubscription.unsubscribe();
-          } else {
-            this._debug(`Stomp not connected, no need to unsubscribe from ${destination} at Stomp`);
-          }
-        };
+      stompConnectedSubscription = this._connectedPre$.subscribe(() => {
+        this._debug(`Will subscribe to ${destination}`);
+        stompSubscription = this._stompClient.subscribe(
+          destination,
+          (message: IMessage) => {
+            messages.next(message);
+          },
+          headers
+        );
       });
+
+      return () => {
+        /* cleanup function, will be called when no subscribers are left */
+        this._debug(`Stop watching connection state (for ${destination})`);
+        stompConnectedSubscription.unsubscribe();
+
+        if (this.connected()) {
+          this._debug(`Will unsubscribe from ${destination} at Stomp`);
+          stompSubscription.unsubscribe();
+        } else {
+          this._debug(
+            `Stomp not connected, no need to unsubscribe from ${destination} at Stomp`
+          );
+        }
+      };
+    });
 
     /**
      * Important - convert it to hot Observable - otherwise, if the user code subscribes
@@ -524,7 +544,10 @@ export class RxStomp {
    *
    * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
    */
-  public watchForReceipt(receiptId: string, callback: (frame: IFrame) => void): void {
+  public watchForReceipt(
+    receiptId: string,
+    callback: (frame: IFrame) => void
+  ): void {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 
@@ -532,5 +555,4 @@ export class RxStomp {
     this._connectionStatePre$.next(state);
     this.connectionState$.next(state);
   }
-
 }

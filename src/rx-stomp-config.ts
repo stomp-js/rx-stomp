@@ -1,5 +1,5 @@
-import {debugFnType, StompHeaders, Versions} from '@stomp/stompjs';
-import {RxStomp} from './rx-stomp';
+import { debugFnType, StompHeaders, Versions } from '@stomp/stompjs';
+import { RxStomp } from './rx-stomp';
 
 /**
  * Represents a configuration object for RxSTOMP.
@@ -156,5 +156,5 @@ export class RxStompConfig {
    *
    * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
    */
-  public beforeConnect?: (client: RxStomp) => void|Promise<void>;
+  public beforeConnect?: (client: RxStomp) => void | Promise<void>;
 }

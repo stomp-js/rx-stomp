@@ -7,5 +7,5 @@ export enum RxStompState {
   CONNECTING,
   OPEN,
   CLOSING,
-  CLOSED
+  CLOSED,
 }
