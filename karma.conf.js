@@ -4,9 +4,18 @@
 module.exports = function(config) {
   config.set({
 
+    plugins: [
+      require('@chiragrupani/karma-chromium-edge-launcher'),
+      require('karma-chrome-launcher'),
+      require('karma-firefox-launcher'),
+      require('karma-jasmine'),
+      require('karma-safari-launcher'),
+      require('karma-summary-reporter'),
+      require('karma-typescript'),
+    ],
+
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -42,7 +51,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'summary'],
+    reporters: ['summary'],
 
 
     // web server port
@@ -78,7 +87,11 @@ module.exports = function(config) {
           // Without a remote debugging port, Google Chrome exits immediately.
           ' --remote-debugging-port=9222'
         ]
-      }
+      },
+      FirefoxHeadless: {
+        base: 'Firefox',
+        flags: ['-headless'],
+      },
     },
 
     // Continuous Integration mode

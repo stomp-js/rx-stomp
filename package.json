@@ -31,8 +31,11 @@
   },
   "homepage": "https://github.com/stomp-js/rx-stomp#readme",
   "dependencies": {
+    "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
     "@stomp/stompjs": "^6.0.0-beta1",
-    "angular2-uuid": "^1.1.1"
+    "angular2-uuid": "^1.1.1",
+    "karma-firefox-launcher": "^1.3.0",
+    "karma-safari-launcher": "^1.0.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.3.0",
