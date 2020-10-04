@@ -241,8 +241,8 @@ describe('Subscribe & Publish', () => {
     beforeEach(() => {
       subSpy = spyOn(rxStomp.stompClient, 'subscribe').and.callThrough();
       unsubSpy = spyOn(
-          // @ts-ignore - accessing private property
-          rxStomp.stompClient._stompHandler,
+        // @ts-ignore - accessing private property
+        rxStomp.stompClient._stompHandler,
         'unsubscribe'
       ).and.callThrough();
     });
@@ -265,8 +265,8 @@ describe('Subscribe & Publish', () => {
 
     it('should use unsubscription headers returned by a function', () => {
       const sub = rxStomp
-          .watch({ destination: queueName, unsubHeaders: () => unsubHeaders })
-          .subscribe(() => {});
+        .watch({ destination: queueName, unsubHeaders: () => unsubHeaders })
+        .subscribe(() => {});
 
       sub.unsubscribe();
       expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
@@ -274,8 +274,8 @@ describe('Subscribe & Publish', () => {
 
     it('should use subscription/unsubscription headers', () => {
       const sub = rxStomp
-          .watch({ destination: queueName, subHeaders, unsubHeaders })
-          .subscribe(() => {});
+        .watch({ destination: queueName, subHeaders, unsubHeaders })
+        .subscribe(() => {});
 
       sub.unsubscribe();
       expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);

@@ -4,5 +4,5 @@ export * from './rx-stomp-state';
 
 export * from './rx-stomp-rpc-config';
 export * from './rx-stomp-rpc';
-export * from './rx-stomp-publish-params';
-export * from "./i-watch-params";
+export * from './i-rx-stomp-publish-params';
+export * from './i-watch-params';

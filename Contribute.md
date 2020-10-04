@@ -113,10 +113,10 @@ lint - run tslint
    (`bundles`, `esm5` and `esm6`) folders.
    These will be generated during merge and release process.
 1. Please ensure that following passes successfully:
-     ```bash
-     $ npm run lint
-     $ npm run karma
-     ```
+   ```bash
+   $ npm run lint
+   $ npm run karma
+   ```
 1. Please follow GitHub guidelines to raise a PR against `develop` branch.
 1. Travis CI will run tests against a freshly installed RabbitMQ.
 1. Travis CI will also test current `ng2-stompjs` against this build.

@@ -20,7 +20,7 @@ import {
 } from '@stomp/stompjs';
 
 import { RxStompConfig } from './rx-stomp-config';
-import { IRxStompPublishParams } from './rx-stomp-publish-params';
+import { IRxStompPublishParams } from './i-rx-stomp-publish-params';
 import { RxStompState } from './rx-stomp-state';
 import { IWatchParams } from './i-watch-params';
 
@@ -439,7 +439,8 @@ export class RxStomp {
    * It will subscribe to server message queues
    *
    * This method can be safely called even if the STOMP broker is not connected.
-   * If the underlying STOMP connection drops and reconnects, it will resubscribe automatically.
+   * If the underlying STOMP connection drops and reconnects, by default, it will resubscribe automatically.
+   * See [IWatchParams#subscribeOnlyOnce]{@link IWatchParams#subscribeOnlyOnce} also.
    *
    * Note that messages might be missed during reconnect. This issue is not specific
    * to this library but the way STOMP brokers are designed to work.
@@ -449,9 +450,17 @@ export class RxStomp {
    * However `subscribe` is also used by RxJS and code reads strange with two subscribe calls
    * following each other and both meaning very different things.
    *
+   * This method has two alternate syntax, use [IWatchParams]{@link IWatchParams} if you need to pass additional options.
+   *
    * Maps to: [Client#subscribe]{@link Client#subscribe}
    */
   public watch(opts: IWatchParams): Observable<IMessage>;
+  /**
+   * See the [other variant]{@link #watch} for details.
+   *
+   * @param destination
+   * @param headers subscription headers
+   */
   public watch(
     destination: string,
     headers?: StompHeaders
@@ -463,7 +472,7 @@ export class RxStomp {
     const defaults: IWatchParams = {
       subHeaders: {},
       unsubHeaders: {},
-      noAutoResubscribe: false,
+      subscribeOnlyOnce: false,
     };
 
     let params: IWatchParams;
