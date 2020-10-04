@@ -491,11 +491,6 @@ export class RxStomp {
      */
     this._debug(`Request to subscribe ${params.destination}`);
 
-    // By default auto acknowledgement of messages
-    if (!params.subHeaders.ack) {
-      params.subHeaders.ack = 'auto';
-    }
-
     const coldObservable = Observable.create((messages: Observer<IMessage>) => {
       /*
        * These variables will be used as part of the closure and work their magic during unsubscribe
@@ -524,7 +519,11 @@ export class RxStomp {
 
         if (this.connected()) {
           this._debug(`Will unsubscribe from ${params.destination} at Stomp`);
-          stompSubscription.unsubscribe();
+          let unsubHeaders = params.unsubHeaders;
+          if (typeof unsubHeaders === 'function') {
+            unsubHeaders = unsubHeaders();
+          }
+          stompSubscription.unsubscribe(unsubHeaders);
         } else {
           this._debug(
             `Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`

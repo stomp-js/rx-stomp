@@ -224,4 +224,62 @@ describe('Subscribe & Publish', () => {
       });
     });
   });
+
+  describe('Headers', () => {
+    const queueName = '/topic/ng-demo-sub';
+    const subHeaders = { hello: 'world' };
+    const unsubHeaders = { bye: 'world' };
+
+    let subSpy: any;
+    let unsubSpy: any;
+
+    // Wait till RxStomp is actually connected
+    beforeEach(done => {
+      ensureRxStompConnected(rxStomp, done);
+    });
+
+    beforeEach(() => {
+      subSpy = spyOn(rxStomp.stompClient, 'subscribe').and.callThrough();
+      unsubSpy = spyOn(
+          // @ts-ignore - accessing private property
+          rxStomp.stompClient._stompHandler,
+        'unsubscribe'
+      ).and.callThrough();
+    });
+
+    it('should send subscription headers', () => {
+      const sub = rxStomp
+        .watch({ destination: queueName, subHeaders })
+        .subscribe(() => {});
+      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
+    });
+
+    it('should use passed unsubscription headers', () => {
+      const sub = rxStomp
+        .watch({ destination: queueName, unsubHeaders })
+        .subscribe(() => {});
+
+      sub.unsubscribe();
+      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+    });
+
+    it('should use unsubscription headers returned by a function', () => {
+      const sub = rxStomp
+          .watch({ destination: queueName, unsubHeaders: () => unsubHeaders })
+          .subscribe(() => {});
+
+      sub.unsubscribe();
+      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+    });
+
+    it('should use subscription/unsubscription headers', () => {
+      const sub = rxStomp
+          .watch({ destination: queueName, subHeaders, unsubHeaders })
+          .subscribe(() => {});
+
+      sub.unsubscribe();
+      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
+      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+    });
+  });
 });
