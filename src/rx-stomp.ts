@@ -22,6 +22,7 @@ import {
 import { RxStompConfig } from './rx-stomp-config';
 import { IRxStompPublishParams } from './rx-stomp-publish-params';
 import { RxStompState } from './rx-stomp-state';
+import { IWatchParams } from './i-watch-params';
 
 /**
  * This is the main Stomp Client.
@@ -445,15 +446,37 @@ export class RxStomp {
    *
    * This method in the underlying library is called `subscribe`.
    * In earlier version it was called `subscribe` here as well.
-   * However `subscribe` is also used by RxJS and code read quite strange with two subscribe calls
+   * However `subscribe` is also used by RxJS and code reads strange with two subscribe calls
    * following each other and both meaning very different things.
    *
    * Maps to: [Client#subscribe]{@link Client#subscribe}
    */
+  public watch(opts: IWatchParams): Observable<IMessage>;
   public watch(
     destination: string,
+    headers?: StompHeaders
+  ): Observable<IMessage>;
+  public watch(
+    opts: string | IWatchParams,
     headers: StompHeaders = {}
   ): Observable<IMessage> {
+    const defaults: IWatchParams = {
+      subHeaders: {},
+      unsubHeaders: {},
+      noAutoResubscribe: false,
+    };
+
+    let params: IWatchParams;
+
+    if (typeof opts === 'string') {
+      params = Object.assign({}, defaults, {
+        destination: opts,
+        subHeaders: headers,
+      });
+    } else {
+      params = Object.assign({}, defaults, opts);
+    }
+
     /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
      *
      * We need to activate the underlying subscription immediately if Stomp is connected. If not it should
@@ -466,11 +489,11 @@ export class RxStomp {
      * The observable that we return to caller remains same across all reconnects, so no special handling needed at
      * the message subscriber.
      */
-    this._debug(`Request to subscribe ${destination}`);
+    this._debug(`Request to subscribe ${params.destination}`);
 
     // By default auto acknowledgement of messages
-    if (!headers.ack) {
-      headers.ack = 'auto';
+    if (!params.subHeaders.ack) {
+      params.subHeaders.ack = 'auto';
     }
 
     const coldObservable = Observable.create((messages: Observer<IMessage>) => {
@@ -482,27 +505,29 @@ export class RxStomp {
       let stompConnectedSubscription: Subscription;
 
       stompConnectedSubscription = this._connectedPre$.subscribe(() => {
-        this._debug(`Will subscribe to ${destination}`);
+        this._debug(`Will subscribe to ${params.destination}`);
         stompSubscription = this._stompClient.subscribe(
-          destination,
+          params.destination,
           (message: IMessage) => {
             messages.next(message);
           },
-          headers
+          params.subHeaders
         );
       });
 
       return () => {
         /* cleanup function, will be called when no subscribers are left */
-        this._debug(`Stop watching connection state (for ${destination})`);
+        this._debug(
+          `Stop watching connection state (for ${params.destination})`
+        );
         stompConnectedSubscription.unsubscribe();
 
         if (this.connected()) {
-          this._debug(`Will unsubscribe from ${destination} at Stomp`);
+          this._debug(`Will unsubscribe from ${params.destination} at Stomp`);
           stompSubscription.unsubscribe();
         } else {
           this._debug(
-            `Stomp not connected, no need to unsubscribe from ${destination} at Stomp`
+            `Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`
           );
         }
       };
