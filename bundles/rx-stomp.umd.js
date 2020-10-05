@@ -276,9 +276,11 @@ class RxStompRPC {
         return rxjs_1.Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
             const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
-            defaultMessagesSubscription = this._repliesObservable.pipe(operators_1.filter((message) => {
+            defaultMessagesSubscription = this._repliesObservable
+                .pipe(operators_1.filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
-            })).subscribe((message) => {
+            }))
+                .subscribe((message) => {
                 rpcObserver.next(message);
             });
             // send an RPC request
@@ -286,6 +288,7 @@ class RxStompRPC {
             headers['correlation-id'] = correlationId;
             this.rxStomp.publish({ destination, body, binaryBody, headers });
             return () => {
+                // Cleanup
                 defaultMessagesSubscription.unsubscribe();
             };
         });
@@ -481,7 +484,7 @@ class RxStomp {
             },
             onWebSocketError: (evt) => {
                 this.webSocketErrors$.next(evt);
-            }
+            },
         });
         // Attempt connection
         this._stompClient.activate();
@@ -598,23 +601,22 @@ class RxStomp {
             this.publish(queuedMessage);
         }
     }
-    /**
-     * It will subscribe to server message queues
-     *
-     * This method can be safely called even if the STOMP broker is not connected.
-     * If the underlying STOMP connection drops and reconnects, it will resubscribe automatically.
-     *
-     * Note that messages might be missed during reconnect. This issue is not specific
-     * to this library but the way STOMP brokers are designed to work.
-     *
-     * This method in the underlying library is called `subscribe`.
-     * In earlier version it was called `subscribe` here as well.
-     * However `subscribe` is also used by RxJS and code read quite strange with two subscribe calls
-     * following each other and both meaning very different things.
-     *
-     * Maps to: [Client#subscribe]{@link Client#subscribe}
-     */
-    watch(destination, headers = {}) {
+    watch(opts, headers = {}) {
+        const defaults = {
+            subHeaders: {},
+            unsubHeaders: {},
+            subscribeOnlyOnce: false,
+        };
+        let params;
+        if (typeof opts === 'string') {
+            params = Object.assign({}, defaults, {
+                destination: opts,
+                subHeaders: headers,
+            });
+        }
+        else {
+            params = Object.assign({}, defaults, opts);
+        }
         /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
          *
          * We need to activate the underlying subscription immediately if Stomp is connected. If not it should
@@ -627,32 +629,37 @@ class RxStomp {
          * The observable that we return to caller remains same across all reconnects, so no special handling needed at
          * the message subscriber.
          */
-        this._debug(`Request to subscribe ${destination}`);
-        // By default auto acknowledgement of messages
-        if (!headers.ack) {
-            headers.ack = 'auto';
-        }
+        this._debug(`Request to subscribe ${params.destination}`);
         const coldObservable = rxjs_1.Observable.create((messages) => {
             /*
              * These variables will be used as part of the closure and work their magic during unsubscribe
              */
-            let stompSubscription;
-            let stompConnectedSubscription;
-            stompConnectedSubscription = this._connectedPre$.subscribe(() => {
-                this._debug(`Will subscribe to ${destination}`);
-                stompSubscription = this._stompClient.subscribe(destination, (message) => {
+            let stompSubscription; // Stomp
+            let stompConnectedSubscription; // RxJS
+            let connectedPre$ = this._connectedPre$;
+            if (params.subscribeOnlyOnce) {
+                connectedPre$ = connectedPre$.pipe(operators_1.take(1));
+            }
+            stompConnectedSubscription = connectedPre$.subscribe(() => {
+                this._debug(`Will subscribe to ${params.destination}`);
+                stompSubscription = this._stompClient.subscribe(params.destination, (message) => {
                     messages.next(message);
-                }, headers);
+                }, params.subHeaders);
             });
             return () => {
-                this._debug(`Stop watching connection state (for ${destination})`);
+                /* cleanup function, will be called when no subscribers are left */
+                this._debug(`Stop watching connection state (for ${params.destination})`);
                 stompConnectedSubscription.unsubscribe();
                 if (this.connected()) {
-                    this._debug(`Will unsubscribe from ${destination} at Stomp`);
-                    stompSubscription.unsubscribe();
+                    this._debug(`Will unsubscribe from ${params.destination} at Stomp`);
+                    let unsubHeaders = params.unsubHeaders;
+                    if (typeof unsubHeaders === 'function') {
+                        unsubHeaders = unsubHeaders();
+                    }
+                    stompSubscription.unsubscribe(unsubHeaders);
                 }
                 else {
-                    this._debug(`Stomp not connected, no need to unsubscribe from ${destination} at Stomp`);
+                    this._debug(`Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`);
                 }
             };
         });

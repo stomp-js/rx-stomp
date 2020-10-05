@@ -1,8 +1,9 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Client, debugFnType, IFrame, IMessage, publishParams, StompHeaders } from '@stomp/stompjs';
 import { RxStompConfig } from './rx-stomp-config';
-import { IRxStompPublishParams } from './rx-stomp-publish-params';
+import { IRxStompPublishParams } from './i-rx-stomp-publish-params';
 import { RxStompState } from './rx-stomp-state';
+import { IWatchParams } from './i-watch-params';
 /**
  * This is the main Stomp Client.
  * Typically you will create an instance of this to connect to the STOMP broker.
@@ -244,17 +245,27 @@ export declare class RxStomp {
      * It will subscribe to server message queues
      *
      * This method can be safely called even if the STOMP broker is not connected.
-     * If the underlying STOMP connection drops and reconnects, it will resubscribe automatically.
+     * If the underlying STOMP connection drops and reconnects, by default, it will resubscribe automatically.
+     * See [IWatchParams#subscribeOnlyOnce]{@link IWatchParams#subscribeOnlyOnce} also.
      *
      * Note that messages might be missed during reconnect. This issue is not specific
      * to this library but the way STOMP brokers are designed to work.
      *
      * This method in the underlying library is called `subscribe`.
      * In earlier version it was called `subscribe` here as well.
-     * However `subscribe` is also used by RxJS and code read quite strange with two subscribe calls
+     * However `subscribe` is also used by RxJS and code reads strange with two subscribe calls
      * following each other and both meaning very different things.
      *
+     * This method has two alternate syntax, use [IWatchParams]{@link IWatchParams} if you need to pass additional options.
+     *
      * Maps to: [Client#subscribe]{@link Client#subscribe}
+     */
+    watch(opts: IWatchParams): Observable<IMessage>;
+    /**
+     * See the [other variant]{@link #watch} for details.
+     *
+     * @param destination
+     * @param headers subscription headers
      */
     watch(destination: string, headers?: StompHeaders): Observable<IMessage>;
     /**

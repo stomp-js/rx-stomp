@@ -55,9 +55,11 @@ class RxStompRPC {
         return rxjs_1.Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
             const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
-            defaultMessagesSubscription = this._repliesObservable.pipe(operators_1.filter((message) => {
+            defaultMessagesSubscription = this._repliesObservable
+                .pipe(operators_1.filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
-            })).subscribe((message) => {
+            }))
+                .subscribe((message) => {
                 rpcObserver.next(message);
             });
             // send an RPC request
@@ -65,6 +67,7 @@ class RxStompRPC {
             headers['correlation-id'] = correlationId;
             this.rxStomp.publish({ destination, body, binaryBody, headers });
             return () => {
+                // Cleanup
                 defaultMessagesSubscription.unsubscribe();
             };
         });
