@@ -12,6 +12,7 @@ import { generateBinaryData } from '../helpers/content-helpers';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
+  forceDisconnectAndEnsure,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
@@ -123,20 +124,8 @@ describe('Subscribe & Publish', () => {
         });
 
       // Actively disconnect simulating error after STOMP connects, then publish the message
-      rxStomp.connected$.pipe(take(1)).subscribe(() => {
-        // publish when disconnected
-        rxStomp.connectionState$
-          .pipe(
-            filter((state: RxStompState) => {
-              return state === RxStompState.CLOSED;
-            }),
-            take(1)
-          )
-          .subscribe(() => {
-            rxStomp.publish({ destination: queueName, body: msg });
-          });
-
-        rxStomp.stompClient.forceDisconnect();
+      forceDisconnectAndEnsure(rxStomp, () => {
+        rxStomp.publish({ destination: queueName, body: msg });
       });
     });
 
@@ -165,19 +154,8 @@ describe('Subscribe & Publish', () => {
 
       // Wait for the first connect, set publish after disconnect
       // then force a disconnect
-      rxStomp.connected$.pipe(take(1)).subscribe(() => {
-        rxStomp.connectionState$
-          .pipe(
-            filter(state => {
-              return state === RxStompState.CLOSED;
-            }),
-            take(1)
-          )
-          .subscribe(() => {
-            rxStomp.publish({ destination: endPoint, body: msg });
-          });
-
-        rxStomp.stompClient.forceDisconnect();
+      forceDisconnectAndEnsure(rxStomp, () => {
+        rxStomp.publish({ destination: endPoint, body: msg });
       });
     });
 
@@ -200,26 +178,15 @@ describe('Subscribe & Publish', () => {
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 03' + Math.random();
         // Actively disconnect simulating error after STOMP connects, then publish the message
-        rxStomp.connected$.pipe(take(1)).subscribe(() => {
-          // publish when disconnected
-          rxStomp.connectionState$
-            .pipe(
-              filter((state: RxStompState) => {
-                return state === RxStompState.CLOSED;
-              }),
-              take(1)
-            )
-            .subscribe(() => {
-              expect(() =>
-                rxStomp.publish({
-                  destination: queueName,
-                  body: msg,
-                  retryIfDisconnected: false,
-                })
-              ).toThrow();
-              done();
-            });
-          rxStomp.stompClient.forceDisconnect();
+        forceDisconnectAndEnsure(rxStomp, () => {
+          expect(() =>
+            rxStomp.publish({
+              destination: queueName,
+              body: msg,
+              retryIfDisconnected: false,
+            })
+          ).toThrow();
+          done();
         });
       });
     });
@@ -280,6 +247,43 @@ describe('Subscribe & Publish', () => {
       sub.unsubscribe();
       expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
       expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+    });
+  });
+
+  describe('Reconnection', () => {
+    describe('should resubscribe', () => {
+      let onMessage: (message: Message) => void;
+      const endPoint = '/topic/ng-demo-sub02';
+      const msg = 'My very special message 05' + Math.random();
+
+      // Start the watch
+      beforeEach(() => {
+        rxStomp.watch(endPoint).subscribe(message => onMessage(message));
+      });
+
+      // Force disconnect
+      beforeEach(done => {
+        forceDisconnectAndEnsure(rxStomp, done);
+      });
+
+      // Wait till RxStomp is actually connected
+      beforeEach(done => {
+        ensureRxStompConnected(rxStomp, done);
+      });
+
+      // The client should reconnect and destination should be subscribed again
+      it('should resubscribe', done => {
+        console.log(
+          `Current state: ${RxStompState[rxStomp.connectionState$.getValue()]}`
+        );
+
+        onMessage = (message: Message) => {
+          expect(message.body).toBe(msg);
+          done();
+        };
+
+        rxStomp.publish({ destination: endPoint, body: msg });
+      });
     });
   });
 });
