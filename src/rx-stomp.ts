@@ -6,7 +6,7 @@ import {
   Subscription,
 } from 'rxjs';
 
-import { filter, share } from 'rxjs/operators';
+import { filter, share, take } from 'rxjs/operators';
 
 import {
   Client,
@@ -504,11 +504,17 @@ export class RxStomp {
       /*
        * These variables will be used as part of the closure and work their magic during unsubscribe
        */
-      let stompSubscription: StompSubscription;
+      let stompSubscription: StompSubscription; // Stomp
 
-      let stompConnectedSubscription: Subscription;
+      let stompConnectedSubscription: Subscription; // RxJS
 
-      stompConnectedSubscription = this._connectedPre$.subscribe(() => {
+      let connectedPre$ = this._connectedPre$;
+
+      if (params.subscribeOnlyOnce) {
+        connectedPre$ = connectedPre$.pipe(take(1));
+      }
+
+      stompConnectedSubscription = connectedPre$.subscribe(() => {
         this._debug(`Will subscribe to ${params.destination}`);
         stompSubscription = this._stompClient.subscribe(
           params.destination,

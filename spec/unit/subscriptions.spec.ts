@@ -273,16 +273,46 @@ describe('Subscribe & Publish', () => {
 
       // The client should reconnect and destination should be subscribed again
       it('should resubscribe', done => {
-        console.log(
-          `Current state: ${RxStompState[rxStomp.connectionState$.getValue()]}`
-        );
-
         onMessage = (message: Message) => {
           expect(message.body).toBe(msg);
           done();
         };
 
         rxStomp.publish({ destination: endPoint, body: msg });
+      });
+    });
+
+    describe('should not resubscribe with subscribeOnlyOnce', () => {
+      let onMessage: (message: Message) => void;
+      const endPoint = '/topic/ng-demo-sub02';
+      const msg = 'My very special message 05' + Math.random();
+
+      // Start the watch
+      beforeEach(() => {
+        rxStomp
+          .watch({ destination: endPoint, subscribeOnlyOnce: true })
+          .subscribe(message => onMessage(message));
+      });
+
+      // Force disconnect
+      beforeEach(done => {
+        forceDisconnectAndEnsure(rxStomp, done);
+      });
+
+      // Wait till RxStomp is actually connected
+      beforeEach(done => {
+        ensureRxStompConnected(rxStomp, done);
+      });
+
+      // The client should reconnect and destination should be subscribed again
+      it('should resubscribe', done => {
+        onMessage = jasmine.createSpy('onMessage');
+        rxStomp.publish({ destination: endPoint, body: msg });
+
+        setTimeout(() => {
+          expect(onMessage).not.toHaveBeenCalled();
+          done();
+        }, 1000);
       });
     });
   });
