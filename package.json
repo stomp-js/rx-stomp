@@ -58,7 +58,7 @@
     "websocket": "^1.0.26"
   },
   "module": "./esm6/index.js",
-  "main": "bundles/rx-stomp.umd.js",
+  "main": "./esm6/index.js",
   "typings": "index.d.ts",
   "sideEffects": false
 }
