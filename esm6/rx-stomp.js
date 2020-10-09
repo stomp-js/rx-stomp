@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const rxjs_1 = require("rxjs");
-const operators_1 = require("rxjs/operators");
-const stompjs_1 = require("@stomp/stompjs");
-const rx_stomp_state_1 = require("./rx-stomp-state");
+import { BehaviorSubject, Observable, Subject, } from 'rxjs';
+import { filter, share, take } from 'rxjs/operators';
+import { Client, } from '@stomp/stompjs';
+import { RxStompState } from './rx-stomp-state';
 /**
  * This is the main Stomp Client.
  * Typically you will create an instance of this to connect to the STOMP broker.
@@ -23,7 +21,7 @@ const rx_stomp_state_1 = require("./rx-stomp-state");
  *
  * Part of `@stomp/rx-stomp`
  */
-class RxStomp {
+export class RxStomp {
     /**
      * Constructor
      */
@@ -32,35 +30,35 @@ class RxStomp {
          * Internal array to hold locally queued messages when STOMP broker is not connected.
          */
         this._queuedMessages = [];
-        this._stompClient = new stompjs_1.Client();
+        this._stompClient = new Client();
         const noOp = () => { };
         // Before connect is no op by default
         this._beforeConnect = noOp;
         // debug is no-op by default
         this._debug = noOp;
         // Initial state is CLOSED
-        this._connectionStatePre$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this._connectedPre$ = this._connectionStatePre$.pipe(operators_1.filter((currentState) => {
-            return currentState === rx_stomp_state_1.RxStompState.OPEN;
+        this._connectionStatePre$ = new BehaviorSubject(RxStompState.CLOSED);
+        this._connectedPre$ = this._connectionStatePre$.pipe(filter((currentState) => {
+            return currentState === RxStompState.OPEN;
         }));
         // Initial state is CLOSED
-        this.connectionState$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this.connected$ = this.connectionState$.pipe(operators_1.filter((currentState) => {
-            return currentState === rx_stomp_state_1.RxStompState.OPEN;
+        this.connectionState$ = new BehaviorSubject(RxStompState.CLOSED);
+        this.connected$ = this.connectionState$.pipe(filter((currentState) => {
+            return currentState === RxStompState.OPEN;
         }));
         // Setup sending queuedMessages
         this.connected$.subscribe(() => {
             this._sendQueuedMessages();
         });
-        this._serverHeadersBehaviourSubject$ = new rxjs_1.BehaviorSubject(null);
-        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(operators_1.filter((headers) => {
+        this._serverHeadersBehaviourSubject$ = new BehaviorSubject(null);
+        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(filter((headers) => {
             return headers !== null;
         }));
-        this.stompErrors$ = new rxjs_1.Subject();
-        this.unhandledMessage$ = new rxjs_1.Subject();
-        this.unhandledReceipts$ = new rxjs_1.Subject();
-        this.unhandledFrame$ = new rxjs_1.Subject();
-        this.webSocketErrors$ = new rxjs_1.Subject();
+        this.stompErrors$ = new Subject();
+        this.unhandledMessage$ = new Subject();
+        this.unhandledReceipts$ = new Subject();
+        this.unhandledFrame$ = new Subject();
+        this.webSocketErrors$ = new Subject();
     }
     /**
      * Instance of actual
@@ -122,21 +120,21 @@ class RxStomp {
     activate() {
         this._stompClient.configure({
             beforeConnect: async () => {
-                this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
+                this._changeState(RxStompState.CONNECTING);
                 // Call handler
                 await this._beforeConnect(this);
             },
             onConnect: (frame) => {
                 this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
-                this._changeState(rx_stomp_state_1.RxStompState.OPEN);
+                this._changeState(RxStompState.OPEN);
             },
             onStompError: (frame) => {
                 // Trigger the frame subject
                 this.stompErrors$.next(frame);
             },
             onWebSocketClose: () => {
-                this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
+                this._changeState(RxStompState.CLOSED);
             },
             onUnhandledMessage: (message) => {
                 this.unhandledMessage$.next(message);
@@ -162,25 +160,18 @@ class RxStomp {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    deactivate() {
-        // Disconnect if connected. Callback will set CLOSED state
-        this._stompClient.deactivate();
-        const stompState = this.connectionState$.getValue();
-        if (stompState === rx_stomp_state_1.RxStompState.OPEN) {
-            // Notify observers that we are disconnecting!
-            this._changeState(rx_stomp_state_1.RxStompState.CLOSING);
-        }
-        // This is bit tricky situation, it would be better handled at stompjs level
-        if (stompState === rx_stomp_state_1.RxStompState.CONNECTING) {
-            // Notify observers that we are disconnecting!
-            this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
-        }
+    async deactivate() {
+        this._changeState(RxStompState.CLOSING);
+        // The promise will be resolved immediately if there are no active connection
+        // otherwise, after it has successfully disconnected.
+        await this._stompClient.deactivate();
+        this._changeState(RxStompState.CLOSED);
     }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
      */
     connected() {
-        return this.connectionState$.getValue() === rx_stomp_state_1.RxStompState.OPEN;
+        return this.connectionState$.getValue() === RxStompState.OPEN;
     }
     /**
      * If the client is active (connected or going to reconnect).
@@ -295,7 +286,7 @@ class RxStomp {
          * the message subscriber.
          */
         this._debug(`Request to subscribe ${params.destination}`);
-        const coldObservable = rxjs_1.Observable.create((messages) => {
+        const coldObservable = Observable.create((messages) => {
             /*
              * These variables will be used as part of the closure and work their magic during unsubscribe
              */
@@ -303,7 +294,7 @@ class RxStomp {
             let stompConnectedSubscription; // RxJS
             let connectedPre$ = this._connectedPre$;
             if (params.subscribeOnlyOnce) {
-                connectedPre$ = connectedPre$.pipe(operators_1.take(1));
+                connectedPre$ = connectedPre$.pipe(take(1));
             }
             stompConnectedSubscription = connectedPre$.subscribe(() => {
                 this._debug(`Will subscribe to ${params.destination}`);
@@ -333,7 +324,7 @@ class RxStomp {
          * to this observable twice, it will subscribe twice to Stomp broker. (This was happening in the current example).
          * A long but good explanatory article at https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339
          */
-        return coldObservable.pipe(operators_1.share());
+        return coldObservable.pipe(share());
     }
     /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
@@ -371,5 +362,4 @@ class RxStomp {
         this.connectionState$.next(state);
     }
 }
-exports.RxStomp = RxStomp;
 //# sourceMappingURL=rx-stomp.js.map

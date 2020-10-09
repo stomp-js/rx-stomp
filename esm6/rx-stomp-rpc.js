@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const rxjs_1 = require("rxjs");
-const operators_1 = require("rxjs/operators");
-const angular2_uuid_1 = require("angular2-uuid");
+import { Observable } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { UUID } from 'angular2-uuid';
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
@@ -10,7 +8,7 @@ const angular2_uuid_1 = require("angular2-uuid");
  *
  * Part of `@stomp/rx-stomp`
  */
-class RxStompRPC {
+export class RxStompRPC {
     /**
      * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
      */
@@ -38,7 +36,7 @@ class RxStompRPC {
      */
     rpc(params) {
         // We know there will be only one message in reply
-        return this.stream(params).pipe(operators_1.first());
+        return this.stream(params).pipe(first());
     }
     /**
      * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
@@ -52,11 +50,11 @@ class RxStompRPC {
         if (!this._repliesObservable) {
             this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
         }
-        return rxjs_1.Observable.create((rpcObserver) => {
+        return Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
-            const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
+            const correlationId = headers['correlation-id'] || UUID.UUID();
             defaultMessagesSubscription = this._repliesObservable
-                .pipe(operators_1.filter((message) => {
+                .pipe(filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
             }))
                 .subscribe((message) => {
@@ -73,5 +71,4 @@ class RxStompRPC {
         });
     }
 }
-exports.RxStompRPC = RxStompRPC;
 //# sourceMappingURL=rx-stomp-rpc.js.map

@@ -148,20 +148,31 @@ exports.UUID = UUID;
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStompConfig, RxStomp, RxStompState, RxStompRPCConfig, RxStompRPC */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _rx_stomp_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./rx-stomp-config */ "./src/rx-stomp-config.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RxStompConfig", function() { return _rx_stomp_config__WEBPACK_IMPORTED_MODULE_0__["RxStompConfig"]; });
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./rx-stomp-config */ "./src/rx-stomp-config.ts"));
-__export(__webpack_require__(/*! ./rx-stomp */ "./src/rx-stomp.ts"));
-__export(__webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts"));
-__export(__webpack_require__(/*! ./rx-stomp-rpc-config */ "./src/rx-stomp-rpc-config.ts"));
-__export(__webpack_require__(/*! ./rx-stomp-rpc */ "./src/rx-stomp-rpc.ts"));
+/* harmony import */ var _rx_stomp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./rx-stomp */ "./src/rx-stomp.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RxStomp", function() { return _rx_stomp__WEBPACK_IMPORTED_MODULE_1__["RxStomp"]; });
+
+/* harmony import */ var _rx_stomp_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RxStompState", function() { return _rx_stomp_state__WEBPACK_IMPORTED_MODULE_2__["RxStompState"]; });
+
+/* harmony import */ var _rx_stomp_rpc_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./rx-stomp-rpc-config */ "./src/rx-stomp-rpc-config.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RxStompRPCConfig", function() { return _rx_stomp_rpc_config__WEBPACK_IMPORTED_MODULE_3__["RxStompRPCConfig"]; });
+
+/* harmony import */ var _rx_stomp_rpc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./rx-stomp-rpc */ "./src/rx-stomp-rpc.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RxStompRPC", function() { return _rx_stomp_rpc__WEBPACK_IMPORTED_MODULE_4__["RxStompRPC"]; });
+
+
+
+
+
+
 
 
 /***/ }),
@@ -170,12 +181,12 @@ __export(__webpack_require__(/*! ./rx-stomp-rpc */ "./src/rx-stomp-rpc.ts"));
 /*!********************************!*\
   !*** ./src/rx-stomp-config.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStompConfig */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxStompConfig", function() { return RxStompConfig; });
 /**
  * Represents a configuration object for RxSTOMP.
  * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
@@ -186,7 +197,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 class RxStompConfig {
 }
-exports.RxStompConfig = RxStompConfig;
 
 
 /***/ }),
@@ -195,18 +205,17 @@ exports.RxStompConfig = RxStompConfig;
 /*!************************************!*\
   !*** ./src/rx-stomp-rpc-config.ts ***!
   \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStompRPCConfig */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxStompRPCConfig", function() { return RxStompRPCConfig; });
 /**
  * RPC Config. See the guide for example.
  */
 class RxStompRPCConfig {
 }
-exports.RxStompRPCConfig = RxStompRPCConfig;
 
 
 /***/ }),
@@ -215,15 +224,21 @@ exports.RxStompRPCConfig = RxStompRPCConfig;
 /*!*****************************!*\
   !*** ./src/rx-stomp-rpc.ts ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStompRPC */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxStompRPC", function() { return RxStompRPC; });
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "rxjs");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var angular2_uuid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! angular2-uuid */ "./node_modules/angular2-uuid/index.js");
+/* harmony import */ var angular2_uuid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(angular2_uuid__WEBPACK_IMPORTED_MODULE_2__);
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
-const operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
-const angular2_uuid_1 = __webpack_require__(/*! angular2-uuid */ "./node_modules/angular2-uuid/index.js");
+
+
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
@@ -259,7 +274,7 @@ class RxStompRPC {
      */
     rpc(params) {
         // We know there will be only one message in reply
-        return this.stream(params).pipe(operators_1.first());
+        return this.stream(params).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["first"])());
     }
     /**
      * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
@@ -273,11 +288,11 @@ class RxStompRPC {
         if (!this._repliesObservable) {
             this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
         }
-        return rxjs_1.Observable.create((rpcObserver) => {
+        return rxjs__WEBPACK_IMPORTED_MODULE_0__["Observable"].create((rpcObserver) => {
             let defaultMessagesSubscription;
-            const correlationId = headers['correlation-id'] || angular2_uuid_1.UUID.UUID();
+            const correlationId = headers['correlation-id'] || angular2_uuid__WEBPACK_IMPORTED_MODULE_2__["UUID"].UUID();
             defaultMessagesSubscription = this._repliesObservable
-                .pipe(operators_1.filter((message) => {
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])((message) => {
                 return message.headers['correlation-id'] === correlationId;
             }))
                 .subscribe((message) => {
@@ -294,7 +309,6 @@ class RxStompRPC {
         });
     }
 }
-exports.RxStompRPC = RxStompRPC;
 
 
 /***/ }),
@@ -303,12 +317,12 @@ exports.RxStompRPC = RxStompRPC;
 /*!*******************************!*\
   !*** ./src/rx-stomp-state.ts ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStompState */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxStompState", function() { return RxStompState; });
 /**
  * Possible states for the RxStomp
  *
@@ -320,7 +334,7 @@ var RxStompState;
     RxStompState[RxStompState["OPEN"] = 1] = "OPEN";
     RxStompState[RxStompState["CLOSING"] = 2] = "CLOSING";
     RxStompState[RxStompState["CLOSED"] = 3] = "CLOSED";
-})(RxStompState = exports.RxStompState || (exports.RxStompState = {}));
+})(RxStompState || (RxStompState = {}));
 
 
 /***/ }),
@@ -329,16 +343,23 @@ var RxStompState;
 /*!*************************!*\
   !*** ./src/rx-stomp.ts ***!
   \*************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: RxStomp */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxStomp", function() { return RxStomp; });
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "rxjs");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _stomp_stompjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
+/* harmony import */ var _stomp_stompjs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_stomp_stompjs__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
-const operators_1 = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
-const stompjs_1 = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
-const rx_stomp_state_1 = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
+
+
+
 /**
  * This is the main Stomp Client.
  * Typically you will create an instance of this to connect to the STOMP broker.
@@ -367,35 +388,35 @@ class RxStomp {
          * Internal array to hold locally queued messages when STOMP broker is not connected.
          */
         this._queuedMessages = [];
-        this._stompClient = new stompjs_1.Client();
+        this._stompClient = new _stomp_stompjs__WEBPACK_IMPORTED_MODULE_2__["Client"]();
         const noOp = () => { };
         // Before connect is no op by default
         this._beforeConnect = noOp;
         // debug is no-op by default
         this._debug = noOp;
         // Initial state is CLOSED
-        this._connectionStatePre$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this._connectedPre$ = this._connectionStatePre$.pipe(operators_1.filter((currentState) => {
-            return currentState === rx_stomp_state_1.RxStompState.OPEN;
+        this._connectionStatePre$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["BehaviorSubject"](_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
+        this._connectedPre$ = this._connectionStatePre$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])((currentState) => {
+            return currentState === _rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].OPEN;
         }));
         // Initial state is CLOSED
-        this.connectionState$ = new rxjs_1.BehaviorSubject(rx_stomp_state_1.RxStompState.CLOSED);
-        this.connected$ = this.connectionState$.pipe(operators_1.filter((currentState) => {
-            return currentState === rx_stomp_state_1.RxStompState.OPEN;
+        this.connectionState$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["BehaviorSubject"](_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
+        this.connected$ = this.connectionState$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])((currentState) => {
+            return currentState === _rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].OPEN;
         }));
         // Setup sending queuedMessages
         this.connected$.subscribe(() => {
             this._sendQueuedMessages();
         });
-        this._serverHeadersBehaviourSubject$ = new rxjs_1.BehaviorSubject(null);
-        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(operators_1.filter((headers) => {
+        this._serverHeadersBehaviourSubject$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["BehaviorSubject"](null);
+        this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])((headers) => {
             return headers !== null;
         }));
-        this.stompErrors$ = new rxjs_1.Subject();
-        this.unhandledMessage$ = new rxjs_1.Subject();
-        this.unhandledReceipts$ = new rxjs_1.Subject();
-        this.unhandledFrame$ = new rxjs_1.Subject();
-        this.webSocketErrors$ = new rxjs_1.Subject();
+        this.stompErrors$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
+        this.unhandledMessage$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
+        this.unhandledReceipts$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
+        this.unhandledFrame$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
+        this.webSocketErrors$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
     }
     /**
      * Instance of actual
@@ -457,21 +478,21 @@ class RxStomp {
     activate() {
         this._stompClient.configure({
             beforeConnect: async () => {
-                this._changeState(rx_stomp_state_1.RxStompState.CONNECTING);
+                this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CONNECTING);
                 // Call handler
                 await this._beforeConnect(this);
             },
             onConnect: (frame) => {
                 this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
-                this._changeState(rx_stomp_state_1.RxStompState.OPEN);
+                this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].OPEN);
             },
             onStompError: (frame) => {
                 // Trigger the frame subject
                 this.stompErrors$.next(frame);
             },
             onWebSocketClose: () => {
-                this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
+                this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
             },
             onUnhandledMessage: (message) => {
                 this.unhandledMessage$.next(message);
@@ -497,25 +518,18 @@ class RxStomp {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    deactivate() {
-        // Disconnect if connected. Callback will set CLOSED state
-        this._stompClient.deactivate();
-        const stompState = this.connectionState$.getValue();
-        if (stompState === rx_stomp_state_1.RxStompState.OPEN) {
-            // Notify observers that we are disconnecting!
-            this._changeState(rx_stomp_state_1.RxStompState.CLOSING);
-        }
-        // This is bit tricky situation, it would be better handled at stompjs level
-        if (stompState === rx_stomp_state_1.RxStompState.CONNECTING) {
-            // Notify observers that we are disconnecting!
-            this._changeState(rx_stomp_state_1.RxStompState.CLOSED);
-        }
+    async deactivate() {
+        this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSING);
+        // The promise will be resolved immediately if there are no active connection
+        // otherwise, after it has successfully disconnected.
+        await this._stompClient.deactivate();
+        this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
     }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
      */
     connected() {
-        return this.connectionState$.getValue() === rx_stomp_state_1.RxStompState.OPEN;
+        return this.connectionState$.getValue() === _rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].OPEN;
     }
     /**
      * If the client is active (connected or going to reconnect).
@@ -630,7 +644,7 @@ class RxStomp {
          * the message subscriber.
          */
         this._debug(`Request to subscribe ${params.destination}`);
-        const coldObservable = rxjs_1.Observable.create((messages) => {
+        const coldObservable = rxjs__WEBPACK_IMPORTED_MODULE_0__["Observable"].create((messages) => {
             /*
              * These variables will be used as part of the closure and work their magic during unsubscribe
              */
@@ -638,7 +652,7 @@ class RxStomp {
             let stompConnectedSubscription; // RxJS
             let connectedPre$ = this._connectedPre$;
             if (params.subscribeOnlyOnce) {
-                connectedPre$ = connectedPre$.pipe(operators_1.take(1));
+                connectedPre$ = connectedPre$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["take"])(1));
             }
             stompConnectedSubscription = connectedPre$.subscribe(() => {
                 this._debug(`Will subscribe to ${params.destination}`);
@@ -668,7 +682,7 @@ class RxStomp {
          * to this observable twice, it will subscribe twice to Stomp broker. (This was happening in the current example).
          * A long but good explanatory article at https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339
          */
-        return coldObservable.pipe(operators_1.share());
+        return coldObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["share"])());
     }
     /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
@@ -706,7 +720,6 @@ class RxStomp {
         this.connectionState$.next(state);
     }
 }
-exports.RxStomp = RxStomp;
 
 
 /***/ }),

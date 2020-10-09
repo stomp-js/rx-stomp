@@ -180,7 +180,7 @@ export declare class RxStomp {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    deactivate(): void;
+    deactivate(): Promise<void>;
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
      */
