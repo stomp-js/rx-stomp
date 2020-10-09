@@ -62,4 +62,4 @@ If you want to understand the code, develop, or contribute. Please visit
 
 ## License
 
-[License](LICENSE.md) - MIT License
+[License](LICENSE) - Apache-2.0
