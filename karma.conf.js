@@ -37,6 +37,9 @@ module.exports = function (config) {
         mode: 'merge',
         values: ['spec/**/*.ts'],
       },
+      compilerOptions: {
+        module: "commonjs",
+      },
       tsconfig: './tsconfig.json',
     },
 
