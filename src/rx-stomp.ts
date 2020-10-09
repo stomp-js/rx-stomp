@@ -322,20 +322,14 @@ export class RxStomp {
    *
    * Maps to: [Client#deactivate]{@link Client#deactivate}
    */
-  public deactivate(): void {
-    // Disconnect if connected. Callback will set CLOSED state
-    this._stompClient.deactivate();
+  public async deactivate(): Promise<void> {
+    this._changeState(RxStompState.CLOSING);
 
-    const stompState = this.connectionState$.getValue();
-    if (stompState === RxStompState.OPEN) {
-      // Notify observers that we are disconnecting!
-      this._changeState(RxStompState.CLOSING);
-    }
-    // This is bit tricky situation, it would be better handled at stompjs level
-    if (stompState === RxStompState.CONNECTING) {
-      // Notify observers that we are disconnecting!
-      this._changeState(RxStompState.CLOSED);
-    }
+    // The promise will be resolved immediately if there are no active connection
+    // otherwise, after it has successfully disconnected.
+    await this._stompClient.deactivate();
+
+    this._changeState(RxStompState.CLOSED);
   }
 
   /**

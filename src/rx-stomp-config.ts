@@ -73,7 +73,15 @@ export class RxStompConfig {
   public webSocketFactory?: () => any;
 
   /**
-   *  automatically reconnect with delay in milliseconds, set to 0 to disable.
+   * Will retry if Stomp connection is not established in specified milliseconds.
+   * Default 10,000ms, set to 0 to wait for ever.
+   *
+   * Maps to: [Client#connectionTimeout]{@link Client#connectionTimeout}.
+   */
+  public connectionTimeout?: number;
+
+  /**
+   * Automatically reconnect with delay in milliseconds, set to 0 to disable.
    *
    * Maps to: [Client#reconnectDelay]{@Client#reconnectDelay}
    */
