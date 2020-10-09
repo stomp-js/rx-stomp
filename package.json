@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/stomp-js/rx-stomp#readme",
   "dependencies": {
-    "@stomp/stompjs": "^6.0.0-beta1",
+    "@stomp/stompjs": "^6.0.0-beta2",
     "angular2-uuid": "^1.1.1"
   },
   "devDependencies": {
