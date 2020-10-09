@@ -2,6 +2,11 @@
 
 ## 1.0.0
 
+### beta-4
+- Update to `@stomp/stompjs@6.x`.
+- Add `connectionTimeout` config opti…on.
+- Rely on `Client#deactivate` to be async to simplify `RxStomp#deactivate`
+
 ### beta-3
 - Allow setting unsubscribe headers,
   see [#24](https://github.com/stomp-js/rx-stomp/issues/24)
