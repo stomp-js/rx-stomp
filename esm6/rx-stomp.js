@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { BehaviorSubject, Observable, Subject, } from 'rxjs';
 import { filter, share, take } from 'rxjs/operators';
 import { Client, } from '@stomp/stompjs';
@@ -119,11 +128,11 @@ export class RxStomp {
      */
     activate() {
         this._stompClient.configure({
-            beforeConnect: async () => {
+            beforeConnect: () => __awaiter(this, void 0, void 0, function* () {
                 this._changeState(RxStompState.CONNECTING);
                 // Call handler
-                await this._beforeConnect(this);
-            },
+                yield this._beforeConnect(this);
+            }),
             onConnect: (frame) => {
                 this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
@@ -160,12 +169,14 @@ export class RxStomp {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    async deactivate() {
-        this._changeState(RxStompState.CLOSING);
-        // The promise will be resolved immediately if there are no active connection
-        // otherwise, after it has successfully disconnected.
-        await this._stompClient.deactivate();
-        this._changeState(RxStompState.CLOSED);
+    deactivate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._changeState(RxStompState.CLOSING);
+            // The promise will be resolved immediately if there are no active connection
+            // otherwise, after it has successfully disconnected.
+            yield this._stompClient.deactivate();
+            this._changeState(RxStompState.CLOSED);
+        });
     }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.

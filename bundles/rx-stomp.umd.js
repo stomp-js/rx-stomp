@@ -356,6 +356,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stomp_stompjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @stomp/stompjs */ "@stomp/stompjs");
 /* harmony import */ var _stomp_stompjs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_stomp_stompjs__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 
 
@@ -477,11 +486,11 @@ class RxStomp {
      */
     activate() {
         this._stompClient.configure({
-            beforeConnect: async () => {
+            beforeConnect: () => __awaiter(this, void 0, void 0, function* () {
                 this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CONNECTING);
                 // Call handler
-                await this._beforeConnect(this);
-            },
+                yield this._beforeConnect(this);
+            }),
             onConnect: (frame) => {
                 this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
@@ -518,12 +527,14 @@ class RxStomp {
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    async deactivate() {
-        this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSING);
-        // The promise will be resolved immediately if there are no active connection
-        // otherwise, after it has successfully disconnected.
-        await this._stompClient.deactivate();
-        this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
+    deactivate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSING);
+            // The promise will be resolved immediately if there are no active connection
+            // otherwise, after it has successfully disconnected.
+            yield this._stompClient.deactivate();
+            this._changeState(_rx_stomp_state__WEBPACK_IMPORTED_MODULE_3__["RxStompState"].CLOSED);
+        });
     }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
