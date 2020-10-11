@@ -2,12 +2,19 @@
 
 ## 1.0.0
 
+### beta-5
+
+- Switch back to `es2015` output target.
+  Resolves [#259](https://github.com/stomp-js/stompjs/issues/259).
+
 ### beta-4
+
 - Update to `@stomp/stompjs@6.x`.
 - Add `connectionTimeout` config opti…on.
 - Rely on `Client#deactivate` to be async to simplify `RxStomp#deactivate`
 
 ### beta-3
+
 - Allow setting unsubscribe headers,
   see [#24](https://github.com/stomp-js/rx-stomp/issues/24)
   and [#254](https://github.com/stomp-js/rx-stomp/pull/254).
@@ -16,6 +23,7 @@
   and [#254](https://github.com/stomp-js/rx-stomp/pull/254).
 
 ### beta-2
+
 - Generate only ES2017 and UMD packages.
 - Concept of `discardWebsocketOnCommFailure`.
 - Update documentation links as per new URL structure without dates.
