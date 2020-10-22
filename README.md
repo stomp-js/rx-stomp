@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp)
 
-This library provides a RxJS oriented STOMP over WebSocket client for Web browser or node.js
+This library provides an RxJS oriented STOMP over WebSocket client for Web browser and node.js
 applications.
 
 # Introduction
@@ -19,18 +19,24 @@ The npm package includes TypeScript definitions, so there is no need no install 
 
 ## Installation
 
-The library is distributed as UMD and can be used in various methods:
+The library is distributed as UMD and ES6 modules.
+This can be installed as an npm module or directly from a CDN:
 
 1.  NPM - `npm install @stomp/rx-stomp`
 2.  Yarn - `yarn add @stomp/rx-stomp`
-3.  Script - available on various CDNs, import both rx-stomp and stomp
+3.  Script - available on various CDNs, import both rx-stomp and stompjs
 
 Additionally, rxjs^6.0 needs to be installed.
 
 ## Usage
 
-This module is distributed as UMD, this allows usage easy from NodeJs `require`,
-ES6/typescript `import` or directly including as script in HTML.
+See [https://stomp-js.github.io/](https://stomp-js.github.io/) for instructions and tutorials.
+
+This module is distributed as UMD and ES6 modules:
+
+- NodeJs `require`,
+- ES6/typescript `import`
+- including a script tage in HTML.
 
 See samples at: [https://github.com/stomp-js/samples/](https://github.com/stomp-js/samples/).
 
@@ -38,9 +44,9 @@ API documentation at:
 [https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html](https://stomp-js.github.io/api-docs/latest/classes/RxStomp.html).
 
 Before installing please check:
-[https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/2018/06/28/pollyfils-for-stompjs-v5.html](https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/2018/06/28/pollyfils-for-stompjs-v5.html).
+[https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/pollyfils-for-stompjs-v5.html](https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/pollyfils-for-stompjs-v5.html).
 
-## Change log
+## Change-log
 
 Please visit [Change Log](Change-log.md).
 
