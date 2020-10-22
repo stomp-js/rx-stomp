@@ -5,6 +5,9 @@ import { StompHeaders } from '@stomp/stompjs';
  * Part of `@stomp/rx-stomp`
  */
 export interface IWatchParams {
+    /**
+     * The subscription target. It is likely to be broker dependent.
+     */
     readonly destination?: string;
     /**
      * Subscription headers, defaults to `{}`
