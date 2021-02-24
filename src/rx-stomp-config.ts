@@ -74,7 +74,7 @@ export class RxStompConfig {
 
   /**
    * Will retry if Stomp connection is not established in specified milliseconds.
-   * Default 10,000ms, set to 0 to wait for ever.
+   * Default 0, which implies wait for ever.
    *
    * Maps to: [Client#connectionTimeout]{@link Client#connectionTimeout}.
    */

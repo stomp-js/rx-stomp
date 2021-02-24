@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.2 (2020-02-24)
+
+- Update dependency for "@stomp/stompjs" to ">=6.1.0".
+
 ## 1.0.1 (2020-10-22)
 
 - Update dependency for "@stomp/stompjs" to "^6.0.0".
