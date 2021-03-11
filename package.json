@@ -52,7 +52,7 @@
     "tslint": "^6.0.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.2.1",
-    "webpack": "^4.12.1",
+    "webpack": "^5.24.4",
     "webpack-cli": "^4.5.0",
     "webpack-rxjs-externals": "^2.0.0",
     "websocket": "^1.0.26"
