@@ -53,7 +53,7 @@ const config = {
         test: /\.tsx?$/,
         loader: 'awesome-typescript-loader',
         exclude: /node_modules/,
-        query: {
+        options: {
           declaration: false,
         },
       },

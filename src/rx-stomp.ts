@@ -506,16 +506,20 @@ export class RxStomp {
 
       if (params.subscribeOnlyOnce) {
         connectedPre$ = connectedPre$.pipe(take(1));
-      }
+      }    
 
       stompConnectedSubscription = connectedPre$.subscribe(() => {
         this._debug(`Will subscribe to ${params.destination}`);
+        let subHeaders = params.subHeaders;
+        if (typeof subHeaders === 'function') {
+          subHeaders = subHeaders();
+        }          
         stompSubscription = this._stompClient.subscribe(
           params.destination,
           (message: IMessage) => {
             messages.next(message);
           },
-          params.subHeaders
+          subHeaders
         );
       });
 

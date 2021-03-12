@@ -13,8 +13,22 @@ export interface IWatchParams {
 
   /**
    * Subscription headers, defaults to `{}`
+   * 
+   * If header information can change over time and you are allowing automatic resubscriptions,
+   * consider using a callback as the value rather than a string literal.
+   *
+   * ```typescript
+   *              const subHeadersCallback = () => {
+   *                  return {bye: 'world'};
+   *              };
+   *              const sub = rxStomp.watch({ destination: queueName, subHeaders: subHeadersCallback})
+   *                                 .subscribe((message) => {
+   *                                    // handle message
+   *                                 });
+   *              // The subHeadersCallback will be invoked before every (re)subscription.
+   * ```
    */
-  readonly subHeaders?: StompHeaders;
+  readonly subHeaders?: StompHeaders | (() => StompHeaders);
 
   /**
    * Headers to be passed while unsubscribing, defaults to `{}`.
