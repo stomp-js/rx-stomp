@@ -221,6 +221,14 @@ describe('Subscribe & Publish', () => {
       expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
     });
 
+    it('should send subscription headers returned by a function', () => {
+      const sub = rxStomp
+        .watch({ destination: queueName, subHeaders: () => subHeaders })
+        .subscribe(() => {});
+
+      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
+    });    
+
     it('should use passed unsubscription headers', () => {
       const sub = rxStomp
         .watch({ destination: queueName, unsubHeaders })
