@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.0 (2020-03-14)
+
+- Allow subHeaders to be a callback
+  [#299](https://github.com/stomp-js/rx-stomp/pull/299),
+  fixes [#298](https://github.com/stomp-js/rx-stomp/issues/298).
+
 ## 1.0.2 (2020-02-24)
 
 - Update dependency for "@stomp/stompjs" to ">=6.1.0".
