@@ -13,7 +13,7 @@ export interface IWatchParams {
 
   /**
    * Subscription headers, defaults to `{}`
-   * 
+   *
    * If header information can change over time and you are allowing automatic resubscriptions,
    * consider using a callback as the value rather than a string literal.
    *
