@@ -160,11 +160,13 @@ class RxStompRPC {
         this._setupReplyQueue = () => {
             return this.rxStomp.unhandledMessage$;
         };
+        this._customReplyQueue = false;
         if (stompRPCConfig) {
             if (stompRPCConfig.replyQueueName) {
                 this._replyQueueName = stompRPCConfig.replyQueueName;
             }
             if (stompRPCConfig.setupReplyQueue) {
+                this._customReplyQueue = true;
                 this._setupReplyQueue = stompRPCConfig.setupReplyQueue;
             }
         }
@@ -189,7 +191,12 @@ class RxStompRPC {
         const headers = Object.assign({}, params.headers || {});
         const { destination, body, binaryBody } = params;
         if (!this._repliesObservable) {
-            this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+            const repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+            // In case of custom queue, ensure it remains subscribed
+            if (this._customReplyQueue) {
+                this._dummySubscription = repliesObservable.subscribe(() => { });
+            }
+            this._repliesObservable = repliesObservable;
         }
         return rxjs__WEBPACK_IMPORTED_MODULE_0__.Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
@@ -685,8 +692,9 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs__;
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {

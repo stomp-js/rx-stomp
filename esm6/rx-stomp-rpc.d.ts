@@ -15,6 +15,8 @@ export declare class RxStompRPC {
     private _replyQueueName;
     private _setupReplyQueue;
     private _repliesObservable;
+    private _customReplyQueue;
+    private _dummySubscription;
     /**
      * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
      */

@@ -19,11 +19,13 @@ export class RxStompRPC {
         this._setupReplyQueue = () => {
             return this.rxStomp.unhandledMessage$;
         };
+        this._customReplyQueue = false;
         if (stompRPCConfig) {
             if (stompRPCConfig.replyQueueName) {
                 this._replyQueueName = stompRPCConfig.replyQueueName;
             }
             if (stompRPCConfig.setupReplyQueue) {
+                this._customReplyQueue = true;
                 this._setupReplyQueue = stompRPCConfig.setupReplyQueue;
             }
         }
@@ -48,7 +50,12 @@ export class RxStompRPC {
         const headers = Object.assign({}, params.headers || {});
         const { destination, body, binaryBody } = params;
         if (!this._repliesObservable) {
-            this._repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+            const repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
+            // In case of custom queue, ensure it remains subscribed
+            if (this._customReplyQueue) {
+                this._dummySubscription = repliesObservable.subscribe(() => { });
+            }
+            this._repliesObservable = repliesObservable;
         }
         return Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
