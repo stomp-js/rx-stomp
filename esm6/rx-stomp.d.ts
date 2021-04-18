@@ -121,7 +121,7 @@ export declare class RxStomp {
      *
      * **Be careful in calling methods on it directly - you may get unintended consequences.**
      */
-    get stompClient(): Client;
+    readonly stompClient: Client;
     protected _stompClient: Client;
     /**
      * Before connect
@@ -190,7 +190,7 @@ export declare class RxStomp {
      *
      *  Maps to: [Client#active]{@link Client#active}
      */
-    get active(): boolean;
+    readonly active: boolean;
     /**
      * Send a message to a named destination. Refer to your STOMP broker documentation for types
      * and naming of destinations.

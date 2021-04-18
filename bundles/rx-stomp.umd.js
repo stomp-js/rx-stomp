@@ -9,6 +9,7 @@
 		root["RxStomp"] = factory(root["rxjs"], root["rxjs"]["operators"], root["StompJs"]);
 })(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_rxjs__, __WEBPACK_EXTERNAL_MODULE_rxjs_operators__, __WEBPACK_EXTERNAL_MODULE__stomp_stompjs__) {
 return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/angular2-uuid/index.js":
@@ -17,7 +18,6 @@ return /******/ (() => { // webpackBootstrap
   \*********************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
 var UUID = (function () {
     function UUID() {
@@ -58,33 +58,12 @@ exports.UUID = UUID;
 
 /***/ }),
 
-/***/ "./src/i-rx-stomp-publish-params.ts":
-/*!******************************************!*\
-  !*** ./src/i-rx-stomp-publish-params.ts ***!
-  \******************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
-/***/ "./src/i-watch-params.ts":
-/*!*******************************!*\
-  !*** ./src/i-watch-params.ts ***!
-  \*******************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
 /***/ "./src/rx-stomp-config.ts":
 /*!********************************!*\
   !*** ./src/rx-stomp-config.ts ***!
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RxStompConfig": () => (/* binding */ RxStompConfig)
@@ -109,7 +88,6 @@ class RxStompConfig {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RxStompRPCConfig": () => (/* binding */ RxStompRPCConfig)
@@ -129,7 +107,6 @@ class RxStompRPCConfig {
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RxStompRPC": () => (/* binding */ RxStompRPC)
@@ -229,7 +206,6 @@ class RxStompRPC {
   \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RxStompState": () => (/* binding */ RxStompState)
@@ -256,7 +232,6 @@ var RxStompState;
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RxStomp": () => (/* binding */ RxStomp)
@@ -657,7 +632,6 @@ class RxStomp {
   \*******************************************************************************************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE__stomp_stompjs__;
 
 /***/ }),
@@ -668,7 +642,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__stomp_stompjs__;
   \******************************************************************************************************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs_operators__;
 
 /***/ }),
@@ -679,7 +652,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs_operators__;
   \************************************************************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs__;
 
 /***/ })
@@ -753,9 +725,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_rxjs__;
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
@@ -772,18 +743,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _rx_stomp_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./rx-stomp-state */ "./src/rx-stomp-state.ts");
 /* harmony import */ var _rx_stomp_rpc_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./rx-stomp-rpc-config */ "./src/rx-stomp-rpc-config.ts");
 /* harmony import */ var _rx_stomp_rpc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./rx-stomp-rpc */ "./src/rx-stomp-rpc.ts");
-/* harmony import */ var _i_rx_stomp_publish_params__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./i-rx-stomp-publish-params */ "./src/i-rx-stomp-publish-params.ts");
-/* harmony import */ var _i_rx_stomp_publish_params__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_i_rx_stomp_publish_params__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _i_rx_stomp_publish_params__WEBPACK_IMPORTED_MODULE_5__) if(["default","RxStompConfig","RxStomp","RxStompState","RxStompRPCConfig","RxStompRPC"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _i_rx_stomp_publish_params__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _i_watch_params__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./i-watch-params */ "./src/i-watch-params.ts");
-/* harmony import */ var _i_watch_params__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_i_watch_params__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _i_watch_params__WEBPACK_IMPORTED_MODULE_6__) if(["default","RxStompConfig","RxStomp","RxStompState","RxStompRPCConfig","RxStompRPC"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _i_watch_params__WEBPACK_IMPORTED_MODULE_6__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-
-
 
 
 
