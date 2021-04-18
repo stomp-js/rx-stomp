@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.2 (2020-04-18)
+
+- Restrict typescript to 3.6.x.
+
 ## 1.1.1 (2020-04-18)
 
 - Fix issues with RPC with custom reply queue
