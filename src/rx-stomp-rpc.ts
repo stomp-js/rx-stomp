@@ -24,6 +24,11 @@ export class RxStompRPC {
 
   private _repliesObservable: Observable<IMessage>;
 
+  private _customReplyQueue: boolean = false;
+
+  // This is used to ensure that underlying subscription remains subscribed
+  private _dummySubscription: Subscription;
+
   /**
    * Create an instance, see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html) for details.
    */
@@ -36,6 +41,7 @@ export class RxStompRPC {
         this._replyQueueName = stompRPCConfig.replyQueueName;
       }
       if (stompRPCConfig.setupReplyQueue) {
+        this._customReplyQueue = true;
         this._setupReplyQueue = stompRPCConfig.setupReplyQueue;
       }
     }
@@ -66,10 +72,17 @@ export class RxStompRPC {
     const { destination, body, binaryBody } = params;
 
     if (!this._repliesObservable) {
-      this._repliesObservable = this._setupReplyQueue(
+      const repliesObservable = this._setupReplyQueue(
         this._replyQueueName,
         this.rxStomp
       );
+
+      // In case of custom queue, ensure it remains subscribed
+      if (this._customReplyQueue) {
+        this._dummySubscription = repliesObservable.subscribe(() => {});
+      }
+
+      this._repliesObservable = repliesObservable;
     }
 
     return Observable.create((rpcObserver: Observer<IMessage>) => {

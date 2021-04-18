@@ -40,3 +40,6 @@ export function forceDisconnectAndEnsure(rxStomp: RxStomp, done: () => void) {
       });
   });
 }
+
+export const wait = (timeToDelay: number) =>
+  new Promise(resolve => setTimeout(resolve, timeToDelay));
