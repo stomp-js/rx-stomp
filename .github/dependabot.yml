@@ -1,0 +1,26 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: develop
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.32.0
+    - 5.34.0
+  - dependency-name: jasmine
+    versions:
+    - 3.6.4
+  - dependency-name: typescript
+    versions:
+    - 3.9.7
+    - 3.9.8
+  - dependency-name: webpack-cli
+    versions:
+    - 4.4.0
+  - dependency-name: karma-summary-reporter
+    versions:
+    - 2.0.0
