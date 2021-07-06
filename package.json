@@ -47,7 +47,7 @@
     "karma-summary-reporter": "^2.0.2",
     "karma-typescript": "^5.0.0",
     "prettier": "^2.1.2",
-    "rxjs": "^6.3.3",
+    "rxjs": "^7.2.0",
     "text-encoding": "^0.7.0",
     "tslint": "^6.0.0",
     "tslint-config-prettier": "^1.18.0",
