@@ -3,7 +3,7 @@ import { filter, first } from 'rxjs/operators';
 
 import { UUID } from 'angular2-uuid';
 
-import { IMessage, publishParams, StompHeaders } from '@stomp/stompjs';
+import { IMessage, IPublishParams, StompHeaders } from '@stomp/stompjs';
 
 import { RxStomp } from './rx-stomp';
 import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config';
@@ -53,7 +53,7 @@ export class RxStompRPC {
    *
    * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
    */
-  public rpc(params: publishParams): Observable<IMessage> {
+  public rpc(params: IPublishParams): Observable<IMessage> {
     // We know there will be only one message in reply
     return this.stream(params).pipe(first());
   }
@@ -64,12 +64,8 @@ export class RxStompRPC {
    * Note: This call internally takes care of generating a correlation id,
    * however, if `correlation-id` is passed via `headers`, that will be used instead.
    */
-  public stream(params: publishParams): Observable<IMessage> {
-    const headers: StompHeaders = (Object as any).assign(
-      {},
-      params.headers || {}
-    );
-    const { destination, body, binaryBody } = params;
+  public stream(params: IPublishParams): Observable<IMessage> {
+    const headers: StompHeaders = { ...(params.headers || {}) };
 
     if (!this._repliesObservable) {
       const repliesObservable = this._setupReplyQueue(
@@ -104,7 +100,7 @@ export class RxStompRPC {
       headers['reply-to'] = this._replyQueueName;
       headers['correlation-id'] = correlationId;
 
-      this.rxStomp.publish({ destination, body, binaryBody, headers });
+      this.rxStomp.publish({ ...params, headers });
 
       return () => {
         // Cleanup
