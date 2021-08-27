@@ -65,6 +65,7 @@ export class RxStompRPC {
    * however, if `correlation-id` is passed via `headers`, that will be used instead.
    */
   public stream(params: IPublishParams): Observable<IMessage> {
+    // defensively copy
     const headers: StompHeaders = { ...(params.headers || {}) };
 
     if (!this._repliesObservable) {
