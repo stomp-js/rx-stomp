@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.3 (2021-08-28)
+
+- Pass all params with modified header,
+  see [#394](https://github.com/stomp-js/rx-stomp/issues/394).
+- Since source is not included, exclude source maps from npm package.
+
 ## 1.1.2 (2020-04-18)
 
 - Restrict typescript to 3.6.x.
