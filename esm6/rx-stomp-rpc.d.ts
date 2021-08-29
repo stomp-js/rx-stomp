@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IMessage, publishParams } from '@stomp/stompjs';
+import { IMessage, IPublishParams } from '@stomp/stompjs';
 import { RxStomp } from './rx-stomp';
 import { RxStompRPCConfig } from './rx-stomp-rpc-config';
 /**
@@ -27,12 +27,12 @@ export declare class RxStompRPC {
      *
      * It is a simple wrapper around [RxStompRPC#stream]{@link RxStompRPC#stream}.
      */
-    rpc(params: publishParams): Observable<IMessage>;
+    rpc(params: IPublishParams): Observable<IMessage>;
     /**
      * Make an RPC stream request. See the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
      *
      * Note: This call internally takes care of generating a correlation id,
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
-    stream(params: publishParams): Observable<IMessage>;
+    stream(params: IPublishParams): Observable<IMessage>;
 }

@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.4 (2021-08-28)
+
+- Pin typescript less than 3.7, v1.1.3 had mistakenly relaxed it.
+
 ## 1.1.3 (2021-08-28)
 
 - Pass all params with modified header,

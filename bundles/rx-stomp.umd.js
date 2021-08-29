@@ -165,8 +165,8 @@ class RxStompRPC {
      * however, if `correlation-id` is passed via `headers`, that will be used instead.
      */
     stream(params) {
-        const headers = Object.assign({}, params.headers || {});
-        const { destination, body, binaryBody } = params;
+        // defensively copy
+        const headers = Object.assign({}, (params.headers || {}));
         if (!this._repliesObservable) {
             const repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
             // In case of custom queue, ensure it remains subscribed
@@ -188,7 +188,7 @@ class RxStompRPC {
             // send an RPC request
             headers['reply-to'] = this._replyQueueName;
             headers['correlation-id'] = correlationId;
-            this.rxStomp.publish({ destination, body, binaryBody, headers });
+            this.rxStomp.publish(Object.assign(Object.assign({}, params), { headers }));
             return () => {
                 // Cleanup
                 defaultMessagesSubscription.unsubscribe();
