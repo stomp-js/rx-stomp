@@ -9,8 +9,7 @@ updates:
     ignore:
       - dependency-name: webpack
         versions:
-          - 5.32.0
-          - 5.34.0
+          - '5.x'
       - dependency-name: jasmine
         versions:
           - 3.6.4
@@ -18,7 +17,10 @@ updates:
         versions: ['3.x', '4.x']
       - dependency-name: webpack-cli
         versions:
-          - 4.4.0
+          - '4.x'
       - dependency-name: karma-summary-reporter
         versions:
           - 2.0.0
+      - dependency-name: rxjs
+        versions:
+          - '7.x'
