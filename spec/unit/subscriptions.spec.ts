@@ -227,7 +227,7 @@ describe('Subscribe & Publish', () => {
         .subscribe(() => {});
 
       expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
-    });    
+    });
 
     it('should use passed unsubscription headers', () => {
       const sub = rxStomp

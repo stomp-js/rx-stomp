@@ -208,9 +208,8 @@ export class RxStomp {
       this._sendQueuedMessages();
     });
 
-    this._serverHeadersBehaviourSubject$ = new BehaviorSubject<null | StompHeaders>(
-      null
-    );
+    this._serverHeadersBehaviourSubject$ =
+      new BehaviorSubject<null | StompHeaders>(null);
 
     this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(
       filter((headers: null | StompHeaders) => {

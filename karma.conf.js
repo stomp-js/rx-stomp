@@ -38,7 +38,7 @@ module.exports = function (config) {
         values: ['spec/**/*.ts'],
       },
       compilerOptions: {
-        module: "commonjs",
+        module: 'commonjs',
       },
       tsconfig: './tsconfig.json',
     },

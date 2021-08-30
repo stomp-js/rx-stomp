@@ -1,16 +1,16 @@
 // Tests under 'RPC' group are likely to fail on any broker other than RabbitMQ
 // The tests under 'Custom Queue RPC' should work on every broker
 
-import "jasmine";
+import 'jasmine';
 
-import { Message } from "@stomp/stompjs";
-import { UUID } from "angular2-uuid";
+import { Message } from '@stomp/stompjs';
+import { UUID } from 'angular2-uuid';
 
-import { RxStomp, RxStompRPC } from "../../src";
+import { RxStomp, RxStompRPC } from '../../src';
 
-import { generateBinaryData } from "../helpers/content-helpers";
-import { ensureRxStompConnected, wait } from "../helpers/helpers";
-import { rxStompFactory } from "../helpers/rx-stomp-factory";
+import { generateBinaryData } from '../helpers/content-helpers';
+import { ensureRxStompConnected, wait } from '../helpers/helpers';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 const myRPCEndPoint = '/topic/echo';
 
