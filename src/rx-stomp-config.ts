@@ -160,7 +160,7 @@ export class RxStompConfig {
    * This can be used to reliably fetch credentials, access token etc. from some other service
    * in an asynchronous way.
    *
-   * As of 0.3.5, this callback will receive [RxStomp](@link RxStomp) as parameter.
+   * As of 0.3.5, this callback will receive [RxStomp]{@link RxStomp} as parameter.
    *
    * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
    */
