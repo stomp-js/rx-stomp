@@ -150,7 +150,7 @@ export class RxStompConfig {
    * Callback, invoked on before a connection connection to the STOMP broker.
    *
    * You can change configuration of the rxStomp, which will impact the immediate connect.
-   * It is valid to call [RxStomp#decativate]{@link RxStomp#deactivate} in this callback.
+   * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} in this callback.
    *
    * As of version 0.1.1, this callback can be
    * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
