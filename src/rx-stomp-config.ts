@@ -83,14 +83,14 @@ export class RxStompConfig {
   /**
    * Automatically reconnect with delay in milliseconds, set to 0 to disable.
    *
-   * Maps to: [Client#reconnectDelay]{@Client#reconnectDelay}
+   * Maps to: [Client#reconnectDelay]{@link Client#reconnectDelay}
    */
   public reconnectDelay?: number;
 
   /**
    * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
    *
-   * Maps to: [Client#heartbeatIncoming]{@Client#heartbeatIncoming}
+   * Maps to: [Client#heartbeatIncoming]{@link Client#heartbeatIncoming}
    */
   public heartbeatIncoming?: number;
 
