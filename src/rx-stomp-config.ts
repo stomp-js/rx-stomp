@@ -83,14 +83,14 @@ export class RxStompConfig {
   /**
    * Automatically reconnect with delay in milliseconds, set to 0 to disable.
    *
-   * Maps to: [Client#reconnectDelay]{@Client#reconnectDelay}
+   * Maps to: [Client#reconnectDelay]{@link Client#reconnectDelay}
    */
   public reconnectDelay?: number;
 
   /**
    * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
    *
-   * Maps to: [Client#heartbeatIncoming]{@Client#heartbeatIncoming}
+   * Maps to: [Client#heartbeatIncoming]{@link Client#heartbeatIncoming}
    */
   public heartbeatIncoming?: number;
 
@@ -150,7 +150,7 @@ export class RxStompConfig {
    * Callback, invoked on before a connection connection to the STOMP broker.
    *
    * You can change configuration of the rxStomp, which will impact the immediate connect.
-   * It is valid to call [RxStomp#decativate]{@link RxStomp#deactivate} in this callback.
+   * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} in this callback.
    *
    * As of version 0.1.1, this callback can be
    * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
@@ -160,7 +160,7 @@ export class RxStompConfig {
    * This can be used to reliably fetch credentials, access token etc. from some other service
    * in an asynchronous way.
    *
-   * As of 0.3.5, this callback will receive [RxStomp](@link RxStomp) as parameter.
+   * As of 0.3.5, this callback will receive [RxStomp]{@link RxStomp} as parameter.
    *
    * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
    */
