@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.2.0 (2022-10-03)
+
+Introduce the error correlation feature - see new optional config
+property `correlateErrors`.
+
 ## 1.1.4 (2021-08-28)
 
 - Pin typescript less than 3.7, v1.1.3 had mistakenly relaxed it.

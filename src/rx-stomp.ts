@@ -163,20 +163,34 @@ export class RxStomp {
   protected _beforeConnect: (client: RxStomp) => void | Promise<void>;
 
   /**
+   * Correlate errors
+   */
+  protected _correlateErrors: (error: IFrame) => string;
+
+  /**
    * Will be assigned during configuration, no-op otherwise
    */
   protected _debug: debugFnType;
 
   /**
    * Constructor
+   * 
+   * @param stompClient optionally inject the 
+   * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
+   * {@link Client} to wrap. If this is not provided, a client will 
+   * be constructed internally.
    */
-  public constructor() {
-    this._stompClient = new Client();
+  public constructor(stompClient?: Client) {
+    const client = stompClient ? stompClient : new Client();
+    this._stompClient = client;
 
     const noOp = () => {};
 
     // Before connect is no op by default
     this._beforeConnect = noOp;
+
+    // Correlate errors is falsey op by default
+    this._correlateErrors = () => undefined;
 
     // debug is no-op by default
     this._debug = noOp;
@@ -251,15 +265,20 @@ export class RxStomp {
    * Maps to: [Client#configure]{@link Client#configure}
    */
   public configure(rxStompConfig: RxStompConfig) {
-    const stompConfig: StompConfig = (Object as any).assign({}, rxStompConfig);
+    const stompConfig: RxStompConfig = (Object as any).assign({}, rxStompConfig);
 
     if (stompConfig.beforeConnect) {
       this._beforeConnect = stompConfig.beforeConnect;
       delete stompConfig.beforeConnect;
     }
 
+    if (stompConfig.correlateErrors) {
+      this._correlateErrors = stompConfig.correlateErrors;
+      delete stompConfig.correlateErrors;
+    }    
+
     // RxStompConfig has subset of StompConfig fields
-    this._stompClient.configure(stompConfig);
+    this._stompClient.configure(stompConfig as StompConfig);
     if (stompConfig.debug) {
       this._debug = stompConfig.debug;
     }
@@ -507,6 +526,13 @@ export class RxStomp {
         connectedPre$ = connectedPre$.pipe(take(1));
       }
 
+      const stompErrorsSubscription = this.stompErrors$.subscribe((error: IFrame) => {
+        const correlatedDestination = this._correlateErrors(error);
+        if (correlatedDestination === params.destination) {
+          messages.error(error);
+        }
+      });      
+
       stompConnectedSubscription = connectedPre$.subscribe(() => {
         this._debug(`Will subscribe to ${params.destination}`);
         let subHeaders = params.subHeaders;
@@ -528,6 +554,7 @@ export class RxStomp {
           `Stop watching connection state (for ${params.destination})`
         );
         stompConnectedSubscription.unsubscribe();
+        stompErrorsSubscription.unsubscribe();
 
         if (this.connected()) {
           this._debug(`Will unsubscribe from ${params.destination} at Stomp`);
