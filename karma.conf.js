@@ -40,6 +40,9 @@ module.exports = function (config) {
       compilerOptions: {
         module: 'commonjs',
       },
+      coverageOptions: {
+        instrumentation: false
+      },
       tsconfig: './tsconfig.json',
     },
 
