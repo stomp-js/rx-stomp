@@ -42,7 +42,7 @@
     "karma": "^6.2.0",
     "karma-chrome-launcher": "^3.0.0",
     "karma-firefox-launcher": "^2.0.0",
-    "karma-jasmine": "^4.0.0",
+    "karma-jasmine": "^5.1.0",
     "karma-safari-launcher": "git+https://github.com/RLovelett/karma-safari-launcher.git#safari-webdriver",
     "karma-summary-reporter": "^2.0.2",
     "karma-typescript": "^5.0.0",
