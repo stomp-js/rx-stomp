@@ -1,9 +1,9 @@
 # Change Log
 
-## 1.2.0 (2022-10-03)
+## 1.2.0 (2022-11-10)
 
-Introduce the error correlation feature - see new optional config
-property `correlateErrors`.
+Introduce the error correlation feature.
+See [#470](https://github.com/stomp-js/rx-stomp/pull/470) and the new optional config property `correlateErrors`.
 
 ## 1.1.4 (2021-08-28)
 
