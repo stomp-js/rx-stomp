@@ -88,10 +88,10 @@ const rpcWithBinayPayload = async () => {
 
 describe('RPC', () => {
   // Wait till RxStomp is actually connected
-  beforeAll(done => {
+  beforeAll(async () => {
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp);
-    ensureRxStompConnected(rxStomp, done);
+    await ensureRxStompConnected(rxStomp);
   });
 
   beforeAll(done => startRPCServer(done));
@@ -138,10 +138,10 @@ describe('Custom Queue RPC', () => {
   };
 
   // Wait till RxStomp is actually connected
-  beforeAll(done => {
+  beforeAll(async () => {
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp, stompRPCConfig);
-    ensureRxStompConnected(rxStomp, done);
+    await ensureRxStompConnected(rxStomp);
   });
 
   beforeAll(done => startRPCServer(done));

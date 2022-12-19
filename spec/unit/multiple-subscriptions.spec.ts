@@ -17,14 +17,14 @@ describe('Multiple Queues', () => {
   let rxStomp: RxStomp;
 
   // Wait till RxStomp is actually connected
-  beforeEach(done => {
+  beforeEach(async () => {
     rxStomp = rxStompFactory();
-    ensureRxStompConnected(rxStomp, done);
+    await ensureRxStompConnected(rxStomp);
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(done => {
-    disconnectRxStompAndEnsure(rxStomp, done);
+  afterEach(async () => {
+    await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 

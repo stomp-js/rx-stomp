@@ -2,7 +2,7 @@
 
 import 'jasmine';
 
-import { filter, take } from 'rxjs/operators';
+import { filter, first, take } from 'rxjs/operators';
 
 import { Message } from '@stomp/stompjs';
 
@@ -15,6 +15,7 @@ import {
   forceDisconnectAndEnsure,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
+import { firstValueFrom } from 'rxjs';
 
 describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp;
@@ -25,16 +26,14 @@ describe('Subscribe & Publish', () => {
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(done => {
-    disconnectRxStompAndEnsure(rxStomp, done);
+  afterEach(async () => {
+    await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
   describe('with established connection', () => {
     // Wait till RxStomp is actually connected
-    beforeEach(done => {
-      ensureRxStompConnected(rxStomp, done);
-    });
+    beforeEach(async () => ensureRxStompConnected(rxStomp));
 
     it('send and receive a message', done => {
       const queueName = '/topic/ng-demo-sub';
@@ -104,29 +103,24 @@ describe('Subscribe & Publish', () => {
       rxStomp.publish({ destination: queueName, body: msg });
     });
 
-    it('should be able to publish/subscribe when STOMP is disconnected', done => {
+    it('should be able to publish/subscribe when STOMP is disconnected', async () => {
       // Queue is a durable queue
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp
-        .watch(queueName)
-        .pipe(
-          filter((message: Message) => {
-            // Since the queue is durable, we may receive older messages as well, discard those
-            return message.body === msg;
-          })
+      const retPromise = firstValueFrom(
+        rxStomp.watch(queueName).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((message: Message) => message.body === msg)
         )
-        .subscribe((message: Message) => {
-          expect(message.body).toBe(msg);
-          done();
-        });
+      );
 
       // Actively disconnect simulating error after STOMP connects, then publish the message
-      forceDisconnectAndEnsure(rxStomp, () => {
-        rxStomp.publish({ destination: queueName, body: msg });
-      });
+      await forceDisconnectAndEnsure(rxStomp);
+      rxStomp.publish({ destination: queueName, body: msg });
+
+      return retPromise;
     });
 
     it('should be able to subscribe before sending queued messages', done => {
@@ -142,21 +136,23 @@ describe('Subscribe & Publish', () => {
       rxStomp.publish({ destination: endPoint, body: msg });
     });
 
-    it('should be able to subscribe before sending queued messages when broker was disconnected', done => {
+    it('should be able to subscribe before sending queued messages when broker was disconnected', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.watch(endPoint).subscribe((message: Message) => {
-        expect(message.body).toBe(msg);
-        done();
-      });
+      const retPromise = firstValueFrom(rxStomp.watch(endPoint)).then(
+        (message: Message) => {
+          expect(message.body).toBe(msg);
+        }
+      );
 
       // Wait for the first connect, set publish after disconnect
       // then force a disconnect
-      forceDisconnectAndEnsure(rxStomp, () => {
-        rxStomp.publish({ destination: endPoint, body: msg });
-      });
+      await forceDisconnectAndEnsure(rxStomp);
+      rxStomp.publish({ destination: endPoint, body: msg });
+
+      return retPromise;
     });
 
     describe('When providing retry flag', () => {
@@ -173,21 +169,19 @@ describe('Subscribe & Publish', () => {
         ).toThrow();
       });
 
-      it('should be able to publish/subscribe when STOMP is disconnected', done => {
+      it('should be able to publish/subscribe when STOMP is disconnected', async () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 03' + Math.random();
         // Actively disconnect simulating error after STOMP connects, then publish the message
-        forceDisconnectAndEnsure(rxStomp, () => {
-          expect(() =>
-            rxStomp.publish({
-              destination: queueName,
-              body: msg,
-              retryIfDisconnected: false,
-            })
-          ).toThrow();
-          done();
-        });
+        await forceDisconnectAndEnsure(rxStomp);
+        expect(() =>
+          rxStomp.publish({
+            destination: queueName,
+            body: msg,
+            retryIfDisconnected: false,
+          })
+        ).toThrow();
       });
     });
   });
@@ -201,9 +195,7 @@ describe('Subscribe & Publish', () => {
     let unsubSpy: any;
 
     // Wait till RxStomp is actually connected
-    beforeEach(done => {
-      ensureRxStompConnected(rxStomp, done);
-    });
+    beforeEach(async () => ensureRxStompConnected(rxStomp));
 
     beforeEach(() => {
       subSpy = spyOn(rxStomp.stompClient, 'subscribe').and.callThrough();
@@ -270,14 +262,10 @@ describe('Subscribe & Publish', () => {
       });
 
       // Force disconnect
-      beforeEach(done => {
-        forceDisconnectAndEnsure(rxStomp, done);
-      });
+      beforeEach(async () => forceDisconnectAndEnsure(rxStomp));
 
       // Wait till RxStomp is actually connected
-      beforeEach(done => {
-        ensureRxStompConnected(rxStomp, done);
-      });
+      beforeEach(async () => ensureRxStompConnected(rxStomp));
 
       // The client should reconnect and destination should be subscribed again
       it('should resubscribe', done => {
@@ -303,14 +291,10 @@ describe('Subscribe & Publish', () => {
       });
 
       // Force disconnect
-      beforeEach(done => {
-        forceDisconnectAndEnsure(rxStomp, done);
-      });
+      beforeEach(async () => forceDisconnectAndEnsure(rxStomp));
 
       // Wait till RxStomp is actually connected
-      beforeEach(done => {
-        ensureRxStompConnected(rxStomp, done);
-      });
+      beforeEach(async () => ensureRxStompConnected(rxStomp));
 
       // The client should reconnect and destination should be subscribed again
       it('should resubscribe', done => {

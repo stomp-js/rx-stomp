@@ -5,40 +5,28 @@ import 'jasmine';
 // Helper functions
 import { RxStomp, RxStompState } from '../../src';
 import { filter, take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
-export function ensureRxStompConnected(rxStomp: RxStomp, done: any) {
-  rxStomp.connected$.subscribe((state: RxStompState) => {
-    done();
-  });
+export async function ensureRxStompConnected(rxStomp: RxStomp) {
+  await firstValueFrom(rxStomp.connected$);
 }
 
-export function ensureRxStompDisconnected(rxStomp: RxStomp, done: any) {
-  rxStomp.connectionState$.subscribe((state: RxStompState) => {
-    if (state === RxStompState.CLOSED) {
-      done();
-    }
-  });
+export async function ensureRxStompDisconnected(rxStomp: RxStomp) {
+  await firstValueFrom(
+    rxStomp.connectionState$.pipe(
+      filter((state: RxStompState) => state === RxStompState.CLOSED)
+    )
+  );
 }
 
-export function disconnectRxStompAndEnsure(rxStomp: RxStomp, done: () => void) {
-  rxStomp.deactivate();
-  ensureRxStompDisconnected(rxStomp, done);
+export async function disconnectRxStompAndEnsure(rxStomp: RxStomp) {
+  await rxStomp.deactivate();
 }
 
-export function forceDisconnectAndEnsure(rxStomp: RxStomp, done: () => void) {
-  rxStomp.connected$.pipe(take(1)).subscribe(() => {
-    rxStomp.stompClient.forceDisconnect();
-    rxStomp.connectionState$
-      .pipe(
-        filter(state => {
-          return state === RxStompState.CLOSED;
-        }),
-        take(1)
-      )
-      .subscribe(() => {
-        done();
-      });
-  });
+export async function forceDisconnectAndEnsure(rxStomp: RxStomp) {
+  await ensureRxStompConnected(rxStomp);
+  rxStomp.stompClient.forceDisconnect();
+  await ensureRxStompDisconnected(rxStomp);
 }
 
 export const wait = (timeToDelay: number) =>

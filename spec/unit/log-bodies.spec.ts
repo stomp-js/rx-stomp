@@ -11,8 +11,8 @@ describe('Log Bodies', () => {
   let rxStomp: RxStomp;
 
   // Disconnect and wait till it actually disconnects
-  afterEach(done => {
-    disconnectRxStompAndEnsure(rxStomp, done);
+  afterEach(async () => {
+    await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 

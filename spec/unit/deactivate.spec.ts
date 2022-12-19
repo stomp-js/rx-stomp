@@ -14,14 +14,14 @@ import { rxStompFactory } from '../helpers/rx-stomp-factory';
 describe('Deactivate', () => {
   let rxStomp: RxStomp;
 
-  beforeEach(done => {
+  beforeEach(async () => {
     rxStomp = rxStompFactory();
-    ensureRxStompConnected(rxStomp, done);
+    await ensureRxStompConnected(rxStomp);
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(done => {
-    ensureRxStompDisconnected(rxStomp, done);
+  afterEach(async () => {
+    await ensureRxStompDisconnected(rxStomp);
     rxStomp = null;
   });
 
@@ -46,9 +46,7 @@ describe('Deactivate', () => {
 
   describe('should deactivate even when underlying connection is not there', () => {
     // Simulate error on WebSocket and wait for while and call disconnect
-    beforeEach(done => {
-      disconnectRxStompAndEnsure(rxStomp, done);
-    });
+    beforeEach(async () => disconnectRxStompAndEnsure(rxStomp));
 
     // Ask RxStomp to disconnect and wait for 500 ms (more than double
     // of reconnect delay)
