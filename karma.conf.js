@@ -1,27 +1,27 @@
 // Karma configuration
 // Generated on Thu Jul 05 2018 16:43:26 GMT+0530 (IST)
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     plugins: [
-      require('@chiragrupani/karma-chromium-edge-launcher'),
-      require('karma-chrome-launcher'),
-      require('karma-firefox-launcher'),
-      require('karma-jasmine'),
-      require('karma-safari-launcher'),
-      require('karma-summary-reporter'),
-      require('karma-typescript'),
+      require("@chiragrupani/karma-chromium-edge-launcher"),
+      require("karma-chrome-launcher"),
+      require("karma-firefox-launcher"),
+      require("karma-jasmine"),
+      require("karma-rollup-preprocessor"),
+      require("karma-safari-launcher"),
+      require("karma-summary-reporter")
     ],
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: "",
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'karma-typescript'],
+    frameworks: ["jasmine"],
 
     // list of files / patterns to load in the browser
-    files: ['src/**/*.ts', 'spec/**/*.ts'],
+    files: ["src/**/*.ts", "spec/**/*.ts"],
 
     // list of files / patterns to exclude
     exclude: [],
@@ -29,27 +29,30 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*.ts': 'karma-typescript',
+      "**/*.ts": "rollup"
     },
 
-    karmaTypescriptConfig: {
-      include: {
-        mode: 'merge',
-        values: ['spec/**/*.ts'],
+    rollupPreprocessor: {
+      plugins: [
+        require("@rollup/plugin-node-resolve")(),
+        require("@rollup/plugin-commonjs")(),
+        require("@rollup/plugin-sucrase")({
+          exclude: ["node_modules/**"],
+          transforms: ["typescript"],
+        }),
+      ],
+      output: {
+        format: "iife",
+        name: "testcases",
+        sourcemap: "inline",
       },
-      compilerOptions: {
-        module: 'commonjs',
-      },
-      coverageOptions: {
-        instrumentation: false
-      },
-      tsconfig: './tsconfig.json',
+      external: "jasmine",
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['summary'],
+    reporters: ["progress"],
 
     // web server port
     port: 9876,
@@ -66,25 +69,25 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['ChromeNoSandboxHeadless'],
+    browsers: ["ChromeNoSandboxHeadless"],
 
     customLaunchers: {
       // See https://github.com/karma-runner/karma/issues/2603
       ChromeNoSandboxHeadless: {
-        base: 'Chrome',
+        base: "Chrome",
         flags: [
-          '--no-sandbox',
+          "--no-sandbox",
           // See https://chromium.googlesource.com/chromium/src/+/lkgr/headless/README.md
-          '--headless',
-          '--disable-gpu',
+          "--headless",
+          "--disable-gpu",
           // Without a remote debugging port, Google Chrome exits immediately.
-          ' --remote-debugging-port=9222',
-        ],
+          " --remote-debugging-port=9222"
+        ]
       },
       FirefoxHeadless: {
-        base: 'Firefox',
-        flags: ['-headless'],
-      },
+        base: "Firefox",
+        flags: ["-headless"]
+      }
     },
 
     // Continuous Integration mode
@@ -93,6 +96,6 @@ module.exports = function (config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: 1,
+    concurrency: 1
   });
 };
