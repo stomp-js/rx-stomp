@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.0.0-beta1
+
+- Compatibility with Node 18.
+- Switch to `rollup` from `webpack`.
+- `Karma`/`Jasmine` tests are transformed using `rollup`.
+- Cleanup and update dependencies.
+- Jasmine test cases use `async` wherever possible.
+- Update `RxJS` imports as per `RxJS 7.2` recommendations.
+- Deprecate unmaintained `angular2-uuid` in favor of `uuid`.
+
 ## 1.2.0 (2022-11-10)
 
 Introduce the error correlation feature.
