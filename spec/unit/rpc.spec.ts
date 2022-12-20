@@ -11,13 +11,14 @@ import { RxStomp, RxStompRPC } from '../../src';
 import { generateBinaryData } from '../helpers/content-helpers';
 import { ensureRxStompConnected, wait } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
+import { firstValueFrom } from 'rxjs';
 
 const myRPCEndPoint = '/topic/echo';
 
 let rxStomp: RxStomp;
 let rxStompRPC: RxStompRPC;
 
-const startRPCServer = (done: () => void) => {
+const startRPCServer = async () => {
   const receiptId = UUID.UUID();
 
   rxStomp
@@ -34,13 +35,15 @@ const startRPCServer = (done: () => void) => {
       });
     });
 
-  rxStomp.watchForReceipt(receiptId, () => {
-    done();
+  return new Promise<void>((resolve, reject) => {
+    rxStomp.watchForReceipt(receiptId, () => {
+      resolve();
+    });
   });
 };
 
 const rpcCallHelper = (message: string): Promise<Message> =>
-  rxStompRPC.rpc({ destination: myRPCEndPoint, body: message }).toPromise();
+  firstValueFrom(rxStompRPC.rpc({ destination: myRPCEndPoint, body: message }));
 
 const simpleRPCRetestTest = async () => {
   const msg01 = 'Hello';
@@ -69,20 +72,18 @@ const rpcWithCustomCorrelationId = async () => {
   const customCorrelationId = `custom-${UUID.UUID()}`;
   const headers = { 'correlation-id': customCorrelationId };
 
-  const reply = await rxStompRPC
-    .rpc({ destination: myRPCEndPoint, body: msg, headers })
-    .toPromise();
-
+  const reply = await firstValueFrom(
+    rxStompRPC.rpc({ destination: myRPCEndPoint, body: msg, headers })
+  );
   expect(reply.body).toEqual(msg);
   expect(reply.headers['correlation-id']).toEqual(customCorrelationId);
 };
 
 const rpcWithBinayPayload = async () => {
   const binaryMsg = generateBinaryData(1);
-  const message = await rxStompRPC
-    .rpc({ destination: myRPCEndPoint, binaryBody: binaryMsg })
-    .toPromise();
-
+  const message = await firstValueFrom(
+    rxStompRPC.rpc({ destination: myRPCEndPoint, binaryBody: binaryMsg })
+  );
   expect(message.binaryBody.toString()).toEqual(binaryMsg.toString());
 };
 
@@ -94,7 +95,7 @@ describe('RPC', () => {
     await ensureRxStompConnected(rxStomp);
   });
 
-  beforeAll(done => startRPCServer(done));
+  beforeAll(startRPCServer);
 
   it('Simple RPC', simpleRPCRetestTest);
   it('Multiple RPC requests', multiRPCRetestsTest);
@@ -103,14 +104,16 @@ describe('RPC', () => {
 
   it('Should not leak', async () => {
     const numSubscribers = () => {
+      // `.observers` is deprecated, as it is an internal implementation detail.
+      // There is no equivalent. We will drop this test when this stops working.
       return rxStomp.unhandledMessage$.observers.length;
     };
 
     const origNumSubscribers = numSubscribers();
 
-    const messagePromise = rxStompRPC
-      .rpc({ destination: myRPCEndPoint, body: 'Hello' })
-      .toPromise();
+    const messagePromise = firstValueFrom(
+      rxStompRPC.rpc({ destination: myRPCEndPoint, body: 'Hello' })
+    );
 
     // Just after initiating the request, teh count should go up by 1
     expect(numSubscribers()).toBe(origNumSubscribers + 1);
@@ -144,7 +147,7 @@ describe('Custom Queue RPC', () => {
     await ensureRxStompConnected(rxStomp);
   });
 
-  beforeAll(done => startRPCServer(done));
+  beforeAll(startRPCServer);
 
   it('Simple RPC', simpleRPCRetestTest);
   it('Multiple RPC requests', multiRPCRetestsTest);

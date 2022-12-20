@@ -1,4 +1,4 @@
-import { skip, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import 'jasmine';
 
@@ -6,6 +6,7 @@ import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
+import { firstValueFrom } from 'rxjs';
 
 describe('WebSocket Error', () => {
   let rxStomp: RxStomp;
@@ -16,7 +17,7 @@ describe('WebSocket Error', () => {
     rxStomp = null;
   });
 
-  it('should trigger webSocketErrors$', done => {
+  it('should trigger webSocketErrors$', async () => {
     rxStomp = new RxStomp();
     rxStomp.configure(defaultConfig());
 
@@ -30,9 +31,7 @@ describe('WebSocket Error', () => {
       expect(true).toEqual(false);
     });
 
-    rxStomp.webSocketErrors$.subscribe(evt => {
-      expect(evt).toBeTruthy();
-      done();
-    });
+    const evt = await firstValueFrom(rxStomp.webSocketErrors$);
+    expect(evt).toBeTruthy();
   });
 });

@@ -4,7 +4,7 @@ import 'jasmine';
 
 // Helper functions
 import { RxStomp, RxStompState } from '../../src';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 
 export async function ensureRxStompConnected(rxStomp: RxStomp) {

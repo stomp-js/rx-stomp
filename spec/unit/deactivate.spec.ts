@@ -8,6 +8,7 @@ import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
   ensureRxStompDisconnected,
+  wait,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
@@ -27,12 +28,10 @@ describe('Deactivate', () => {
 
   describe('should disconnect', () => {
     // Ask RxStomp to disconnect and wait for 500 ms (more than double
-    // of reconnect delay)
-    beforeEach(done => {
-      rxStomp.deactivate();
-      setTimeout(() => {
-        done();
-      }, 500);
+    // of the reconnect-delay)
+    beforeEach(async () => {
+      await rxStomp.deactivate();
+      await wait(500);
     });
 
     it('and not reconnect', () => {
@@ -44,23 +43,15 @@ describe('Deactivate', () => {
     });
   });
 
-  describe('should deactivate even when underlying connection is not there', () => {
+  it('should deactivate even when underlying connection is not there and not reconnect', async () => {
     // Simulate error on WebSocket and wait for while and call disconnect
-    beforeEach(async () => disconnectRxStompAndEnsure(rxStomp));
+    await disconnectRxStompAndEnsure(rxStomp);
 
     // Ask RxStomp to disconnect and wait for 500 ms (more than double
-    // of reconnect delay)
-    beforeEach(done => {
-      rxStomp.deactivate();
-      setTimeout(() => {
-        done();
-      }, 500);
-    });
+    // of the reconnect-delay)
+    await rxStomp.deactivate();
+    await wait(500);
 
-    it('and not reconnect', () => {
-      expect(rxStomp.connectionState$.getValue()).not.toEqual(
-        RxStompState.OPEN
-      );
-    });
+    expect(rxStomp.connectionState$.getValue()).not.toEqual(RxStompState.OPEN);
   });
 });

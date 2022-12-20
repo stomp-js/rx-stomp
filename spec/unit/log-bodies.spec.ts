@@ -6,6 +6,7 @@ import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
+import { firstValueFrom } from 'rxjs';
 
 describe('Log Bodies', () => {
   let rxStomp: RxStomp;
@@ -16,12 +17,11 @@ describe('Log Bodies', () => {
     rxStomp = null;
   });
 
-  it('should trigger webSocketErrors$', done => {
+  it('logs when logRawCommunication is set', async () => {
     const queueName = '/topic/ng-demo-sub';
 
     // Text picked up from https://github.com/stomp-js/stomp-websocket/pull/46
     const body = 'Älä sinä yhtään and السابق';
-    // client.logRawCommunication = true;
 
     const debug = jasmine.createSpy('debug');
 
@@ -30,10 +30,7 @@ describe('Log Bodies', () => {
 
     rxStomp.configure({ debug, logRawCommunication: true });
 
-    rxStomp.watch(queueName).subscribe(() => {
-      expect(debug.calls.mostRecent().args[0]).toMatch(body);
-      done();
-    });
+    const retPromise = firstValueFrom(rxStomp.watch(queueName));
 
     rxStomp.activate();
 
@@ -44,5 +41,16 @@ describe('Log Bodies', () => {
           '\0'
       );
     });
+
+    await retPromise;
+
+    // There should at least two log statements containing the body
+    // One for the outgoing message and another for the incoming message.
+    expect(
+      debug.calls
+        .all()
+        .map(c => c.args[0])
+        .filter(v => v.match(body)).length
+    ).toBeGreaterThanOrEqual(2);
   });
 });

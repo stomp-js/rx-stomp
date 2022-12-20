@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
+  wait,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
@@ -49,7 +50,7 @@ describe('Multiple Queues', () => {
     });
 
     // Subscribe to both queues
-    beforeEach(done => {
+    beforeEach(async () => {
       queSubscription1 = rxStomp
         .watch(queueName1)
         .pipe(map(message => message.body))
@@ -60,22 +61,17 @@ describe('Multiple Queues', () => {
         .pipe(map(message => message.body))
         .subscribe(spyHandler2);
 
-      setTimeout(() => {
-        done();
-      }, 100);
+      await wait(100);
     });
 
     // Send one message to each queue and verify that these are received in respective subscriptions
-    beforeEach(done => {
+    beforeEach(async () => {
       rxStomp.publish({ destination: queueName1, body: 'Message 01-01' });
       rxStomp.publish({ destination: queueName2, body: 'Message 02-01' });
 
-      setTimeout(() => {
-        expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
-        expect(spyHandler2).toHaveBeenCalledWith('Message 02-01');
-
-        done();
-      }, 100);
+      await wait(100);
+      expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
+      expect(spyHandler2).toHaveBeenCalledWith('Message 02-01');
     });
 
     it('should receive message in correct queue', () => {
@@ -84,24 +80,19 @@ describe('Multiple Queues', () => {
     });
 
     describe('unsubscribe both queues', () => {
-      beforeEach(done => {
+      beforeEach(async () => {
         queSubscription1.unsubscribe();
         queSubscription2.unsubscribe();
-        setTimeout(() => {
-          done();
-        }, 100);
+        await wait(100);
       });
 
-      it('should not receive message in any of the  queues', done => {
+      it('should not receive message in any of the  queues', async () => {
         rxStomp.publish({ destination: queueName1, body: 'Message 01-02' });
         rxStomp.publish({ destination: queueName2, body: 'Message 02-02' });
 
-        setTimeout(() => {
-          expect(spyHandler1.calls.count()).toBe(1);
-          expect(spyHandler2.calls.count()).toBe(1);
-
-          done();
-        }, 100);
+        await wait(100);
+        expect(spyHandler1.calls.count()).toBe(1);
+        expect(spyHandler2.calls.count()).toBe(1);
       });
     });
   });

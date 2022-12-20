@@ -2,7 +2,7 @@
 
 import 'jasmine';
 
-import { filter, first, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { Message } from '@stomp/stompjs';
 
@@ -13,6 +13,7 @@ import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
   forceDisconnectAndEnsure,
+  wait,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { firstValueFrom } from 'rxjs';
@@ -35,72 +36,74 @@ describe('Subscribe & Publish', () => {
     // Wait till RxStomp is actually connected
     beforeEach(async () => ensureRxStompConnected(rxStomp));
 
-    it('send and receive a message', done => {
+    it('send and receive a message', async () => {
       const queueName = '/topic/ng-demo-sub';
       const msg = 'My very special message';
 
-      // Subscribe and set up the Observable
-      rxStomp.watch(queueName).subscribe((message: Message) => {
-        expect(message.body).toBe(msg);
-        done();
-      });
+      // Subscribe
+      const retPromise = firstValueFrom(rxStomp.watch(queueName));
 
       // Now publish to the same queue
       rxStomp.publish({ destination: queueName, body: msg });
+
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
-    it('send and receive a binary message', done => {
+    it('send and receive a binary message', async () => {
       const queueName = '/topic/ng-demo-sub';
       const binaryMsg = generateBinaryData(1);
 
-      // Subscribe and set up the Observable
-      rxStomp.watch(queueName).subscribe((message: Message) => {
-        expect(message.binaryBody.toString()).toBe(binaryMsg.toString());
-        done();
-      });
+      // Subscribe
+      const retPromise = firstValueFrom(rxStomp.watch(queueName));
 
       // Now publish to the same queue
       rxStomp.publish({ destination: queueName, binaryBody: binaryMsg });
+
+      const message = await retPromise;
+      expect(message.binaryBody.toString()).toBe(binaryMsg.toString());
     });
   });
 
   describe('Without established connection', () => {
-    it('should be able to subscribe even before STOMP is connected', done => {
+    it('should be able to subscribe even before STOMP is connected', async () => {
       const queueName = '/topic/ng-demo-sub01';
       const msg = 'My very special message 01';
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.watch(queueName).subscribe((message: Message) => {
-        expect(message.body).toBe(msg);
-        done();
-      });
+      const retPromise = firstValueFrom(
+        rxStomp.watch(queueName).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
+        )
+      );
 
       rxStomp.connected$.subscribe((state: RxStompState) => {
         // Now publish the message when STOMP Broker is connected
         rxStomp.publish({ destination: queueName, body: msg });
       });
+
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
-    it('should be able to publish/subscribe even before STOMP is connected', done => {
+    it('should be able to publish/subscribe even before STOMP is connected', async () => {
       // Queue is a durable queue
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 02' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp
-        .watch(queueName)
-        .pipe(
-          filter((message: Message) => {
-            // Since the queue is durable, we may receive older messages as well, discard those
-            return message.body === msg;
-          })
+      const retPromise = firstValueFrom(
+        rxStomp.watch(queueName).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
         )
-        .subscribe((message: Message) => {
-          expect(message.body).toBe(msg);
-          done();
-        });
+      );
 
       rxStomp.publish({ destination: queueName, body: msg });
+
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
     it('should be able to publish/subscribe when STOMP is disconnected', async () => {
@@ -108,32 +111,42 @@ describe('Subscribe & Publish', () => {
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
+      // Actively disconnect simulating error after STOMP connects, then publish the message
+      await forceDisconnectAndEnsure(rxStomp);
+
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((message: Message) => message.body === msg)
+          filter((m: Message) => m.body === msg)
         )
       );
-
-      // Actively disconnect simulating error after STOMP connects, then publish the message
-      await forceDisconnectAndEnsure(rxStomp);
       rxStomp.publish({ destination: queueName, body: msg });
 
-      return retPromise;
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
-    it('should be able to subscribe before sending queued messages', done => {
+    it('should be able to subscribe before queued messages are actually sent', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
-      // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      rxStomp.watch(endPoint).subscribe((message: Message) => {
-        expect(message.body).toBe(msg);
-        done();
-      });
+      // Actively disconnect simulating error after STOMP connects, then publish the message
+      await forceDisconnectAndEnsure(rxStomp);
 
+      // Send the message, it will be queued locally.
       rxStomp.publish({ destination: endPoint, body: msg });
+
+      // Now subscribe, while it is still waiting to connect.
+      const retPromise = firstValueFrom(
+        rxStomp.watch(endPoint).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
+        )
+      );
+
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
     it('should be able to subscribe before sending queued messages when broker was disconnected', async () => {
@@ -141,22 +154,24 @@ describe('Subscribe & Publish', () => {
       const msg = 'My very special message 03' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
-      const retPromise = firstValueFrom(rxStomp.watch(endPoint)).then(
-        (message: Message) => {
-          expect(message.body).toBe(msg);
-        }
+      const retPromise = firstValueFrom(
+        rxStomp.watch(endPoint).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
+        )
       );
 
-      // Wait for the first connect, set publish after disconnect
+      // Wait for the first connection, set publish after disconnect
       // then force a disconnect
       await forceDisconnectAndEnsure(rxStomp);
       rxStomp.publish({ destination: endPoint, body: msg });
 
-      return retPromise;
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
     describe('When providing retry flag', () => {
-      it('should not be able to publish even before STOMP is connected', () => {
+      it('should not be able to publish before STOMP is connected', () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 02' + Math.random();
@@ -169,7 +184,7 @@ describe('Subscribe & Publish', () => {
         ).toThrow();
       });
 
-      it('should be able to publish/subscribe when STOMP is disconnected', async () => {
+      it('should not be able to publish when STOMP is disconnected', async () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 03' + Math.random();
@@ -251,61 +266,56 @@ describe('Subscribe & Publish', () => {
   });
 
   describe('Reconnection', () => {
-    describe('should resubscribe', () => {
-      let onMessage: (message: Message) => void;
+    it('should resubscribe on reconnection', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 05' + Math.random();
 
-      // Start the watch
-      beforeEach(() => {
-        rxStomp.watch(endPoint).subscribe(message => onMessage(message));
-      });
+      const retPromise = firstValueFrom(
+        rxStomp.watch(endPoint).pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
+        )
+      );
 
       // Force disconnect
-      beforeEach(async () => forceDisconnectAndEnsure(rxStomp));
+      await forceDisconnectAndEnsure(rxStomp);
 
       // Wait till RxStomp is actually connected
-      beforeEach(async () => ensureRxStompConnected(rxStomp));
+      await ensureRxStompConnected(rxStomp);
 
-      // The client should reconnect and destination should be subscribed again
-      it('should resubscribe', done => {
-        onMessage = (message: Message) => {
-          expect(message.body).toBe(msg);
-          done();
-        };
+      rxStomp.publish({ destination: endPoint, body: msg });
 
-        rxStomp.publish({ destination: endPoint, body: msg });
-      });
+      // wait for the message to be delivered
+      const message = await retPromise;
+      expect(message.body).toBe(msg);
     });
 
-    describe('should not resubscribe with subscribeOnlyOnce', () => {
-      let onMessage: (message: Message) => void;
+    it('should not resubscribe with subscribeOnlyOnce', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 05' + Math.random();
 
-      // Start the watch
-      beforeEach(() => {
-        rxStomp
-          .watch({ destination: endPoint, subscribeOnlyOnce: true })
-          .subscribe(message => onMessage(message));
-      });
+      const onMessage = jasmine.createSpy('onMessage');
+
+      rxStomp
+        .watch({ destination: endPoint, subscribeOnlyOnce: true })
+        .pipe(
+          // Since the queue is durable, we may receive older messages as well, discard those
+          filter((m: Message) => m.body === msg)
+        )
+        .subscribe(m => onMessage(m));
 
       // Force disconnect
-      beforeEach(async () => forceDisconnectAndEnsure(rxStomp));
+      await forceDisconnectAndEnsure(rxStomp);
 
       // Wait till RxStomp is actually connected
-      beforeEach(async () => ensureRxStompConnected(rxStomp));
+      await ensureRxStompConnected(rxStomp);
 
-      // The client should reconnect and destination should be subscribed again
-      it('should resubscribe', done => {
-        onMessage = jasmine.createSpy('onMessage');
-        rxStomp.publish({ destination: endPoint, body: msg });
+      rxStomp.publish({ destination: endPoint, body: msg });
 
-        setTimeout(() => {
-          expect(onMessage).not.toHaveBeenCalled();
-          done();
-        }, 1000);
-      });
+      // wait for some time
+      await wait(1000);
+
+      expect(onMessage).not.toHaveBeenCalled();
     });
   });
 });
