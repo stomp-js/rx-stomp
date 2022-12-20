@@ -1,6 +1,6 @@
 import { filter, first, Observable, Observer, Subscription } from 'rxjs';
 
-import { UUID } from 'angular2-uuid';
+import { v4 as uuid } from 'uuid';
 
 import { IMessage, IPublishParams, StompHeaders } from '@stomp/stompjs';
 
@@ -84,7 +84,7 @@ export class RxStompRPC {
     return Observable.create((rpcObserver: Observer<IMessage>) => {
       let defaultMessagesSubscription: Subscription;
 
-      const correlationId = headers['correlation-id'] || UUID.UUID();
+      const correlationId = headers['correlation-id'] || uuid();
 
       defaultMessagesSubscription = this._repliesObservable
         .pipe(

@@ -4,7 +4,7 @@
 import 'jasmine';
 
 import { Message } from '@stomp/stompjs';
-import { UUID } from 'angular2-uuid';
+import { v4 as uuid } from 'uuid';
 
 import { RxStomp, RxStompRPC } from '../../src';
 
@@ -19,7 +19,7 @@ let rxStomp: RxStomp;
 let rxStompRPC: RxStompRPC;
 
 const startRPCServer = async () => {
-  const receiptId = UUID.UUID();
+  const receiptId = uuid();
 
   rxStomp
     .watch(myRPCEndPoint, { receipt: receiptId })
@@ -69,7 +69,7 @@ const multiRPCRetestsTest = async () => {
 
 const rpcWithCustomCorrelationId = async () => {
   const msg = 'Hello';
-  const customCorrelationId = `custom-${UUID.UUID()}`;
+  const customCorrelationId = `custom-${uuid()}`;
   const headers = { 'correlation-id': customCorrelationId };
 
   const reply = await firstValueFrom(
@@ -128,7 +128,7 @@ describe('RPC', () => {
 describe('Custom Queue RPC', () => {
   const stompRPCConfig = {
     // A name unique across all clients
-    replyQueueName: `/queue/replies-${UUID.UUID()}`,
+    replyQueueName: `/queue/replies-${uuid()}`,
 
     // Simply subscribe, you would need to secure by adding broker specific options
     setupReplyQueue: (replyQueueName: string, rxStomp1: RxStomp) => {
