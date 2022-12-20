@@ -1,4 +1,4 @@
-import { take } from 'rxjs/operators';
+import { firstValueFrom, take } from 'rxjs';
 
 import 'jasmine';
 
@@ -6,7 +6,6 @@ import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
-import { firstValueFrom } from 'rxjs';
 
 describe('WebSocket Error', () => {
   let rxStomp: RxStomp;

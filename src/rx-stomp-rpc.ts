@@ -1,5 +1,4 @@
-import { Observable, Observer, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
+import { filter, first, Observable, Observer, Subscription } from 'rxjs';
 
 import { UUID } from 'angular2-uuid';
 

@@ -167,12 +167,12 @@ export class RxStompConfig {
   public beforeConnect?: (client: RxStomp) => void | Promise<void>;
 
   /**
-   * Callback invoked on every ERROR frame. If the callback returns the ID of a currently 
+   * Callback invoked on every ERROR frame. If the callback returns the ID of a currently
    * subscribed destination, the frame will be emitted as an error on the corresponding
    * observable(s), terminating them.
-   * 
-   * Importantly, since those observables are now closed, this means a re-SUBSCRIBE to 
-   * the erroneous destination will _not_ be attempted during an automatic reconnection of 
+   *
+   * Importantly, since those observables are now closed, this means a re-SUBSCRIBE to
+   * the erroneous destination will _not_ be attempted during an automatic reconnection of
    * the websocket.
    */
   public correlateErrors?: (error: IFrame) => string;

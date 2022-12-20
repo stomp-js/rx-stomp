@@ -1,4 +1,4 @@
-import { skip, take } from 'rxjs/operators';
+import { firstValueFrom, skip, take } from 'rxjs';
 
 import 'jasmine';
 
@@ -6,7 +6,6 @@ import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure, wait } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
-import { firstValueFrom } from 'rxjs';
 
 describe('Connection', () => {
   let rxStomp: RxStomp;

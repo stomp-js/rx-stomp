@@ -2,11 +2,9 @@
 
 import 'jasmine';
 
-import { map } from 'rxjs/operators';
+import { map, Subscription } from 'rxjs';
 
 import { RxStomp } from '../../src';
-
-import { Subscription } from 'rxjs';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,

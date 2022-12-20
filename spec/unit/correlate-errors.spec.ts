@@ -1,6 +1,6 @@
 import { Client, FrameImpl, messageCallbackType } from '@stomp/stompjs';
 import 'jasmine';
-import { skip } from 'rxjs/operators';
+import { skip } from 'rxjs';
 
 import { RxStomp } from '../../src';
 

@@ -2,7 +2,7 @@
 
 import 'jasmine';
 
-import { filter } from 'rxjs/operators';
+import { filter, firstValueFrom } from 'rxjs';
 
 import { Message } from '@stomp/stompjs';
 
@@ -16,7 +16,6 @@ import {
   wait,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
-import { firstValueFrom } from 'rxjs';
 
 describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp;

@@ -1,12 +1,13 @@
 import {
   BehaviorSubject,
+  filter,
   Observable,
   Observer,
+  share,
   Subject,
   Subscription,
+  take,
 } from 'rxjs';
-
-import { filter, share, take } from 'rxjs/operators';
 
 import {
   Client,
@@ -174,10 +175,10 @@ export class RxStomp {
 
   /**
    * Constructor
-   * 
-   * @param stompClient optionally inject the 
+   *
+   * @param stompClient optionally inject the
    * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
-   * {@link Client} to wrap. If this is not provided, a client will 
+   * {@link Client} to wrap. If this is not provided, a client will
    * be constructed internally.
    */
   public constructor(stompClient?: Client) {
@@ -265,7 +266,10 @@ export class RxStomp {
    * Maps to: [Client#configure]{@link Client#configure}
    */
   public configure(rxStompConfig: RxStompConfig) {
-    const stompConfig: RxStompConfig = (Object as any).assign({}, rxStompConfig);
+    const stompConfig: RxStompConfig = (Object as any).assign(
+      {},
+      rxStompConfig
+    );
 
     if (stompConfig.beforeConnect) {
       this._beforeConnect = stompConfig.beforeConnect;
@@ -275,7 +279,7 @@ export class RxStomp {
     if (stompConfig.correlateErrors) {
       this._correlateErrors = stompConfig.correlateErrors;
       delete stompConfig.correlateErrors;
-    }    
+    }
 
     // RxStompConfig has subset of StompConfig fields
     this._stompClient.configure(stompConfig as StompConfig);
@@ -526,12 +530,14 @@ export class RxStomp {
         connectedPre$ = connectedPre$.pipe(take(1));
       }
 
-      const stompErrorsSubscription = this.stompErrors$.subscribe((error: IFrame) => {
-        const correlatedDestination = this._correlateErrors(error);
-        if (correlatedDestination === params.destination) {
-          messages.error(error);
+      const stompErrorsSubscription = this.stompErrors$.subscribe(
+        (error: IFrame) => {
+          const correlatedDestination = this._correlateErrors(error);
+          if (correlatedDestination === params.destination) {
+            messages.error(error);
+          }
         }
-      });      
+      );
 
       stompConnectedSubscription = connectedPre$.subscribe(() => {
         this._debug(`Will subscribe to ${params.destination}`);
