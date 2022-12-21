@@ -9,6 +9,7 @@
 - Jasmine test cases use `async` wherever possible.
 - Update `RxJS` imports as per `RxJS 7.2` recommendations.
 - Deprecate unmaintained `angular2-uuid` in favor of `uuid`.
+- Use package type `module` in package.json exports.
 
 ## 1.2.0 (2022-11-10)
 
