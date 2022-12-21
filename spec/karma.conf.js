@@ -21,7 +21,7 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
-    files: ['src/**/*.ts', 'spec/**/*.ts'],
+    files: ['../src/**/*.ts', './**/*.ts'],
 
     // list of files / patterns to exclude
     exclude: [],

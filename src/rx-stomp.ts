@@ -20,10 +20,10 @@ import {
   StompSubscription,
 } from '@stomp/stompjs';
 
-import { RxStompConfig } from './rx-stomp-config';
-import { IRxStompPublishParams } from './i-rx-stomp-publish-params';
-import { RxStompState } from './rx-stomp-state';
-import { IWatchParams } from './i-watch-params';
+import { RxStompConfig } from './rx-stomp-config.js';
+import { IRxStompPublishParams } from './i-rx-stomp-publish-params.js';
+import { RxStompState } from './rx-stomp-state.js';
+import { IWatchParams } from './i-watch-params.js';
 
 /**
  * This is the main Stomp Client.

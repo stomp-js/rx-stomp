@@ -1,5 +1,5 @@
 import { debugFnType, IFrame, StompHeaders, Versions } from '@stomp/stompjs';
-import { RxStomp } from './rx-stomp';
+import { RxStomp } from './rx-stomp.js';
 
 /**
  * Represents a configuration object for RxSTOMP.

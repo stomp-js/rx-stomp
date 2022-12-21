@@ -6,7 +6,7 @@
     "clean": "rm -rf bundles esm6",
     "rollup": "rollup -c --bundleConfigAsCjs && rm -f bundles/*.d.ts",
     "build": "npm run clean && tsc && npm run rollup",
-    "karma": "karma start --single-run",
+    "karma": "karma start spec/karma.conf.js --single-run",
     "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
     "prepublishOnly": "npm run lint && npm run karma && npm run build"
   },
@@ -58,8 +58,10 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.9.4"
   },
-  "module": "./esm6/index.js",
-  "main": "bundles/rx-stomp.umd.js",
+  "type": "module",
+  "exports": "./esm6/index.js",
+  "main": "./esm6/index.js",
+  "browser": "bundles/rx-stomp.umd.js",
   "typings": "index.d.ts",
   "sideEffects": false
 }

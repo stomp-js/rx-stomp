@@ -4,8 +4,8 @@ import { v4 as uuid } from 'uuid';
 
 import { IMessage, IPublishParams, StompHeaders } from '@stomp/stompjs';
 
-import { RxStomp } from './rx-stomp';
-import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config';
+import { RxStomp } from './rx-stomp.js';
+import { RxStompRPCConfig, setupReplyQueueFnType } from './rx-stomp-rpc-config.js';
 
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
