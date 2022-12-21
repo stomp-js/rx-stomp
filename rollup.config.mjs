@@ -1,19 +1,30 @@
 import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
 
-export const umdConf = {
-  file: 'bundles/rxstomp.umd.js',
+const umdConf = {
+  file: 'bundles/rx-stomp.umd.js',
   format: 'umd',
   name: 'RxStomp',
   sourcemap: true,
-  // globals: d3Modules,
-  // paths: d3Modules,
+  globals: {
+    '@stomp/stompjs': 'StompJs',
+    rxjs: 'rxjs',
+    uuid: 'uuid',
+  },
+};
+
+const umdMinConf = {
+  ...umdConf,
+  file: 'bundles/rx-stomp.umd.min.js',
+  sourcemap: false,
+  plugins: [terser()],
 };
 
 export default [
   {
     input: 'src/index.ts',
-    external: [],
+    external: Object.keys(umdConf.globals),
     plugins: [typescript()],
-    output: [umdConf],
+    output: [umdConf, umdMinConf],
   },
 ];
