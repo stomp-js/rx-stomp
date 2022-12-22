@@ -20,5 +20,7 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm ci
+      - run: npm run build
+      - run: npm run lint
       - run: npx karma start spec/karma.conf.js --single-run --browsers=Safari
       - run: npx karma start spec/karma.conf.js --single-run --browsers=EdgeHeadless
