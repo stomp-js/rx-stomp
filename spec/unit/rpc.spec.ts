@@ -3,10 +3,8 @@
 
 import 'jasmine';
 
-import { Message } from '@stomp/stompjs';
+import { IMessage, RxStomp, RxStompRPC } from '../../src';
 import { v4 as uuid } from 'uuid';
-
-import { RxStomp, RxStompRPC } from '../../src';
 
 import { generateBinaryData } from '../helpers/content-helpers';
 import { ensureRxStompConnected, wait } from '../helpers/helpers';
@@ -23,7 +21,7 @@ const startRPCServer = async () => {
 
   rxStomp
     .watch(myRPCEndPoint, { receipt: receiptId })
-    .subscribe((message: Message) => {
+    .subscribe((message: IMessage) => {
       const replyTo = message.headers['reply-to'];
       const correlationId = message.headers['correlation-id'];
       const incomingMessage = message.binaryBody;
@@ -42,7 +40,7 @@ const startRPCServer = async () => {
   });
 };
 
-const rpcCallHelper = (message: string): Promise<Message> =>
+const rpcCallHelper = (message: string): Promise<IMessage> =>
   firstValueFrom(rxStompRPC.rpc({ destination: myRPCEndPoint, body: message }));
 
 const simpleRPCRetestTest = async () => {

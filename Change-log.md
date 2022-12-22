@@ -9,7 +9,10 @@
 - Jasmine test cases use `async` wherever possible.
 - Update `RxJS` imports as per `RxJS 7.2` recommendations.
 - Deprecate unmaintained `angular2-uuid` in favor of `uuid`.
+  Fixes [#461](https://github.com/stomp-js/rx-stomp/issues/461).
 - Use package type `module` in package.json exports.
+- Exports a few symbols from @stomp/stompjs.
+  Fixes [#416](https://github.com/stomp-js/rx-stomp/issues/416).
 
 ## 1.2.0 (2022-11-10)
 
