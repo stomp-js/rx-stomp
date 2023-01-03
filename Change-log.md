@@ -13,6 +13,7 @@
 - Use package type `module` in package.json exports.
 - Exports a few symbols from @stomp/stompjs.
   Fixes [#416](https://github.com/stomp-js/rx-stomp/issues/416).
+- Depend on @stomp/stompjs@7.0.0-beta2.
 
 ## 1.2.0 (2022-11-10)
 
