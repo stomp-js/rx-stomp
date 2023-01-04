@@ -338,18 +338,24 @@ export class RxStomp {
 
   /**
    * Disconnect if connected and stop auto reconnect loop.
-   * Appropriate callbacks will be invoked if underlying STOMP connection was connected.
+   * Appropriate callbacks will be invoked if the underlying STOMP connection was connected.
    *
-   * To reactivate you can call [RxStomp#activate]{@link RxStomp#activate}.
+   * To reactivate, you can call [RxStomp#activate]{@link RxStomp#activate}.
+   *
+   * This call is async. It will resolve immediately if there is no underlying active websocket,
+   * otherwise, it will resolve after the underlying websocket is properly disposed of.
+   *
+   * Experimental: pass `force: true` to immediately discard the underlying connection.
+   * See [Client#deactivate]{@link Client#deactivate} for details.
    *
    * Maps to: [Client#deactivate]{@link Client#deactivate}
    */
-  public async deactivate(): Promise<void> {
+  public async deactivate(options: { force?: boolean } = {}): Promise<void> {
     this._changeState(RxStompState.CLOSING);
 
     // The promise will be resolved immediately if there are no active connection
     // otherwise, after it has successfully disconnected.
-    await this._stompClient.deactivate();
+    await this._stompClient.deactivate(options);
 
     this._changeState(RxStompState.CLOSED);
   }
