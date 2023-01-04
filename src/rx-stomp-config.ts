@@ -5,7 +5,7 @@ import { RxStomp } from './rx-stomp.js';
  * Represents a configuration object for RxSTOMP.
  * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
  *
- * All the attributes of this calls are optional.
+ * All the attributes of these calls are optional.
  *
  * Part of `@stomp/rx-stomp`
  */
@@ -22,12 +22,12 @@ export class RxStompConfig {
   public brokerURL?: string;
 
   /**
-   * STOMP versions to attempt during STOMP handshake. By default versions `1.0`, `1.1`, and `1.2` are attempted.
+   * STOMP versions to attempt during STOMP handshake. By default, versions `1.2`, `1.1`, and `1.0` are attempted.
    *
    * Example:
    * ```javascript
-   *        // Try only versions 1.0 and 1.1
-   *        rxStompConfig.stompVersions= new Versions(['1.0', '1.1']);
+   *        // Try only versions 1.1 and 1.0
+   *        rxStompConfig.stompVersions= new Versions(['1.1', '1.0']);
    * ```
    *
    * Maps to: [Client#stompVersions]{@link Client#stompVersions}
@@ -36,9 +36,9 @@ export class RxStompConfig {
 
   /**
    * Set it to log the actual raw communication with the broker.
-   * When unset, it logs headers of the parsed frames.
+   * When unset, it logs only the headers of the parsed frames.
    *
-   * Change in this effects from next broker reconnect.
+   * Change in this takes effect from the next broker reconnection.
    *
    * **Caution: this assumes that frames only have valid UTF8 strings.**
    *
@@ -46,7 +46,17 @@ export class RxStompConfig {
    */
   public logRawCommunication?: boolean;
 
-  /** Enable client debugging? */
+  /**
+   * Enable client debugging
+   *
+   * Example:
+   *
+   * ```typescript
+   *     debug: (msg: string): void => {
+   *       console.log(new Date(), msg);
+   *     },
+   * ```
+   */
   public debug?: debugFnType;
 
   /**
@@ -74,9 +84,11 @@ export class RxStompConfig {
 
   /**
    * Will retry if Stomp connection is not established in specified milliseconds.
-   * Default 0, which implies wait for ever.
+   * Default 0, which implies wait forever.
    *
    * Maps to: [Client#connectionTimeout]{@link Client#connectionTimeout}.
+   *
+   * Caution: This feature is experimental.
    */
   public connectionTimeout?: number;
 
@@ -102,9 +114,9 @@ export class RxStompConfig {
   public heartbeatOutgoing?: number;
 
   /**
-   * Enable non-standards compliant mode of splitting of outgoing large text packets.
+   * Enable a non-standards compliant mode of splitting outgoing large text packets.
    * See [Client#splitLargeFrames]{@link Client#splitLargeFrames} for details.
-   * Useful with Java Spring based brokers.
+   * Probably, only Java Spring based brokers support this mode.
    *
    * Maps to: [Client#splitLargeFrames]{@link Client#splitLargeFrames}.
    */
@@ -147,16 +159,16 @@ export class RxStompConfig {
   public disconnectHeaders?: StompHeaders;
 
   /**
-   * Callback, invoked on before a connection connection to the STOMP broker.
+   * Callback, invoked before attempting connection to the STOMP broker.
    *
-   * You can change configuration of the rxStomp, which will impact the immediate connect.
+   * You can change the configuration of the rxStomp, which will impact the immediate connecting.
    * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} in this callback.
    *
    * As of version 0.1.1, this callback can be
    * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
    * (i.e., it can return a
    * [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)).
-   * In that case connect will be called only after the Promise is resolved.
+   * In that case, connect will be called only after the Promise is resolved.
    * This can be used to reliably fetch credentials, access token etc. from some other service
    * in an asynchronous way.
    *

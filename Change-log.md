@@ -4,7 +4,7 @@
 
 - Compatibility with Node 18.
 - Switch to `rollup` from `webpack`.
-- `Karma`/`Jasmine` tests are transformed using `rollup`.
+- `Karma`/`Jasmine` upgraded to use `rollup`.
 - Cleanup and update dependencies.
 - Jasmine test cases use `async` wherever possible.
 - Update `RxJS` imports as per `RxJS 7.2` recommendations.
@@ -14,6 +14,8 @@
 - Exports a few symbols from @stomp/stompjs.
   Fixes [#416](https://github.com/stomp-js/rx-stomp/issues/416).
 - Depend on @stomp/stompjs@7.0.0-beta2.
+- Add `force` option to `deactivate`.
+- Documentation tidying and grammar corrections.
 
 ## 1.2.0 (2022-11-10)
 
