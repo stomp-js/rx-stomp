@@ -15,7 +15,7 @@ This has been developed using TypeScript and includes typing information in the 
 
 ## TypeScript definitions
 
-The npm package includes TypeScript definitions, so there is no need no install it separately.
+The npm package includes TypeScript definitions, so there is no need to install it separately.
 
 ## Installation
 
@@ -26,7 +26,9 @@ This can be installed as an npm module or directly from a CDN:
 2.  Yarn - `yarn add @stomp/rx-stomp`
 3.  Script - available on various CDNs, import both rx-stomp and stompjs
 
-Additionally, rxjs^6.0 needs to be installed.
+TODO: Add instructions and link to sample for v2.0.0
+
+Additionally, rxjs > 7.2.0 needs to be installed.
 
 ## Usage
 
@@ -34,9 +36,9 @@ See [https://stomp-js.github.io/](https://stomp-js.github.io/) for instructions 
 
 This module is distributed as UMD and ES6 modules:
 
-- NodeJs `require`,
 - ES6/typescript `import`
 - including a script tage in HTML.
+- NodeJs - Starting with v2, this library is distributed as ES modules only.
 
 See samples at: [https://github.com/stomp-js/samples/](https://github.com/stomp-js/samples/).
 
@@ -64,8 +66,7 @@ If you want to understand the code, develop, or contribute. Please visit
 - [Michel Promonet](https://github.com/mpromonet)
 - [Ray Booysen](https://github.com/raybooysen)
 - [Matt Critchlow](https://github.com/vigie)
-- Everyone involved at https://github.com/stomp-js/stomp-websocket
-  and https://github.com/stomp-js/stompjs
+- Everyone involved at https://github.com/stomp-js/stompjs
 
 ## License
 
