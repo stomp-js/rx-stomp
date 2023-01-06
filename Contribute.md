@@ -103,8 +103,7 @@ lint - run tslint
      ```bash
      $ npm run lint
      ```
-1. Documentation is generated centrally for `stompjs`, `rx-stomp`
-   and `ng2-stompjs`.
+1. Documentation is generated centrally for `stompjs` and `rx-stomp`.
    Follow required https://compodoc.app/ standards in comments.
 
 ### Creating a Pull Request
@@ -118,8 +117,5 @@ lint - run tslint
    $ npm run karma
    ```
 1. Please follow GitHub guidelines to raise a PR against `develop` branch.
-1. Travis CI will run tests against a freshly installed RabbitMQ.
-1. Travis CI will also test current `ng2-stompjs` against this build.
-   Failing this part of the tests itself is not an issue, it only suggests
-   that a coordinated release of both libraries might be needed.
+1. GitHub actions will run tests against a freshly installed RabbitMQ.
 1. Raise an issue if you are unclear.

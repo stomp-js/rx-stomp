@@ -16,6 +16,8 @@
 - Depend on @stomp/stompjs@7.0.0-beta2.
 - Add `force` option to `deactivate`.
 - Documentation tidying and grammar corrections.
+- Deprecate ng2-stompjs.
+- No longer use Travis CI.
 
 ## 1.2.0 (2022-11-10)
 
