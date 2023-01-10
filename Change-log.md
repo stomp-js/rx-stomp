@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.0.0-beta1
+## 2.0.0-beta1 (2023-01-10)
 
 - Compatibility with Node 18.
 - Switch to `rollup` from `webpack`.
@@ -18,6 +18,8 @@
 - Documentation tidying and grammar corrections.
 - Deprecate ng2-stompjs.
 - No longer use Travis CI.
+- New method `asyncReceipt`.
+  Fixes [#484](https://github.com/stomp-js/rx-stomp/issues/484).
 
 ## 1.2.0 (2022-11-10)
 
