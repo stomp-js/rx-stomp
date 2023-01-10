@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { IMessage, IPublishParams } from '@stomp/stompjs';
-import { RxStomp } from './rx-stomp';
-import { RxStompRPCConfig } from './rx-stomp-rpc-config';
+import { RxStomp } from './rx-stomp.js';
+import { RxStompRPCConfig } from './rx-stomp-rpc-config.js';
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *

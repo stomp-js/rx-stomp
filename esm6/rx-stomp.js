@@ -1,28 +1,18 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import { BehaviorSubject, Observable, Subject, } from 'rxjs';
-import { filter, share, take } from 'rxjs/operators';
+import { BehaviorSubject, filter, firstValueFrom, Observable, share, Subject, take, } from 'rxjs';
 import { Client, } from '@stomp/stompjs';
-import { RxStompState } from './rx-stomp-state';
+import { RxStompState } from './rx-stomp-state.js';
 /**
  * This is the main Stomp Client.
- * Typically you will create an instance of this to connect to the STOMP broker.
+ * Typically, you will create an instance of this to connect to the STOMP broker.
  *
- * This wraps [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
- * {@link Client} class.
+ * This wraps an instance of [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
+ * {@link Client}.
  *
  * The key difference is that it exposes operations as RxJS Observables.
- * For example when a STOMP endpoint is subscribed it returns an Observable
+ * For example, when a STOMP endpoint is subscribed it returns an Observable
  * that will stream all received messages.
  *
- * With exception of beforeConnect, functionality related to all callbacks in
+ * With exception to beforeConnect, functionality related to all callbacks in
  * [@stomp/stompjs Client]{@link Client}
  * is exposed as Observables/Subjects/BehaviorSubjects.
  *
@@ -32,17 +22,35 @@ import { RxStompState } from './rx-stomp-state';
  */
 export class RxStomp {
     /**
-     * Constructor
+     * Instance of actual
+     * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
+     * {@link Client}.
+     *
+     * **Be careful in calling methods on it directly - you may get unintended consequences.**
      */
-    constructor() {
+    get stompClient() {
+        return this._stompClient;
+    }
+    /**
+     * Constructor
+     *
+     * @param stompClient optionally inject the
+     * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
+     * {@link Client} to wrap. If this is not provided, a client will
+     * be constructed internally.
+     */
+    constructor(stompClient) {
         /**
          * Internal array to hold locally queued messages when STOMP broker is not connected.
          */
         this._queuedMessages = [];
-        this._stompClient = new Client();
+        const client = stompClient ? stompClient : new Client();
+        this._stompClient = client;
         const noOp = () => { };
         // Before connect is no op by default
         this._beforeConnect = noOp;
+        // Correlate errors is falsey op by default
+        this._correlateErrors = () => undefined;
         // debug is no-op by default
         this._debug = noOp;
         // Initial state is CLOSED
@@ -59,7 +67,8 @@ export class RxStomp {
         this.connected$.subscribe(() => {
             this._sendQueuedMessages();
         });
-        this._serverHeadersBehaviourSubject$ = new BehaviorSubject(null);
+        this._serverHeadersBehaviourSubject$ =
+            new BehaviorSubject(null);
         this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(filter((headers) => {
             return headers !== null;
         }));
@@ -68,16 +77,6 @@ export class RxStomp {
         this.unhandledReceipts$ = new Subject();
         this.unhandledFrame$ = new Subject();
         this.webSocketErrors$ = new Subject();
-    }
-    /**
-     * Instance of actual
-     * [@stomp/stompjs]{@link https://github.com/stomp-js/stompjs}
-     * {@link Client}.
-     *
-     * **Be careful in calling methods on it directly - you may get unintended consequences.**
-     */
-    get stompClient() {
-        return this._stompClient;
     }
     /**
      * Set configuration. This method may be called multiple times.
@@ -111,6 +110,10 @@ export class RxStomp {
             this._beforeConnect = stompConfig.beforeConnect;
             delete stompConfig.beforeConnect;
         }
+        if (stompConfig.correlateErrors) {
+            this._correlateErrors = stompConfig.correlateErrors;
+            delete stompConfig.correlateErrors;
+        }
         // RxStompConfig has subset of StompConfig fields
         this._stompClient.configure(stompConfig);
         if (stompConfig.debug) {
@@ -128,11 +131,11 @@ export class RxStomp {
      */
     activate() {
         this._stompClient.configure({
-            beforeConnect: () => __awaiter(this, void 0, void 0, function* () {
+            beforeConnect: async () => {
                 this._changeState(RxStompState.CONNECTING);
                 // Call handler
-                yield this._beforeConnect(this);
-            }),
+                await this._beforeConnect(this);
+            },
             onConnect: (frame) => {
                 this._serverHeadersBehaviourSubject$.next(frame.headers);
                 // Indicate our connected state to observers
@@ -163,20 +166,24 @@ export class RxStomp {
     }
     /**
      * Disconnect if connected and stop auto reconnect loop.
-     * Appropriate callbacks will be invoked if underlying STOMP connection was connected.
+     * Appropriate callbacks will be invoked if the underlying STOMP connection was connected.
      *
-     * To reactivate you can call [RxStomp#activate]{@link RxStomp#activate}.
+     * To reactivate, you can call [RxStomp#activate]{@link RxStomp#activate}.
+     *
+     * This call is async. It will resolve immediately if there is no underlying active websocket,
+     * otherwise, it will resolve after the underlying websocket is properly disposed of.
+     *
+     * Experimental: Since version 2.0.0, pass `force: true` to immediately discard the underlying connection.
+     * See [Client#deactivate]{@link Client#deactivate} for details.
      *
      * Maps to: [Client#deactivate]{@link Client#deactivate}
      */
-    deactivate() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this._changeState(RxStompState.CLOSING);
-            // The promise will be resolved immediately if there are no active connection
-            // otherwise, after it has successfully disconnected.
-            yield this._stompClient.deactivate();
-            this._changeState(RxStompState.CLOSED);
-        });
+    async deactivate(options = {}) {
+        this._changeState(RxStompState.CLOSING);
+        // The promise will be resolved immediately if there is no active connection
+        // otherwise, after it has successfully disconnected.
+        await this._stompClient.deactivate(options);
+        this._changeState(RxStompState.CLOSED);
     }
     /**
      * It will return `true` if STOMP broker is connected and `false` otherwise.
@@ -196,21 +203,21 @@ export class RxStomp {
      * Send a message to a named destination. Refer to your STOMP broker documentation for types
      * and naming of destinations.
      *
-     * STOMP protocol specifies and suggests some headers and also allows broker specific headers.
+     * STOMP protocol specifies and suggests some headers and also allows broker-specific headers.
      *
      * `body` must be String.
      * You will need to covert the payload to string in case it is not string (e.g. JSON).
      *
-     * To send a binary message body use binaryBody parameter. It should be a
+     * To send a binary message body, use binaryBody parameter. It should be a
      * [Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array).
      * Sometimes brokers may not support binary frames out of the box.
      * Please check your broker documentation.
      *
-     * `content-length` header is automatically added to the STOMP Frame sent to the broker.
+     * The ` content-length` header is automatically added to the STOMP Frame sent to the broker.
      * Set `skipContentLengthHeader` to indicate that `content-length` header should not be added.
-     * For binary messages `content-length` header is always added.
+     * For binary messages, `content-length` header is always added.
      *
-     * Caution: The broker will, most likely, report an error and disconnect if message body has NULL octet(s)
+     * Caution: The broker will, most likely, report an error and disconnect if the message body has NULL octet(s)
      * and `content-length` header is missing.
      *
      * The message will get locally queued if the STOMP broker is not connected. It will attempt to
@@ -218,7 +225,7 @@ export class RxStomp {
      * If you do not want that behavior,
      * please set [retryIfDisconnected]{@link IRxStompPublishParams#retryIfDisconnected} to `false`
      * in the parameters.
-     * When `false`, this function will raise an error if message could not be sent immediately.
+     * When `false`, this function will raise an error if a message could not be sent immediately.
      *
      * Maps to: [Client#publish]{@link Client#publish}
      *
@@ -284,16 +291,16 @@ export class RxStomp {
         else {
             params = Object.assign({}, defaults, opts);
         }
-        /* Well the logic is complicated but works beautifully. RxJS is indeed wonderful.
+        /* Well, the logic is complicated but works beautifully. RxJS is indeed wonderful.
          *
-         * We need to activate the underlying subscription immediately if Stomp is connected. If not it should
-         * subscribe when it gets next connected. Further it should re establish the subscription whenever Stomp
+         * We need to activate the underlying subscription immediately if Stomp is connected. If not, it should
+         * subscribe when it gets next connected. Further, it should re-establish the subscription whenever Stomp
          * successfully reconnects.
          *
          * Actual implementation is simple, we filter the BehaviourSubject 'state' so that we can trigger whenever Stomp is
          * connected. Since 'state' is a BehaviourSubject, if Stomp is already connected, it will immediately trigger.
          *
-         * The observable that we return to caller remains same across all reconnects, so no special handling needed at
+         * The observable that we return to the caller remains the same across all reconnects, so no special handling needed at
          * the message subscriber.
          */
         this._debug(`Request to subscribe ${params.destination}`);
@@ -307,6 +314,12 @@ export class RxStomp {
             if (params.subscribeOnlyOnce) {
                 connectedPre$ = connectedPre$.pipe(take(1));
             }
+            const stompErrorsSubscription = this.stompErrors$.subscribe((error) => {
+                const correlatedDestination = this._correlateErrors(error);
+                if (correlatedDestination === params.destination) {
+                    messages.error(error);
+                }
+            });
             stompConnectedSubscription = connectedPre$.subscribe(() => {
                 this._debug(`Will subscribe to ${params.destination}`);
                 let subHeaders = params.subHeaders;
@@ -318,9 +331,10 @@ export class RxStomp {
                 }, subHeaders);
             });
             return () => {
-                /* cleanup function, will be called when no subscribers are left */
+                /* cleanup function, it will be called when no subscribers are left */
                 this._debug(`Stop watching connection state (for ${params.destination})`);
                 stompConnectedSubscription.unsubscribe();
+                stompErrorsSubscription.unsubscribe();
                 if (this.connected()) {
                     this._debug(`Will unsubscribe from ${params.destination} at Stomp`);
                     let unsubHeaders = params.unsubHeaders;
@@ -342,35 +356,39 @@ export class RxStomp {
         return coldObservable.pipe(share());
     }
     /**
+     * **Deprecated** Please use {@link asyncReceipt}.
+     */
+    watchForReceipt(receiptId, callback) {
+        this._stompClient.watchForReceipt(receiptId, callback);
+    }
+    /**
      * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
      * To request an acknowledgement, a `receipt` header needs to be sent with the actual request.
-     * The value (say receipt-id) for this header needs to be unique for each use. Typically a sequence, a UUID, a
+     * The value (say receipt-id) for this header needs to be unique for each use. Typically, a sequence, a UUID, a
      * random number or a combination may be used.
      *
      * A complaint broker will send a RECEIPT frame when an operation has actually been completed.
-     * The operation needs to be matched based in the value of the receipt-id.
+     * The operation needs to be matched based on the value of the receipt-id.
      *
-     * This method allow watching for a receipt and invoke the callback
-     * when corresponding receipt has been received.
+     * This method allows watching for a receipt and invoking the callback
+     * when the corresponding receipt has been received.
      *
-     * The actual {@link Frame}
-     * will be passed as parameter to the callback.
+     * The promise will yield the actual {@link IFrame}.
      *
      * Example:
      * ```javascript
      *        // Publishing with acknowledgement
      *        let receiptId = randomText();
      *
-     *        rxStomp.watchForReceipt(receiptId, function() {
-     *          // Will be called after server acknowledges
-     *        });
+     *        const receipt = rxStomp.asyncReceipt(receiptId);
      *        rxStomp.publish({destination: '/topic/special', headers: {receipt: receiptId}, body: msg});
+     *        await receipt; // it yields the actual Frame
      * ```
      *
      * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
      */
-    watchForReceipt(receiptId, callback) {
-        this._stompClient.watchForReceipt(receiptId, callback);
+    asyncReceipt(receiptId) {
+        return firstValueFrom(this.unhandledReceipts$.pipe(filter(frame => frame.headers['receipt-id'] === receiptId)));
     }
     _changeState(state) {
         this._connectionStatePre$.next(state);

@@ -2,7 +2,7 @@
  * Represents a configuration object for RxSTOMP.
  * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
  *
- * All the attributes of this calls are optional.
+ * All the attributes of these calls are optional.
  *
  * Part of `@stomp/rx-stomp`
  */

@@ -1,5 +1,5 @@
 /**
- * RPC Config. See the guide for example.
+ * RPC Config. For examples see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
  */
 export class RxStompRPCConfig {
 }

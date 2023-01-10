@@ -1,6 +1,5 @@
-import { Observable } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-import { UUID } from 'angular2-uuid';
+import { filter, first, Observable } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 /**
  * An implementation of Remote Procedure Call (RPC) using messaging.
  *
@@ -48,7 +47,7 @@ export class RxStompRPC {
      */
     stream(params) {
         // defensively copy
-        const headers = Object.assign({}, (params.headers || {}));
+        const headers = { ...(params.headers || {}) };
         if (!this._repliesObservable) {
             const repliesObservable = this._setupReplyQueue(this._replyQueueName, this.rxStomp);
             // In case of custom queue, ensure it remains subscribed
@@ -59,7 +58,7 @@ export class RxStompRPC {
         }
         return Observable.create((rpcObserver) => {
             let defaultMessagesSubscription;
-            const correlationId = headers['correlation-id'] || UUID.UUID();
+            const correlationId = headers['correlation-id'] || uuid();
             defaultMessagesSubscription = this._repliesObservable
                 .pipe(filter((message) => {
                 return message.headers['correlation-id'] === correlationId;
@@ -70,7 +69,7 @@ export class RxStompRPC {
             // send an RPC request
             headers['reply-to'] = this._replyQueueName;
             headers['correlation-id'] = correlationId;
-            this.rxStomp.publish(Object.assign(Object.assign({}, params), { headers }));
+            this.rxStomp.publish({ ...params, headers });
             return () => {
                 // Cleanup
                 defaultMessagesSubscription.unsubscribe();
