@@ -1,12 +1,15 @@
 /* tslint:disable:no-unused-variable */
 
-import "jasmine";
+import 'jasmine';
 
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
-import { RxStomp } from "../../src";
-import { disconnectRxStompAndEnsure, ensureRxStompConnected } from "../helpers/helpers";
-import { rxStompFactory } from "../helpers/rx-stomp-factory";
+import { RxStomp } from '../../src';
+import {
+  disconnectRxStompAndEnsure,
+  ensureRxStompConnected,
+} from '../helpers/helpers';
+import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Receipt', () => {
   let rxStomp: RxStomp;
