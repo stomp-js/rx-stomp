@@ -1,6 +1,7 @@
 import {
   BehaviorSubject,
   filter,
+  firstValueFrom,
   Observable,
   Observer,
   share,
@@ -108,7 +109,7 @@ export class RxStomp {
 
   /**
    * STOMP brokers can be requested to notify when an operation is actually completed.
-   * Prefer using [RxStomp#watchForReceipt]{@link RxStomp#watchForReceipt}.
+   * Prefer using {@link asyncReceipt}.
    *
    * This Observer will yield the received
    * {@link IFrame}
@@ -587,6 +588,16 @@ export class RxStomp {
   }
 
   /**
+   * **Deprecated** Please use {@link asyncReceipt}.
+   */
+  public watchForReceipt(
+    receiptId: string,
+    callback: (frame: IFrame) => void
+  ): void {
+    this._stompClient.watchForReceipt(receiptId, callback);
+  }
+
+  /**
    * STOMP brokers may carry out operation asynchronously and allow requesting for acknowledgement.
    * To request an acknowledgement, a `receipt` header needs to be sent with the actual request.
    * The value (say receipt-id) for this header needs to be unique for each use. Typically, a sequence, a UUID, a
@@ -598,27 +609,26 @@ export class RxStomp {
    * This method allows watching for a receipt and invoking the callback
    * when the corresponding receipt has been received.
    *
-   * The actual {@link Frame}
-   * will be passed as parameter to the callback.
+   * The promise will yield the actual {@link IFrame}.
    *
    * Example:
    * ```javascript
    *        // Publishing with acknowledgement
    *        let receiptId = randomText();
    *
-   *        rxStomp.watchForReceipt(receiptId, function() {
-   *          // Will be called after server acknowledges
-   *        });
+   *        const receipt = rxStomp.asyncReceipt(receiptId);
    *        rxStomp.publish({destination: '/topic/special', headers: {receipt: receiptId}, body: msg});
+   *        await receipt; // it yields the actual Frame
    * ```
    *
    * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
    */
-  public watchForReceipt(
-    receiptId: string,
-    callback: (frame: IFrame) => void
-  ): void {
-    this._stompClient.watchForReceipt(receiptId, callback);
+  public asyncReceipt(receiptId: string): Promise<IFrame> {
+    return firstValueFrom(
+      this.unhandledReceipts$.pipe(
+        filter(frame => frame.headers['receipt-id'] === receiptId)
+      )
+    );
   }
 
   protected _changeState(state: RxStompState): void {

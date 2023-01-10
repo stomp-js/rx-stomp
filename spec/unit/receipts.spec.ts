@@ -1,25 +1,15 @@
 /* tslint:disable:no-unused-variable */
 
-import 'jasmine';
+import "jasmine";
 
-import { filter, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from "rxjs";
 
-import { RxStomp } from '../../src';
-import {
-  disconnectRxStompAndEnsure,
-  ensureRxStompConnected,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+import { RxStomp } from "../../src";
+import { disconnectRxStompAndEnsure, ensureRxStompConnected } from "../helpers/helpers";
+import { rxStompFactory } from "../helpers/rx-stomp-factory";
 
 describe('Receipt', () => {
   let rxStomp: RxStomp;
-
-  const promiseReceipt = (receiptId: string) =>
-    firstValueFrom(
-      rxStomp.unhandledReceipts$.pipe(
-        filter(frame => frame.headers['receipt-id'] === receiptId)
-      )
-    );
 
   // Wait till RxStomp is actually connected
   beforeEach(() => {
@@ -40,14 +30,14 @@ describe('Receipt', () => {
     const publishReceipt = 'publish-receipt';
 
     // Subscribe with receipt request
-    const promiseWatchReceipt = promiseReceipt(watchReceipt);
+    const promiseWatchReceipt = rxStomp.asyncReceipt(watchReceipt);
     const retPromise = firstValueFrom(
       rxStomp.watch(queueName, { receipt: watchReceipt })
     );
     await promiseWatchReceipt;
 
     // Now publish to the same queue with receipt request
-    const promisePublishReceipt = promiseReceipt(publishReceipt);
+    const promisePublishReceipt = rxStomp.asyncReceipt(publishReceipt);
     rxStomp.publish({
       destination: queueName,
       body: msg,
