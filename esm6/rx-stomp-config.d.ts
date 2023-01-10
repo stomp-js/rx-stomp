@@ -1,10 +1,10 @@
-import { debugFnType, StompHeaders, Versions } from '@stomp/stompjs';
-import { RxStomp } from './rx-stomp';
+import { debugFnType, IFrame, StompHeaders, Versions } from '@stomp/stompjs';
+import { RxStomp } from './rx-stomp.js';
 /**
  * Represents a configuration object for RxSTOMP.
  * Instance of this can be passed to [RxStomp#configure]{@link RxStomp#configure}
  *
- * All the attributes of this calls are optional.
+ * All the attributes of these calls are optional.
  *
  * Part of `@stomp/rx-stomp`
  */
@@ -20,12 +20,12 @@ export declare class RxStompConfig {
      */
     brokerURL?: string;
     /**
-     * STOMP versions to attempt during STOMP handshake. By default versions `1.0`, `1.1`, and `1.2` are attempted.
+     * STOMP versions to attempt during STOMP handshake. By default, versions `1.2`, `1.1`, and `1.0` are attempted.
      *
      * Example:
      * ```javascript
-     *        // Try only versions 1.0 and 1.1
-     *        rxStompConfig.stompVersions= new Versions(['1.0', '1.1']);
+     *        // Try only versions 1.1 and 1.0
+     *        rxStompConfig.stompVersions= new Versions(['1.1', '1.0']);
      * ```
      *
      * Maps to: [Client#stompVersions]{@link Client#stompVersions}
@@ -33,16 +33,26 @@ export declare class RxStompConfig {
     stompVersions?: Versions;
     /**
      * Set it to log the actual raw communication with the broker.
-     * When unset, it logs headers of the parsed frames.
+     * When unset, it logs only the headers of the parsed frames.
      *
-     * Change in this effects from next broker reconnect.
+     * Change in this takes effect from the next broker reconnection.
      *
      * **Caution: this assumes that frames only have valid UTF8 strings.**
      *
      * Maps to: [Client#logRawCommunication]{@link Client#logRawCommunication}.
      */
     logRawCommunication?: boolean;
-    /** Enable client debugging? */
+    /**
+     * Enable client debugging
+     *
+     * Example:
+     *
+     * ```typescript
+     *     debug: (msg: string): void => {
+     *       console.log(new Date(), msg);
+     *     },
+     * ```
+     */
     debug?: debugFnType;
     /**
      * This function should return a WebSocket or a similar (e.g. SockJS) object.
@@ -68,21 +78,23 @@ export declare class RxStompConfig {
     webSocketFactory?: () => any;
     /**
      * Will retry if Stomp connection is not established in specified milliseconds.
-     * Default 0, which implies wait for ever.
+     * Default 0, which implies wait forever.
      *
      * Maps to: [Client#connectionTimeout]{@link Client#connectionTimeout}.
+     *
+     * Caution: This feature is experimental.
      */
     connectionTimeout?: number;
     /**
      * Automatically reconnect with delay in milliseconds, set to 0 to disable.
      *
-     * Maps to: [Client#reconnectDelay]{@Client#reconnectDelay}
+     * Maps to: [Client#reconnectDelay]{@link Client#reconnectDelay}
      */
     reconnectDelay?: number;
     /**
      * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
      *
-     * Maps to: [Client#heartbeatIncoming]{@Client#heartbeatIncoming}
+     * Maps to: [Client#heartbeatIncoming]{@link Client#heartbeatIncoming}
      */
     heartbeatIncoming?: number;
     /**
@@ -92,9 +104,9 @@ export declare class RxStompConfig {
      */
     heartbeatOutgoing?: number;
     /**
-     * Enable non-standards compliant mode of splitting of outgoing large text packets.
+     * Enable a non-standards compliant mode of splitting outgoing large text packets.
      * See [Client#splitLargeFrames]{@link Client#splitLargeFrames} for details.
-     * Useful with Java Spring based brokers.
+     * Probably, only Java Spring based brokers support this mode.
      *
      * Maps to: [Client#splitLargeFrames]{@link Client#splitLargeFrames}.
      */
@@ -130,22 +142,32 @@ export declare class RxStompConfig {
      */
     disconnectHeaders?: StompHeaders;
     /**
-     * Callback, invoked on before a connection connection to the STOMP broker.
+     * Callback, invoked before attempting connection to the STOMP broker.
      *
-     * You can change configuration of the rxStomp, which will impact the immediate connect.
-     * It is valid to call [RxStomp#decativate]{@link RxStomp#deactivate} in this callback.
+     * You can change the configuration of the rxStomp, which will impact the immediate connecting.
+     * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} in this callback.
      *
      * As of version 0.1.1, this callback can be
      * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
      * (i.e., it can return a
      * [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)).
-     * In that case connect will be called only after the Promise is resolved.
+     * In that case, connect will be called only after the Promise is resolved.
      * This can be used to reliably fetch credentials, access token etc. from some other service
      * in an asynchronous way.
      *
-     * As of 0.3.5, this callback will receive [RxStomp](@link RxStomp) as parameter.
+     * As of 0.3.5, this callback will receive [RxStomp]{@link RxStomp} as parameter.
      *
      * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
      */
     beforeConnect?: (client: RxStomp) => void | Promise<void>;
+    /**
+     * Callback invoked on every ERROR frame. If the callback returns the ID of a currently
+     * subscribed destination, the frame will be emitted as an error on the corresponding
+     * observable(s), terminating them.
+     *
+     * Importantly, since those observables are now closed, this means a re-SUBSCRIBE to
+     * the erroneous destination will _not_ be attempted during an automatic reconnection of
+     * the websocket.
+     */
+    correlateErrors?: (error: IFrame) => string;
 }

@@ -1,14 +1,14 @@
 import { IMessage } from '@stomp/stompjs';
 import { Observable } from 'rxjs';
-import { RxStomp } from './rx-stomp';
+import { RxStomp } from './rx-stomp.js';
 /**
- * See the guide for example
+ * For examples see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
  *
  * Part of `@stomp/rx-stomp`
  */
-export declare type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<IMessage>;
+export type setupReplyQueueFnType = (replyQueueName: string, rxStomp: RxStomp) => Observable<IMessage>;
 /**
- * RPC Config. See the guide for example.
+ * RPC Config. For examples see the [guide](/guide/rx-stomp/ng2-stompjs/remote-procedure-call.html).
  */
 export declare class RxStompRPCConfig {
     /**
