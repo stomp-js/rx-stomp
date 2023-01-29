@@ -6,21 +6,3 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
     target-branch: develop
-    ignore:
-      - dependency-name: webpack
-        versions:
-          - '5.x'
-      - dependency-name: jasmine
-        versions:
-          - 3.6.4
-      - dependency-name: typescript
-        versions: ['3.x', '4.x']
-      - dependency-name: webpack-cli
-        versions:
-          - '4.x'
-      - dependency-name: karma-summary-reporter
-        versions:
-          - 2.0.0
-      - dependency-name: rxjs
-        versions:
-          - '7.x'
