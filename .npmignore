@@ -2,10 +2,8 @@
 *
 
 !bundles/**/*
-!esm5/**/*
 !esm6/**/*
 !index.d.ts
 !package.json
 !README.md
-
-*.map
+!src/**/*
