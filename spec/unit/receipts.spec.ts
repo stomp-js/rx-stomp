@@ -33,11 +33,10 @@ describe('Receipt', () => {
     const publishReceipt = 'publish-receipt';
 
     // Subscribe with receipt request
-    const promiseWatchReceipt = rxStomp.asyncReceipt(watchReceipt);
     const retPromise = firstValueFrom(
       rxStomp.watch(queueName, { receipt: watchReceipt })
     );
-    await promiseWatchReceipt;
+    await rxStomp.asyncReceipt(watchReceipt);
 
     // Now publish to the same queue with receipt request
     const promisePublishReceipt = rxStomp.asyncReceipt(publishReceipt);
