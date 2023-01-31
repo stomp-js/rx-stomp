@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/stomp-js/rx-stomp.svg?branch=master)](https://travis-ci.org/stomp-js/rx-stomp)
 
+[![Verified on Openbase](https://badges.openbase.com/js/verified/@stomp/rx-stomp.svg?token=oUE0YKV87LJXAWQpGG0YUN698is0r2/WmS2qM7TLz9U=)](https://openbase.com/js/@stomp/rx-stomp?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
+
 This library provides an RxJS oriented STOMP over WebSocket client for Web browser and node.js
 applications.
 
