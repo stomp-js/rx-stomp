@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.0 (2023-02-11)
+
+## 2.0.0-beta2 (2023-01-31)
+
+- Update dependencies.
+- Mark dependencies as peerDependencies.
+
 ## 2.0.0-beta1 (2023-01-10)
 
 - Compatibility with Node 18.
