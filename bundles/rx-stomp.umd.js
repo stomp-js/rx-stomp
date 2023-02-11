@@ -407,9 +407,8 @@
          *        // Publishing with acknowledgement
          *        let receiptId = randomText();
          *
-         *        const receipt = rxStomp.asyncReceipt(receiptId);
          *        rxStomp.publish({destination: '/topic/special', headers: {receipt: receiptId}, body: msg});
-         *        await receipt; // it yields the actual Frame
+         *        await rxStomp.asyncReceipt(receiptId);; // it yields the actual Frame
          * ```
          *
          * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
