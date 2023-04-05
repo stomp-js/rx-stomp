@@ -41,7 +41,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-sucrase": "^5.0.1",
     "@rollup/plugin-terser": "^0.2.0",
-    "@rollup/plugin-typescript": "^10.0.1",
+    "@rollup/plugin-typescript": "^11.1.0",
     "@types/jasmine": "^4.3.1",
     "@types/uuid": "^9.0.0",
     "jasmine": "^4.5.0",
