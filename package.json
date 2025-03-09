@@ -39,6 +39,7 @@
     "@chiragrupani/karma-chromium-edge-launcher": "^2.4.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-sucrase": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/jasmine": "^5.1.7",
     "@types/uuid": "^10.0.0",
