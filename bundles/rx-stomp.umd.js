@@ -26,7 +26,7 @@
         RxStompState[RxStompState["OPEN"] = 1] = "OPEN";
         RxStompState[RxStompState["CLOSING"] = 2] = "CLOSING";
         RxStompState[RxStompState["CLOSED"] = 3] = "CLOSED";
-    })(exports.RxStompState = exports.RxStompState || (exports.RxStompState = {}));
+    })(exports.RxStompState || (exports.RxStompState = {}));
 
     /**
      * This is the main Stomp Client.
@@ -506,15 +506,15 @@
         }
     }
 
-    Object.defineProperty(exports, 'StompHeaders', {
+    Object.defineProperty(exports, "StompHeaders", {
         enumerable: true,
         get: function () { return stompjs.StompHeaders; }
     });
-    Object.defineProperty(exports, 'StompSocketState', {
+    Object.defineProperty(exports, "StompSocketState", {
         enumerable: true,
         get: function () { return stompjs.StompSocketState; }
     });
-    Object.defineProperty(exports, 'Versions', {
+    Object.defineProperty(exports, "Versions", {
         enumerable: true,
         get: function () { return stompjs.Versions; }
     });
@@ -524,4 +524,3 @@
     exports.RxStompRPCConfig = RxStompRPCConfig;
 
 }));
-//# sourceMappingURL=rx-stomp.umd.js.map

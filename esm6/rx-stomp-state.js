@@ -9,5 +9,5 @@ export var RxStompState;
     RxStompState[RxStompState["OPEN"] = 1] = "OPEN";
     RxStompState[RxStompState["CLOSING"] = 2] = "CLOSING";
     RxStompState[RxStompState["CLOSED"] = 3] = "CLOSED";
-})(RxStompState = RxStompState || (RxStompState = {}));
+})(RxStompState || (RxStompState = {}));
 //# sourceMappingURL=rx-stomp-state.js.map
