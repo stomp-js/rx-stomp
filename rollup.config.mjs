@@ -1,11 +1,10 @@
-import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
 
 const umdConf = {
   file: 'bundles/rx-stomp.umd.js',
   format: 'umd',
   name: 'RxStomp',
-  sourcemap: true,
+  sourcemap: false,
   globals: {
     '@stomp/stompjs': 'StompJs',
     rxjs: 'rxjs',
@@ -16,15 +15,13 @@ const umdConf = {
 const umdMinConf = {
   ...umdConf,
   file: 'bundles/rx-stomp.umd.min.js',
-  sourcemap: false,
   plugins: [terser()],
 };
 
 export default [
   {
-    input: 'src/index.ts',
+    input: 'esm6/index.js',
     external: Object.keys(umdConf.globals),
-    plugins: [typescript()],
     output: [umdConf, umdMinConf],
   },
 ];
