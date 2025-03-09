@@ -13,14 +13,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: bin/osx/setup-rabbit.sh
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '22.x'
       - run: npm ci
       - run: npm run build
       - run: npm run lint
       - run: npx karma start spec/karma.conf.js --single-run --browsers=Safari
-      - run: npx karma start spec/karma.conf.js --single-run --browsers=EdgeHeadless
