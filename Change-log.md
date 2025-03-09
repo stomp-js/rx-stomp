@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.1 (2025-03-09)
+
+- Update dependencies.
+- Allow UUID @9, @10, @11 to be used as peerDependency.
+
 ## 2.0.0 (2023-02-11)
 
 ## 2.0.0-beta2 (2023-01-31)
