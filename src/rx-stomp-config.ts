@@ -1,4 +1,4 @@
-import { debugFnType, IFrame, StompHeaders, Versions } from '@stomp/stompjs';
+import { debugFnType, IFrame, ReconnectionTimeMode, StompHeaders, TickerStrategy, Versions } from '@stomp/stompjs';
 import { RxStomp } from './rx-stomp.js';
 
 /**
@@ -98,6 +98,19 @@ export class RxStompConfig {
    * Maps to: [Client#reconnectDelay]{@link Client#reconnectDelay}
    */
   public reconnectDelay?: number;
+  /**
+   * Maximum reconnect delay in milliseconds when using increasing reconnection strategies.
+   *
+   * Maps to: [Client#maxReconnectDelay]{@link Client#maxReconnectDelay}
+   */
+  public maxReconnectDelay?: number;
+
+  /**
+   * Reconnection timing mode/strategy (e.g., fixed, linear, exponential).
+   *
+   * Maps to: [Client#reconnectTimeMode]{@link Client#reconnectTimeMode}
+   */
+  public reconnectTimeMode?: ReconnectionTimeMode;
 
   /**
    * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
@@ -107,11 +120,25 @@ export class RxStompConfig {
   public heartbeatIncoming?: number;
 
   /**
+   * Multiplier applied to incoming heartbeat interval to determine heartbeat loss tolerance.
+   *
+   * Maps to: [Client#heartbeatToleranceMultiplier]{@link Client#heartbeatToleranceMultiplier}.
+   */
+  public heartbeatToleranceMultiplier?: number;
+
+  /**
    * Outgoing heartbeat interval in milliseconds. Set to 0 to disable.
    *
    * Maps to: [Client#heartbeatOutgoing]{@link Client#heartbeatOutgoing}
    */
   public heartbeatOutgoing?: number;
+
+  /**
+   * Strategy/ticker used for scheduling heartbeats.
+   *
+   * Maps to: [Client#heartbeatStrategy]{@link Client#heartbeatStrategy}.
+   */
+  public heartbeatStrategy?: TickerStrategy;
 
   /**
    * Enable a non-standards compliant mode of splitting outgoing large text packets.
