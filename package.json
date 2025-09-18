@@ -1,6 +1,6 @@
 {
   "name": "@stomp/rx-stomp",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "RxJS STOMP client for Javascript and Typescript",
   "scripts": {
     "clean": "rm -rf bundles esm6",
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/stomp-js/rx-stomp#readme",
   "peerDependencies": {
-    "@stomp/stompjs": "^7.0.0",
+    "@stomp/stompjs": "^7.2.0",
     "rxjs": "^7.2.0",
     "uuid": ">=9.0.0 <12.0.0"
   },
