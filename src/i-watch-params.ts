@@ -3,57 +3,58 @@ import { StompHeaders } from '@stomp/stompjs';
 /**
  * Options for [RxStomp#watch]{@link RxStomp#watch}.
  *
+ * These parameters control how a subscription is created, re-created on reconnects,
+ * and how headers are supplied both during subscribe and unsubscribe.
+ *
  * Part of `@stomp/rx-stomp`
  */
 export interface IWatchParams {
   /**
-   * The subscription target. It is likely to be broker dependent.
+   * The subscription target (destination). This is broker-specific and typically
+   * looks like a queue or a topic, e.g. `/queue/orders` or `/topic/updates`.
    */
   readonly destination?: string;
 
   /**
-   * Subscription headers, defaults to `{}`
+   * Headers to send with the SUBSCRIBE frame. Defaults to `{}`.
    *
-   * If header information can change over time, and you are allowing automatic re-subscriptions,
-   * consider using a callback as the value rather than a string literal.
+   * If header values may change across reconnects, supply a function that will be
+   * invoked before each (re)subscription so it can return the latest headers.
    *
+   * Example:
    * ```typescript
-   *              const subHeadersCallback = () => {
-   *                  return {bye: 'world'};
-   *              };
-   *              const sub = rxStomp.watch({ destination: queueName, subHeaders: subHeadersCallback})
-   *                                 .subscribe((message) => {
-   *                                    // handle message
-   *                                 });
-   *              // The subHeadersCallback will be invoked before every (re)subscription.
+   * const subHeadersCallback = () => ({ Authorization: `Bearer ${getToken()}` });
+   * const sub = rxStomp.watch({ destination: queueName, subHeaders: subHeadersCallback })
+   *   .subscribe(message => { /* handle message *\/ });
+   * // The function runs before every subscription and resubscription.
    * ```
    */
   readonly subHeaders?: StompHeaders | (() => StompHeaders);
 
   /**
-   * Headers to be passed while unsubscribing, defaults to `{}`.
+   * Headers to send with the UNSUBSCRIBE frame. Defaults to `{}`.
    *
-   * Occasionally, headers may not be known while invoking [RxStomp#watch]{@link RxStomp#watch},
-   * in such cases a callback can be passed that would return the headers.
+   * When headers are not known up-front, pass a function that will be invoked
+   * right before unsubscribing to obtain the current headers.
    *
+   * Example:
    * ```typescript
-   *              const unsubHeadersCallback = () => {
-   *                  return {bye: 'world'};
-   *              };
-   *              const sub = rxStomp.watch({ destination: queueName, unsubHeaders: unsubHeadersCallback})
-   *                                 .subscribe((message) => {
-   *                                    // handle message
-   *                                 });
-   *              // Unsubscribe from RxJS Observable, internally unsubscribe will be issued to the broker.
-   *              // `unsubHeadersCallback` will be invoked to get the headers.
-   *              sub.unsubscribe();
+   * const unsubHeadersCallback = () => ({ reason: 'user-navigation' });
+   * const sub = rxStomp.watch({ destination: queueName, unsubHeaders: unsubHeadersCallback })
+   *   .subscribe(message => { /* handle message *\/ });
+   * // Later:
+   * sub.unsubscribe(); // The callback will be invoked to fetch headers.
    * ```
    */
   readonly unsubHeaders?: StompHeaders | (() => StompHeaders);
 
   /**
-   * By default, the destination will be subscribed after each successful (re)connection to the broker.
-   * Set this flag to not automatically resubscribe.
+   * By default, the destination will be re-subscribed automatically after each
+   * successful reconnection. Set to `true` to subscribe only once and suppress
+   * automatic resubscriptions.
+   *
+   * This is useful for one-off streams or when you prefer to control the lifetime
+   * explicitly across reconnects.
    */
   readonly subscribeOnlyOnce?: boolean;
 }
