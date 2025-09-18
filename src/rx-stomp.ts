@@ -7,7 +7,7 @@ import {
   share,
   Subject,
   Subscription,
-  take,
+  take
 } from 'rxjs';
 
 import {
@@ -18,7 +18,7 @@ import {
   publishParams,
   StompConfig,
   StompHeaders,
-  StompSubscription,
+  StompSubscription
 } from '@stomp/stompjs';
 
 import { RxStompConfig } from './rx-stomp-config.js';
@@ -183,8 +183,7 @@ export class RxStomp {
    * be constructed internally.
    */
   public constructor(stompClient?: Client) {
-    const client = stompClient ? stompClient : new Client();
-    this._stompClient = client;
+    this._stompClient = stompClient ? stompClient : new Client();
 
     const noOp = () => {};
 
@@ -283,7 +282,7 @@ export class RxStomp {
     }
 
     // RxStompConfig has subset of StompConfig fields
-    this._stompClient.configure(stompConfig as StompConfig);
+    this._stompClient.configure(stompConfig as unknown as StompConfig);
     if (stompConfig.debug) {
       this._debug = stompConfig.debug;
     }
