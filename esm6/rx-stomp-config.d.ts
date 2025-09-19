@@ -1,4 +1,4 @@
-import { debugFnType, IFrame, StompHeaders, Versions } from '@stomp/stompjs';
+import { debugFnType, IFrame, ReconnectionTimeMode, StompHeaders, TickerStrategy, Versions } from '@stomp/stompjs';
 import { RxStomp } from './rx-stomp.js';
 /**
  * Represents a configuration object for RxSTOMP.
@@ -10,87 +10,100 @@ import { RxStomp } from './rx-stomp.js';
  */
 export declare class RxStompConfig {
     /**
-     * The URL for the STOMP broker to connect to.
-     * Typically like `"ws://broker.329broker.com:15674/ws"` or `"wss://broker.329broker.com:15674/ws"`.
+     * The WebSocket URL of the STOMP broker endpoint.
+     * Example: "ws://broker.domain.com:15674/ws" or "wss://broker.domain.com:15674/ws".
      *
-     * Only one of this or [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} need to be set.
-     * If both are set, [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} will be used.
+     * Only one of this or [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} needs to be set.
+     * If both are set, [RxStompConfig#webSocketFactory]{@link RxStompConfig#webSocketFactory} takes precedence.
      *
      * Maps to: [Client#brokerURL]{@link Client#brokerURL}
      */
     brokerURL?: string;
     /**
-     * STOMP versions to attempt during STOMP handshake. By default, versions `1.2`, `1.1`, and `1.0` are attempted.
+     * STOMP versions to attempt during the handshake. By default, versions `1.2`, `1.1`, and `1.0` are attempted.
      *
      * Example:
-     * ```javascript
-     *        // Try only versions 1.1 and 1.0
-     *        rxStompConfig.stompVersions= new Versions(['1.1', '1.0']);
+     * ```typescript
+     * // Try only versions 1.1 and 1.0
+     * rxStompConfig.stompVersions = new Versions(['1.1', '1.0']);
      * ```
      *
      * Maps to: [Client#stompVersions]{@link Client#stompVersions}
      */
     stompVersions?: Versions;
     /**
-     * Set it to log the actual raw communication with the broker.
-     * When unset, it logs only the headers of the parsed frames.
+     * Enable logging of raw frames exchanged with the broker.
+     * When unset or false, only parsed frame headers are logged.
      *
-     * Change in this takes effect from the next broker reconnection.
+     * Takes effect from the next (re)connection.
      *
-     * **Caution: this assumes that frames only have valid UTF8 strings.**
+     * Caution: Assumes frames contain valid UTF-8 strings.
      *
      * Maps to: [Client#logRawCommunication]{@link Client#logRawCommunication}.
      */
     logRawCommunication?: boolean;
     /**
-     * Enable client debugging
+     * Custom debug logger for library messages.
      *
      * Example:
-     *
      * ```typescript
-     *     debug: (msg: string): void => {
-     *       console.log(new Date(), msg);
-     *     },
+     * rxStompConfig.debug = (msg: string) => {
+     *   console.log(new Date(), msg);
+     * };
      * ```
+     *
+     * Maps to: [Client#debug]{@link Client#debug}.
      */
     debug?: debugFnType;
     /**
-     * This function should return a WebSocket or a similar (e.g. SockJS) object.
-     * If your STOMP Broker supports WebSockets, prefer setting [Client#brokerURL]{@link Client#brokerURL}.
+     * Factory function to create and return a WebSocket-like object (e.g., WebSocket or SockJS).
+     * Prefer [Client#brokerURL]{@link Client#brokerURL} if your broker exposes a standard WebSocket endpoint.
      *
      * If both this and [Client#brokerURL]{@link Client#brokerURL} are set, this will be used.
      *
      * Example:
-     * ```javascript
-     *        // use a WebSocket
-     *        rxStompConfig.webSocketFactory= function () {
-     *          return new WebSocket("wss://broker.329broker.com:15674/ws");
-     *        };
+     * ```typescript
+     * // Use a native WebSocket
+     * rxStompConfig.webSocketFactory = () => new WebSocket('wss://broker.domain.com:15674/ws');
      *
-     *        // Typical usage with SockJS
-     *        rxStompConfig.webSocketFactory= function () {
-     *          return new SockJS("http://broker.329broker.com/stomp");
-     *        };
+     * // Use SockJS
+     * rxStompConfig.webSocketFactory = () => new SockJS('https://broker.domain.com/stomp');
      * ```
      *
      * Maps to: [Client#webSocketFactory]{@link Client#webSocketFactory}
      */
     webSocketFactory?: () => any;
     /**
-     * Will retry if Stomp connection is not established in specified milliseconds.
-     * Default 0, which implies wait forever.
+     * Connection timeout in milliseconds; the attempt is aborted if not connected within this time.
+     * Default: 0 (wait indefinitely).
      *
      * Maps to: [Client#connectionTimeout]{@link Client#connectionTimeout}.
      *
-     * Caution: This feature is experimental.
+     * Caution: Experimental.
      */
     connectionTimeout?: number;
     /**
-     * Automatically reconnect with delay in milliseconds, set to 0 to disable.
+     * Base delay (in milliseconds) between automatic reconnection attempts.
+     * Set to 0 to disable auto-reconnect.
      *
      * Maps to: [Client#reconnectDelay]{@link Client#reconnectDelay}
      */
     reconnectDelay?: number;
+    /**
+     * Maximum reconnection delay in milliseconds when using increasing reconnection strategies.
+     * Ignored when [reconnectTimeMode]{@link RxStompConfig#reconnectTimeMode} is fixed/linear with a constant delay.
+     *
+     * Maps to: [Client#maxReconnectDelay]{@link Client#maxReconnectDelay}
+     */
+    maxReconnectDelay?: number;
+    /**
+     * Strategy for spacing reconnection attempts.
+     * - ReconnectionTimeMode.LINEAR: fixed delay equal to [reconnectDelay]{@link RxStompConfig#reconnectDelay}
+     * - ReconnectionTimeMode.EXPONENTIAL: delay doubles after each attempt, capped by [maxReconnectDelay]{@link RxStompConfig#maxReconnectDelay}
+     *
+     * Maps to: [Client#reconnectTimeMode]{@link Client#reconnectTimeMode}
+     */
+    reconnectTimeMode?: ReconnectionTimeMode;
     /**
      * Incoming heartbeat interval in milliseconds. Set to 0 to disable.
      *
@@ -98,39 +111,61 @@ export declare class RxStompConfig {
      */
     heartbeatIncoming?: number;
     /**
+     * Multiplier applied to the incoming heartbeat interval to determine tolerance for missing heartbeats.
+     * Effective tolerance = heartbeatIncoming * heartbeatToleranceMultiplier.
+     *
+     * Maps to: [Client#heartbeatToleranceMultiplier]{@link Client#heartbeatToleranceMultiplier}.
+     */
+    heartbeatToleranceMultiplier?: number;
+    /**
      * Outgoing heartbeat interval in milliseconds. Set to 0 to disable.
      *
      * Maps to: [Client#heartbeatOutgoing]{@link Client#heartbeatOutgoing}
      */
     heartbeatOutgoing?: number;
     /**
-     * Enable a non-standards compliant mode of splitting outgoing large text packets.
-     * See [Client#splitLargeFrames]{@link Client#splitLargeFrames} for details.
-     * Probably, only Java Spring based brokers support this mode.
+     * Strategy/ticker used for scheduling heartbeats.
+     *
+     * Maps to: [Client#heartbeatStrategy]{@link Client#heartbeatStrategy}.
+     */
+    heartbeatStrategy?: TickerStrategy;
+    /**
+     * Enable a non-standards-compliant mode of splitting large text WebSocket frames.
+     * Useful for brokers that require chunked text frames (commonly certain Java Spring setups).
+     * Binary frames are never split.
      *
      * Maps to: [Client#splitLargeFrames]{@link Client#splitLargeFrames}.
      */
     splitLargeFrames?: boolean;
     /**
+     * Force all WebSocket frames to be sent as binary.
+     *
      * Maps to: [Client#forceBinaryWSFrames]{@link Client#forceBinaryWSFrames}.
      */
     forceBinaryWSFrames?: boolean;
     /**
-     * See [Client#appendMissingNULLonIncoming]{@link Client#appendMissingNULLonIncoming}.
+     * Workaround for environments where incoming frames may be truncated at NULL.
+     * Appends a trailing NULL to incoming frames.
+     *
+     * Maps to: [Client#appendMissingNULLonIncoming]{@link Client#appendMissingNULLonIncoming}.
      */
     appendMissingNULLonIncoming?: boolean;
     /**
+     * Maximum size (in bytes) of each WebSocket chunk when [splitLargeFrames]{@link RxStompConfig#splitLargeFrames} is enabled.
+     *
      * Maps to: [Client#maxWebSocketChunkSize]{@link Client#maxWebSocketChunkSize}.
      */
     maxWebSocketChunkSize?: number;
     /**
+     * Immediately discard the WebSocket on communication failure, instead of waiting for a clean close.
+     * Can reduce reconnection delays on certain browser/network failures.
+     *
      * Maps to: [Client#discardWebsocketOnCommFailure]{@link Client#discardWebsocketOnCommFailure}.
      */
     discardWebsocketOnCommFailure?: boolean;
     /**
-     * Connection headers, important keys - `login`, `passcode`, `host`.
-     * Though STOMP 1.2 standard marks these keys to be present, check your broker documentation for
-     * details specific to your broker.
+     * Connection headers, common keys include `login`, `passcode`, and `host`.
+     * Refer to your broker documentation for exact requirements.
      *
      * Maps to: [Client#connectHeaders]{@link Client#connectHeaders}
      */
@@ -142,32 +177,25 @@ export declare class RxStompConfig {
      */
     disconnectHeaders?: StompHeaders;
     /**
-     * Callback, invoked before attempting connection to the STOMP broker.
+     * Callback invoked before attempting a connection to the STOMP broker.
      *
-     * You can change the configuration of the rxStomp, which will impact the immediate connecting.
-     * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} in this callback.
+     * You may update configuration or credentials within this callback.
+     * It is valid to call [RxStomp#deactivate]{@link RxStomp#deactivate} here.
      *
-     * As of version 0.1.1, this callback can be
-     * [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
-     * (i.e., it can return a
-     * [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)).
-     * In that case, connect will be called only after the Promise is resolved.
-     * This can be used to reliably fetch credentials, access token etc. from some other service
-     * in an asynchronous way.
-     *
-     * As of 0.3.5, this callback will receive [RxStomp]{@link RxStomp} as parameter.
+     * This callback can be async; connection proceeds after the returned Promise resolves.
+     * As of 0.3.5, this callback receives the [RxStomp]{@link RxStomp} instance.
      *
      * Maps to: [Client#beforeConnect]{@link Client#beforeConnect}
      */
     beforeConnect?: (client: RxStomp) => void | Promise<void>;
     /**
-     * Callback invoked on every ERROR frame. If the callback returns the ID of a currently
-     * subscribed destination, the frame will be emitted as an error on the corresponding
-     * observable(s), terminating them.
+     * Callback invoked on every ERROR frame from the broker.
      *
-     * Importantly, since those observables are now closed, this means a re-SUBSCRIBE to
-     * the erroneous destination will _not_ be attempted during an automatic reconnection of
-     * the websocket.
+     * Return the subscription ID (or destination-id) that should receive the error. If returned ID
+     * corresponds to an active subscription, that observable will error and complete, and will not be
+     * re-subscribed automatically on reconnection.
+     *
+     * Useful for mapping broker ERROR frames to specific subscriptions that caused them.
      */
     correlateErrors?: (error: IFrame) => string;
 }
