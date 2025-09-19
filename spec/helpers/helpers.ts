@@ -13,8 +13,8 @@ export async function ensureRxStompConnected(rxStomp: RxStomp) {
 export async function ensureRxStompDisconnected(rxStomp: RxStomp) {
   await firstValueFrom(
     rxStomp.connectionState$.pipe(
-      filter((state: RxStompState) => state === RxStompState.CLOSED)
-    )
+      filter((state: RxStompState) => state === RxStompState.CLOSED),
+    ),
   );
 }
 

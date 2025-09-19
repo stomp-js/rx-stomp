@@ -6,7 +6,12 @@ import { filter, firstValueFrom } from 'rxjs';
 
 import { IMessage, RxStomp, RxStompState } from '../../src';
 import { generateBinaryData } from '../helpers/content-helpers';
-import { disconnectRxStompAndEnsure, ensureRxStompConnected, forceDisconnectAndEnsure, wait } from '../helpers/helpers';
+import {
+  disconnectRxStompAndEnsure,
+  ensureRxStompConnected,
+  forceDisconnectAndEnsure,
+  wait,
+} from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Subscribe & Publish', () => {
@@ -65,8 +70,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
 
       rxStomp.connected$.subscribe((state: RxStompState) => {
@@ -87,8 +92,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
 
       rxStomp.publish({ destination: queueName, body: msg });
@@ -109,8 +114,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
       rxStomp.publish({ destination: queueName, body: msg });
 
@@ -132,8 +137,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
 
       const message = await retPromise;
@@ -148,8 +153,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
 
       // Wait for the first connection, set publish after disconnect
@@ -171,7 +176,7 @@ describe('Subscribe & Publish', () => {
             destination: queueName,
             body: msg,
             retryIfDisconnected: false,
-          })
+          }),
         ).toThrow();
       });
 
@@ -186,7 +191,7 @@ describe('Subscribe & Publish', () => {
             destination: queueName,
             body: msg,
             retryIfDisconnected: false,
-          })
+          }),
         ).toThrow();
       });
     });
@@ -208,7 +213,7 @@ describe('Subscribe & Publish', () => {
       unsubSpy = spyOn(
         // @ts-ignore - accessing private property
         rxStomp.stompClient._stompHandler,
-        'unsubscribe'
+        'unsubscribe',
       ).and.callThrough();
     });
 
@@ -264,8 +269,8 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
-        )
+          filter((m: IMessage) => m.body === msg),
+        ),
       );
 
       // Force disconnect
@@ -291,7 +296,7 @@ describe('Subscribe & Publish', () => {
         .watch({ destination: endPoint, subscribeOnlyOnce: true })
         .pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: IMessage) => m.body === msg)
+          filter((m: IMessage) => m.body === msg),
         )
         .subscribe(m => onMessage(m));
 

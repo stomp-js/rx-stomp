@@ -37,7 +37,7 @@ describe('Log Bodies', () => {
       rxStomp.publish({ destination: queueName, body });
       expect(debug.calls.mostRecent().args[0]).toEqual(
         '>>> SEND\ndestination:/topic/ng-demo-sub\ncontent-length:37\n\nÄlä sinä yhtään and السابق' +
-          '\0'
+          '\0',
       );
     });
 
@@ -49,7 +49,7 @@ describe('Log Bodies', () => {
       debug.calls
         .all()
         .map(c => c.args[0])
-        .filter(v => v.match(body)).length
+        .filter(v => v.match(body)).length,
     ).toBeGreaterThanOrEqual(2);
   });
 });

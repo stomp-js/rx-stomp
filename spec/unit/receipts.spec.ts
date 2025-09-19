@@ -34,7 +34,7 @@ describe('Receipt', () => {
 
     // Subscribe with receipt request
     const retPromise = firstValueFrom(
-      rxStomp.watch(queueName, { receipt: watchReceipt })
+      rxStomp.watch(queueName, { receipt: watchReceipt }),
     );
     await rxStomp.asyncReceipt(watchReceipt);
 

@@ -71,7 +71,7 @@ const rpcWithCustomCorrelationId = async () => {
   const headers = { 'correlation-id': customCorrelationId };
 
   const reply = await firstValueFrom(
-    rxStompRPC.rpc({ destination: myRPCEndPoint, body: msg, headers })
+    rxStompRPC.rpc({ destination: myRPCEndPoint, body: msg, headers }),
   );
   expect(reply.body).toEqual(msg);
   expect(reply.headers['correlation-id']).toEqual(customCorrelationId);
@@ -80,7 +80,7 @@ const rpcWithCustomCorrelationId = async () => {
 const rpcWithBinayPayload = async () => {
   const binaryMsg = generateBinaryData(1);
   const message = await firstValueFrom(
-    rxStompRPC.rpc({ destination: myRPCEndPoint, binaryBody: binaryMsg })
+    rxStompRPC.rpc({ destination: myRPCEndPoint, binaryBody: binaryMsg }),
   );
   expect(message.binaryBody.toString()).toEqual(binaryMsg.toString());
 };
@@ -110,7 +110,7 @@ describe('RPC', () => {
     const origNumSubscribers = numSubscribers();
 
     const messagePromise = firstValueFrom(
-      rxStompRPC.rpc({ destination: myRPCEndPoint, body: 'Hello' })
+      rxStompRPC.rpc({ destination: myRPCEndPoint, body: 'Hello' }),
     );
 
     // Just after initiating the request, teh count should go up by 1

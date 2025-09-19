@@ -38,7 +38,7 @@ import { RxStomp } from './rx-stomp.js';
  */
 export type setupReplyQueueFnType = (
   replyQueueName: string,
-  rxStomp: RxStomp
+  rxStomp: RxStomp,
 ) => Observable<IMessage>;
 
 /**

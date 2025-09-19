@@ -17,5 +17,5 @@ export {
   StompHeaders,
   StompSocketState,
   TickerStrategy,
-  Versions
+  Versions,
 } from '@stomp/stompjs';

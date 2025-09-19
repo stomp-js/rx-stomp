@@ -8,7 +8,8 @@
     "build": "npm run clean && tsc && npm run rollup",
     "karma": "karma start spec/karma.conf.js --single-run",
     "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
-    "prepublishOnly": "npm run lint && npm run karma && npm run build"
+    "prepublishOnly": "npm run lint && npm run karma && npm run build",
+    "prettier": "prettier --write 'src/**/*.ts' 'spec/**/*.ts'"
   },
   "repository": {
     "type": "git",

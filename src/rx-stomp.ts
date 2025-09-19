@@ -7,7 +7,7 @@ import {
   share,
   Subject,
   Subscription,
-  take
+  take,
 } from 'rxjs';
 
 import {
@@ -18,7 +18,7 @@ import {
   publishParams,
   StompConfig,
   StompHeaders,
-  StompSubscription
+  StompSubscription,
 } from '@stomp/stompjs';
 
 import { RxStompConfig } from './rx-stomp-config.js';
@@ -202,24 +202,24 @@ export class RxStomp {
 
     // Initial state is CLOSED
     this._connectionStatePre$ = new BehaviorSubject<RxStompState>(
-      RxStompState.CLOSED
+      RxStompState.CLOSED,
     );
 
     this._connectedPre$ = this._connectionStatePre$.pipe(
       filter((currentState: RxStompState) => {
         return currentState === RxStompState.OPEN;
-      })
+      }),
     );
 
     // Initial state is CLOSED
     this.connectionState$ = new BehaviorSubject<RxStompState>(
-      RxStompState.CLOSED
+      RxStompState.CLOSED,
     );
 
     this.connected$ = this.connectionState$.pipe(
       filter((currentState: RxStompState) => {
         return currentState === RxStompState.OPEN;
-      })
+      }),
     );
 
     // Setup sending queuedMessages
@@ -233,7 +233,7 @@ export class RxStomp {
     this.serverHeaders$ = this._serverHeadersBehaviourSubject$.pipe(
       filter((headers: null | StompHeaders) => {
         return headers !== null;
-      })
+      }),
     );
 
     this.stompErrors$ = new Subject<IFrame>();
@@ -274,7 +274,7 @@ export class RxStomp {
   public configure(rxStompConfig: RxStompConfig) {
     const stompConfig: RxStompConfig = (Object as any).assign(
       {},
-      rxStompConfig
+      rxStompConfig,
     );
 
     if (stompConfig.beforeConnect) {
@@ -501,11 +501,11 @@ export class RxStomp {
    */
   public watch(
     destination: string,
-    headers?: StompHeaders
+    headers?: StompHeaders,
   ): Observable<IMessage>;
   public watch(
     opts: string | IWatchParams,
-    headers: StompHeaders = {}
+    headers: StompHeaders = {},
   ): Observable<IMessage> {
     const defaults: IWatchParams = {
       subHeaders: {},
@@ -558,7 +558,7 @@ export class RxStomp {
           if (correlatedDestination === params.destination) {
             messages.error(error);
           }
-        }
+        },
       );
 
       stompConnectedSubscription = connectedPre$.subscribe(() => {
@@ -572,14 +572,14 @@ export class RxStomp {
           (message: IMessage) => {
             messages.next(message);
           },
-          subHeaders
+          subHeaders,
         );
       });
 
       return () => {
         /* cleanup function, it will be called when no subscribers are left */
         this._debug(
-          `Stop watching connection state (for ${params.destination})`
+          `Stop watching connection state (for ${params.destination})`,
         );
         stompConnectedSubscription.unsubscribe();
         stompErrorsSubscription.unsubscribe();
@@ -593,7 +593,7 @@ export class RxStomp {
           stompSubscription.unsubscribe(unsubHeaders);
         } else {
           this._debug(
-            `Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`
+            `Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`,
           );
         }
       };
@@ -612,53 +612,53 @@ export class RxStomp {
    */
   public watchForReceipt(
     receiptId: string,
-    callback: (frame: IFrame) => void
+    callback: (frame: IFrame) => void,
   ): void {
     this._stompClient.watchForReceipt(receiptId, callback);
   }
 
-    /**
-     * Wait for a broker RECEIPT matching the provided receipt-id.
-     *
-     * How it works
-     * - To request an acknowledgment for an operation (e.g., publish, subscribe, unsubscribe),
-     *   include a `receipt` header in that operation with a unique value.
-     * - A compliant broker will respond with a `RECEIPT` frame whose `receipt-id` header equals
-     *   the value you sent in the `receipt` header.
-     * - This method returns a Promise that resolves with the matching {@link IFrame} when the
-     *   corresponding `RECEIPT` arrives.
-     *
-     * Receipt identifiers
-     * - Must be unique per request; generating a UUID or monotonic sequence is typical.
-     *
-     * Notes
-     * - The Promise resolves once for the first matching receipt and then completes.
-     * - No timeout is enforced by default; to add one, wrap with your own timeout logic (e.g., Promise.race).
-     *
-     * Example:
-     * ```javascript
-     * // Publish with receipt tracking
-     * const receiptId = randomText();
-     * rxStomp.publish({
-     *   destination: "/topic/special",
-     *   headers: { receipt: receiptId },
-     *   body: msg
-     * });
-     * const receiptFrame = await rxStomp.asyncReceipt(receiptId); // resolves with the RECEIPT frame
-     * ```
-     *
-     * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
-     */
-    public asyncReceipt(receiptId: string): Promise<IFrame> {
-      return firstValueFrom(
-        this.unhandledReceipts$.pipe(
-          filter(frame => frame.headers['receipt-id'] === receiptId)
-        )
-      );
-    }
+  /**
+   * Wait for a broker RECEIPT matching the provided receipt-id.
+   *
+   * How it works
+   * - To request an acknowledgment for an operation (e.g., publish, subscribe, unsubscribe),
+   *   include a `receipt` header in that operation with a unique value.
+   * - A compliant broker will respond with a `RECEIPT` frame whose `receipt-id` header equals
+   *   the value you sent in the `receipt` header.
+   * - This method returns a Promise that resolves with the matching {@link IFrame} when the
+   *   corresponding `RECEIPT` arrives.
+   *
+   * Receipt identifiers
+   * - Must be unique per request; generating a UUID or monotonic sequence is typical.
+   *
+   * Notes
+   * - The Promise resolves once for the first matching receipt and then completes.
+   * - No timeout is enforced by default; to add one, wrap with your own timeout logic (e.g., Promise.race).
+   *
+   * Example:
+   * ```javascript
+   * // Publish with receipt tracking
+   * const receiptId = randomText();
+   * rxStomp.publish({
+   *   destination: "/topic/special",
+   *   headers: { receipt: receiptId },
+   *   body: msg
+   * });
+   * const receiptFrame = await rxStomp.asyncReceipt(receiptId); // resolves with the RECEIPT frame
+   * ```
+   *
+   * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
+   */
+  public asyncReceipt(receiptId: string): Promise<IFrame> {
+    return firstValueFrom(
+      this.unhandledReceipts$.pipe(
+        filter(frame => frame.headers['receipt-id'] === receiptId),
+      ),
+    );
+  }
 
-    protected _changeState(state: RxStompState): void {
-      this._connectionStatePre$.next(state);
-      this.connectionState$.next(state);
-    }
+  protected _changeState(state: RxStompState): void {
+    this._connectionStatePre$.next(state);
+    this.connectionState$.next(state);
+  }
 }

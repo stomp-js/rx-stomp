@@ -81,7 +81,7 @@ export class RxStompRPC {
    */
   constructor(
     private rxStomp: RxStomp,
-    private stompRPCConfig?: RxStompRPCConfig
+    private stompRPCConfig?: RxStompRPCConfig,
   ) {
     if (stompRPCConfig) {
       if (stompRPCConfig.replyQueueName) {
@@ -138,7 +138,7 @@ export class RxStompRPC {
     if (!this._repliesObservable) {
       const repliesObservable = this._setupReplyQueue(
         this._replyQueueName,
-        this.rxStomp
+        this.rxStomp,
       );
 
       // In case of custom queue, ensure it remains subscribed
@@ -158,7 +158,7 @@ export class RxStompRPC {
         .pipe(
           filter((message: IMessage) => {
             return message.headers['correlation-id'] === correlationId;
-          })
+          }),
         )
         .subscribe((message: IMessage) => {
           rpcObserver.next(message);

@@ -19,7 +19,7 @@ function simulateWebSocketConnected(client: Client) {
     new FrameImpl({
       command: 'MESSAGE',
       headers: {},
-    })
+    }),
   );
 }
 
@@ -28,7 +28,7 @@ function simulateStompErrorAtDestination(client: Client, destination: string) {
     new FrameImpl({
       command: 'ERROR',
       body: destination,
-    })
+    }),
   );
 }
 
@@ -51,14 +51,14 @@ describe('Correlate Errors', () => {
           new MessageImpl({
             command: 'MESSAGE',
             body: destination,
-          })
+          }),
         );
 
         return {
           id: `${destination}-subscription`,
           unsubscribe: noop,
         };
-      }
+      },
     );
 
     rxStomp = new RxStomp(client);
