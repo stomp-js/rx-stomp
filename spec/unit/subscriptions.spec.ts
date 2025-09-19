@@ -4,17 +4,9 @@ import 'jasmine';
 
 import { filter, firstValueFrom } from 'rxjs';
 
-import { Message } from '@stomp/stompjs';
-
-import { RxStomp, RxStompState } from '../../src';
-
+import { IMessage, RxStomp, RxStompState } from '../../src';
 import { generateBinaryData } from '../helpers/content-helpers';
-import {
-  disconnectRxStompAndEnsure,
-  ensureRxStompConnected,
-  forceDisconnectAndEnsure,
-  wait,
-} from '../helpers/helpers';
+import { disconnectRxStompAndEnsure, ensureRxStompConnected, forceDisconnectAndEnsure, wait } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Subscribe & Publish', () => {
@@ -73,7 +65,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
 
@@ -95,7 +87,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
 
@@ -117,7 +109,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(queueName).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
       rxStomp.publish({ destination: queueName, body: msg });
@@ -140,7 +132,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
 
@@ -156,7 +148,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
 
@@ -272,7 +264,7 @@ describe('Subscribe & Publish', () => {
       const retPromise = firstValueFrom(
         rxStomp.watch(endPoint).pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
       );
 
@@ -299,7 +291,7 @@ describe('Subscribe & Publish', () => {
         .watch({ destination: endPoint, subscribeOnlyOnce: true })
         .pipe(
           // Since the queue is durable, we may receive older messages as well, discard those
-          filter((m: Message) => m.body === msg)
+          filter((m: IMessage) => m.body === msg)
         )
         .subscribe(m => onMessage(m));
 
