@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.0 (2025-09-18)
+
+- Update dependencies.
+- Add newer @stomp/stompjs configuration options.
+- Cleaned and improved documentation.
+
 ## 2.0.1 (2025-03-09)
 
 - Update dependencies.
