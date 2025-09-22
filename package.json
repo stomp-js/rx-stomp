@@ -59,7 +59,10 @@
     "typescript": "^5.9.2"
   },
   "type": "module",
-  "exports": "./esm6/index.js",
+  "exports": {
+    "import": "./esm6/index.js",
+    "require": "./bundles/rx-stomp.umd.js"
+  },
   "main": "./esm6/index.js",
   "browser": "bundles/rx-stomp.umd.js",
   "typings": "index.d.ts",
