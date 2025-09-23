@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.2.0 (2025-09-23)
+
+- added export for commonjs [#602](https://github.com/stomp-js/rx-stomp/pull/602).
+  Many thanks, [Ivan](https://github.com/akaNightmare).
+
 ## 2.1.0 (2025-09-18)
 
 - Update dependencies.

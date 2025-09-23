@@ -188,6 +188,7 @@ If you want to understand the code, develop, or contribute. Please visit
 - [Michel Promonet](https://github.com/mpromonet)
 - [Ray Booysen](https://github.com/raybooysen)
 - [Matt Critchlow](https://github.com/vigie)
+- [Ivan](https://github.com/akaNightmare)
 - Everyone involved at https://github.com/stomp-js/stompjs
  
 ## License
