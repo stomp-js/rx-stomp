@@ -1,4 +1,3 @@
-
 import 'jasmine';
 
 // Helper functions

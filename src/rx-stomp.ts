@@ -541,7 +541,6 @@ export class RxStomp {
        */
       let stompSubscription: StompSubscription | undefined; // Stomp
 
-
       let connectedPre$ = this._connectedPre$;
 
       if (params.subscribeOnlyOnce) {

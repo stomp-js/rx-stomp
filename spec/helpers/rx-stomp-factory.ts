@@ -1,4 +1,3 @@
-
 import { RxStomp, RxStompConfig } from '../../src';
 
 export function defaultConfig(): RxStompConfig {

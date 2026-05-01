@@ -1,4 +1,3 @@
-
 import 'jasmine';
 
 import { firstValueFrom, TimeoutError } from 'rxjs';
@@ -79,7 +78,10 @@ describe('Receipt', () => {
     it('rejects with TimeoutError when no receipt arrives within the timeout', async () => {
       await ensureRxStompConnected(rxStomp);
 
-      const receiptPromise = rxStomp.asyncReceipt('receipt-that-never-comes', 100);
+      const receiptPromise = rxStomp.asyncReceipt(
+        'receipt-that-never-comes',
+        100,
+      );
 
       await expectAsync(receiptPromise).toBeRejectedWithError(TimeoutError);
     });

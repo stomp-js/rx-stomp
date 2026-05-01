@@ -1,4 +1,3 @@
-
 import 'jasmine';
 
 import { RxStomp, RxStompState } from '../../src';
