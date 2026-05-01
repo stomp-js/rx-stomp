@@ -11,7 +11,7 @@ import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { firstValueFrom } from 'rxjs';
 
 describe('Connection', () => {
-  let rxStomp: RxStomp;
+  let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
   beforeEach(() => {

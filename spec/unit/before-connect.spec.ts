@@ -8,7 +8,7 @@ import { disconnectRxStompAndEnsure, wait } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
 
 describe('Connection', () => {
-  let rxStomp: RxStomp;
+  let rxStomp: RxStomp | null;
 
   // Disconnect and wait till it actually disconnects
   afterEach(async () => {

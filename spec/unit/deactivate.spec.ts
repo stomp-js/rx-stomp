@@ -12,7 +12,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Deactivate', () => {
-  let rxStomp: RxStomp;
+  let rxStomp: RxStomp | null;
 
   beforeEach(async () => {
     rxStomp = rxStompFactory();

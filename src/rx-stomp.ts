@@ -194,7 +194,7 @@ export class RxStomp {
     this._beforeConnect = noOp;
 
     // Correlate errors is falsey op by default
-    this._correlateErrors = () => undefined;
+    this._correlateErrors = () => '';
 
     // debug is no-op by default
     this._debug = noOp;
@@ -538,7 +538,7 @@ export class RxStomp {
       /*
        * These variables will be used as part of the closure and work their magic during unsubscribe
        */
-      let stompSubscription: StompSubscription; // Stomp
+      let stompSubscription: StompSubscription | undefined; // Stomp
 
 
       let connectedPre$ = this._connectedPre$;
@@ -563,7 +563,7 @@ export class RxStomp {
           subHeaders = subHeaders();
         }
         stompSubscription = this._stompClient.subscribe(
-          params.destination,
+          params.destination!,
           (message: IMessage) => {
             messages.next(message);
           },
@@ -585,7 +585,7 @@ export class RxStomp {
           if (typeof unsubHeaders === 'function') {
             unsubHeaders = unsubHeaders();
           }
-          stompSubscription.unsubscribe(unsubHeaders);
+          stompSubscription!.unsubscribe(unsubHeaders);
         } else {
           this._debug(
             `Stomp not connected, no need to unsubscribe from ${params.destination} at Stomp`,

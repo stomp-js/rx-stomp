@@ -14,7 +14,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
 describe('Subscribe & Publish', () => {
-  let rxStomp: RxStomp;
+  let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
   beforeEach(() => {

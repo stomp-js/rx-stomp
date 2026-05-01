@@ -55,7 +55,7 @@ export class RxStompRPC {
    * Shared stream of all messages arriving on the reply destination.
    * Lazily initialized on first call to {@link stream}.
    */
-  private _repliesObservable: Observable<IMessage>;
+  private _repliesObservable: Observable<IMessage> | undefined;
 
   /**
    * True when a custom reply queue setup function is supplied.
@@ -64,7 +64,7 @@ export class RxStompRPC {
   private _customReplyQueue: boolean = false;
 
   // This is used to ensure that underlying subscription remains subscribed
-  private _dummySubscription: Subscription;
+  private _dummySubscription: Subscription | undefined;
 
   /**
    * Construct a new RxStompRPC.
@@ -152,7 +152,7 @@ export class RxStompRPC {
     return Observable.create((rpcObserver: Observer<IMessage>) => {
       const correlationId = headers['correlation-id'] || uuid();
 
-      const defaultMessagesSubscription: Subscription = this._repliesObservable
+      const defaultMessagesSubscription: Subscription = this._repliesObservable!
         .pipe(
           filter((message: IMessage) => {
             return message.headers['correlation-id'] === correlationId;
