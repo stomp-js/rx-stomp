@@ -16,7 +16,7 @@ Following tools are getting used:
 - `compodoc` for API documentation - https://compodoc.app/
 - `Jasmine` for test cases - https://jasmine.github.io/
 - `Karma` for running test cases in browsers - http://karma-runner.github.io/
-- `webpack` for build - https://webpack.js.org/
+- `rollup` for bundling - https://rollupjs.org/
 - `nodejs` during development - https://nodejs.org/
 - `npm` for dependency management, packaging and distribution - https://www.npmjs.com/
 - `git` for version control - https://git-scm.com/
@@ -39,27 +39,26 @@ Instructions on setting up development environment:
 ├── LICENSE.md
 ├── README.md
 ├── bin/                     -- Scripts invoked from `npm` tasks
-├── bundles/                 -- Generated code browsers
-├── esm5/                    -- Generated ES5 modules
-├── esm6/                    -- Generated ES6 modules
+├── bundles/                 -- Generated UMD bundles for browsers (generated)
+├── esm6/                    -- Generated ES2020 modules (generated)
 ├── index.d.ts
-├── karma.conf.js
 ├── package-lock.json
 ├── package.json
 ├── rabbitmq/
-│   └── Dockerfile           -- This builds a docker image that is used to run test cases
-├── spec/                    -- These test cases run both for nodejs (using just Jasmine) and Chrome (Jasmine/Karma)
-│   ├── helpers/
-│   └── unit/                -- Test cases using Jasmine
-├── src/                     -- Typescript sources
-├── tsconfig.json
-└── webpack.config.js
+│   └── Dockerfile           -- Builds a Docker image used to run tests
+├── rollup.config.mjs        -- Rollup bundler configuration
+├── spec/                    -- Test cases
+│   ├── helpers/             -- Shared test utilities and factory functions
+│   ├── karma.conf.js        -- Karma test runner configuration
+│   └── unit/                -- Test cases using Jasmine
+├── src/                     -- TypeScript sources
+└── tsconfig.json
 ```
 
 ## Setup a Stomp broker
 
 - A Stomp broker is used for running the tests. I have been using RabbitMQ.
-- Edit `spec/helpers/stomp.service.factory.ts` as per
+- Edit `spec/helpers/rx-stomp-factory.ts` as per
   your setup. Defaults should work for as RabbitMQ default setup on localhost.
 - Please note that in RabbitMQ you will need to enable Stomp and WebStomp plugins.
 - By default RabbitMQ WebStomp will treat messages a text, you will need to tell
@@ -78,12 +77,11 @@ Instructions on setting up development environment:
 Key npm tasks:
 
 ```text
-clean - Remove generated built artifacts
-build-tsc - Internally used by `npm run build`
-build-webpack - Internally used by `npm run build`
-build - Build three variants - ES5, ES6, and UMD
-karma - Run tests in browsers
-lint - run tslint
+clean   - Remove generated build artifacts (bundles/, esm6/)
+build   - Compile TypeScript to esm6/ and bundle to bundles/
+karma   - Run tests in browsers (Chrome and Firefox headless)
+lint    - Run eslint
+prettier - Format source files
 ```
 
 ### Basic development workflow
@@ -109,7 +107,7 @@ lint - run tslint
 ### Creating a Pull Request
 
 1. Please exclude generated files from the commit
-   (`bundles`, `esm5` and `esm6`) folders.
+   (`bundles` and `esm6` folders).
    These will be generated during merge and release process.
 1. Please ensure that following passes successfully:
    ```bash
