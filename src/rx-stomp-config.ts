@@ -84,6 +84,7 @@ export class RxStompConfig {
    *
    * Maps to: [Client#webSocketFactory]{@link Client#webSocketFactory}
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public webSocketFactory?: () => any;
 
   /**

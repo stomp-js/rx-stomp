@@ -150,11 +150,9 @@ export class RxStompRPC {
     }
 
     return Observable.create((rpcObserver: Observer<IMessage>) => {
-      let defaultMessagesSubscription: Subscription;
-
       const correlationId = headers['correlation-id'] || uuid();
 
-      defaultMessagesSubscription = this._repliesObservable
+      const defaultMessagesSubscription: Subscription = this._repliesObservable
         .pipe(
           filter((message: IMessage) => {
             return message.headers['correlation-id'] === correlationId;

@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 
 import 'jasmine';
 
@@ -202,8 +201,8 @@ describe('Subscribe & Publish', () => {
     const subHeaders = { hello: 'world' };
     const unsubHeaders = { bye: 'world' };
 
-    let subSpy: any;
-    let unsubSpy: any;
+    let subSpy: jasmine.Spy;
+    let unsubSpy: jasmine.Spy;
 
     // Wait till RxStomp is actually connected
     beforeEach(async () => ensureRxStompConnected(rxStomp));
@@ -211,7 +210,7 @@ describe('Subscribe & Publish', () => {
     beforeEach(() => {
       subSpy = spyOn(rxStomp.stompClient, 'subscribe').and.callThrough();
       unsubSpy = spyOn(
-        // @ts-ignore - accessing private property
+        // @ts-expect-error - accessing private property
         rxStomp.stompClient._stompHandler,
         'unsubscribe',
       ).and.callThrough();

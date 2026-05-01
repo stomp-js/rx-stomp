@@ -7,7 +7,7 @@
     "rollup": "rollup -c --bundleConfigAsCjs && rm -f bundles/*.d.ts",
     "build": "npm run clean && tsc && npm run rollup",
     "karma": "karma start spec/karma.conf.js --single-run",
-    "lint": "tslint 'src/**/*ts' 'spec/**/*ts'",
+    "lint": "eslint 'src/**/*.ts' 'spec/**/*.ts'",
     "prepublishOnly": "npm run lint && npm run karma && npm run build",
     "prettier": "prettier --write 'src/**/*.ts' 'spec/**/*.ts'"
   },
@@ -44,6 +44,8 @@
     "@rollup/plugin-terser": "^1.0.0",
     "@types/jasmine": "^5.1.9",
     "@types/uuid": "^11.0.0",
+    "eslint": "^10.2.1",
+    "eslint-config-prettier": "^10.1.8",
     "jasmine": "^5.10.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -53,9 +55,8 @@
     "karma-summary-reporter": "^4.0.1",
     "prettier": "^3.6.2",
     "rollup": "^4.50.2",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.59.1"
   },
   "type": "module",
   "exports": "./esm6/index.js",

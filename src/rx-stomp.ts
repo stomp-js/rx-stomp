@@ -6,7 +6,6 @@ import {
   Observer,
   share,
   Subject,
-  Subscription,
   take,
 } from 'rxjs';
 
@@ -272,10 +271,7 @@ export class RxStomp {
    * Maps to: [Client#configure]{@link Client#configure}.
    */
   public configure(rxStompConfig: RxStompConfig) {
-    const stompConfig: RxStompConfig = (Object as any).assign(
-      {},
-      rxStompConfig,
-    );
+    const stompConfig: RxStompConfig = Object.assign({}, rxStompConfig);
 
     if (stompConfig.beforeConnect) {
       this._beforeConnect = stompConfig.beforeConnect;
@@ -544,7 +540,6 @@ export class RxStomp {
        */
       let stompSubscription: StompSubscription; // Stomp
 
-      let stompConnectedSubscription: Subscription; // RxJS
 
       let connectedPre$ = this._connectedPre$;
 
@@ -561,7 +556,7 @@ export class RxStomp {
         },
       );
 
-      stompConnectedSubscription = connectedPre$.subscribe(() => {
+      const stompConnectedSubscription = connectedPre$.subscribe(() => {
         this._debug(`Will subscribe to ${params.destination}`);
         let subHeaders = params.subHeaders;
         if (typeof subHeaders === 'function') {

@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 
 import { RxStomp, RxStompConfig } from '../../src';
 
