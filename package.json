@@ -8,8 +8,15 @@
     "build": "npm run clean && tsc && npm run rollup",
     "karma": "karma start spec/karma.conf.js --single-run",
     "lint": "eslint 'src/**/*.ts' 'spec/**/*.ts'",
+    "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run karma && npm run build",
     "prettier": "prettier --write 'src/**/*.ts' 'spec/**/*.ts'"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "repository": {
     "type": "git",
@@ -46,6 +53,7 @@
     "@types/uuid": "^11.0.0",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "jasmine": "^5.10.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -53,6 +61,7 @@
     "karma-jasmine": "^5.1.0",
     "karma-rollup-preprocessor": "^7.0.8",
     "karma-summary-reporter": "^4.0.1",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.6.2",
     "rollup": "^4.50.2",
     "typescript": "^5.9.2",
