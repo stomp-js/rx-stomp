@@ -1,7 +1,7 @@
 
 import 'jasmine';
 
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, TimeoutError } from 'rxjs';
 
 import { RxStomp } from '../../src';
 import {
@@ -58,5 +58,30 @@ describe('Receipt', () => {
 
   it('gets a receipt for activities before establishing a connection', async () => {
     await sendReceiveWithReceipt();
+  });
+
+  describe('asyncReceipt with timeout', () => {
+    it('resolves when the receipt arrives before the timeout', async () => {
+      await ensureRxStompConnected(rxStomp);
+
+      const receiptId = 'timeout-receipt-ok';
+      const receiptPromise = rxStomp.asyncReceipt(receiptId, 5000);
+
+      rxStomp.publish({
+        destination: '/topic/timeout-test',
+        body: 'test',
+        headers: { receipt: receiptId },
+      });
+
+      await expectAsync(receiptPromise).toBeResolved();
+    });
+
+    it('rejects with TimeoutError when no receipt arrives within the timeout', async () => {
+      await ensureRxStompConnected(rxStomp);
+
+      const receiptPromise = rxStomp.asyncReceipt('receipt-that-never-comes', 100);
+
+      await expectAsync(receiptPromise).toBeRejectedWithError(TimeoutError);
+    });
   });
 });

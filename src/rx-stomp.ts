@@ -7,6 +7,7 @@ import {
   share,
   Subject,
   take,
+  timeout,
 } from 'rxjs';
 
 import {
@@ -628,27 +629,30 @@ export class RxStomp {
    *
    * Notes
    * - The Promise resolves once for the first matching receipt and then completes.
-   * - No timeout is enforced by default; to add one, wrap with your own timeout logic (e.g., Promise.race).
+   * - If `timeoutMs` is provided, the Promise rejects with an RxJS `TimeoutError` if no
+   *   matching RECEIPT arrives within that many milliseconds.
+   * - Without `timeoutMs`, the Promise waits indefinitely.
    *
    * Example:
    * ```javascript
-   * // Publish with receipt tracking
+   * // Publish with receipt tracking and a 5-second timeout
    * const receiptId = randomText();
    * rxStomp.publish({
    *   destination: "/topic/special",
    *   headers: { receipt: receiptId },
    *   body: msg
    * });
-   * const receiptFrame = await rxStomp.asyncReceipt(receiptId); // resolves with the RECEIPT frame
+   * const receiptFrame = await rxStomp.asyncReceipt(receiptId, 5000);
    * ```
    *
    * Maps to: [Client#watchForReceipt]{@link Client#watchForReceipt}
    */
-  public asyncReceipt(receiptId: string): Promise<IFrame> {
+  public asyncReceipt(receiptId: string, timeoutMs?: number): Promise<IFrame> {
+    const frames$ = this.unhandledReceipts$.pipe(
+      filter(frame => frame.headers['receipt-id'] === receiptId),
+    );
     return firstValueFrom(
-      this.unhandledReceipts$.pipe(
-        filter(frame => frame.headers['receipt-id'] === receiptId),
-      ),
+      timeoutMs !== undefined ? frames$.pipe(timeout(timeoutMs)) : frames$,
     );
   }
 
