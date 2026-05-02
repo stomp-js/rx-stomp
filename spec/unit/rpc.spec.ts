@@ -98,16 +98,17 @@ const rpcWithBinaryPayload = async (
 test.describe('RPC', () => {
   let rxStomp: RxStomp;
   let rxStompRPC: RxStompRPC;
-  const myRPCEndPoint = `/topic/echo-${uuid().slice(0, 8)}`;
+  let myRPCEndPoint: string;
 
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
+    myRPCEndPoint = `/topic/echo-${uuid().slice(0, 8)}`;
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp);
     await ensureRxStompConnected(rxStomp);
     await startRPCServer(rxStomp, myRPCEndPoint);
   });
 
-  test.afterAll(async () => {
+  test.afterEach(async () => {
     await rxStomp.deactivate({ force: true });
   });
 
@@ -146,30 +147,32 @@ test.describe('RPC', () => {
 test.describe('Custom Queue RPC', () => {
   let rxStomp: RxStomp;
   let rxStompRPC: RxStompRPC;
-  const myRPCEndPoint = `/topic/echo-${uuid().slice(0, 8)}`;
+  let myRPCEndPoint: string;
 
-  const stompRPCConfig = {
-    // A name unique across all clients
-    replyQueueName: `/queue/replies-${uuid()}`,
-
-    // Simply subscribe, you would need to secure by adding broker specific options
-    setupReplyQueue: (replyQueueName: string, rxStomp1: RxStomp) => {
-      return rxStomp1.watch(replyQueueName, {
-        durable: 'false',
-        'auto-delete': 'true',
-        exclusive: 'true',
-      });
-    },
-  };
-
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
+    myRPCEndPoint = `/topic/echo-${uuid().slice(0, 8)}`;
     rxStomp = rxStompFactory();
+
+    const stompRPCConfig = {
+      // A name unique across all clients
+      replyQueueName: `/queue/replies-${uuid()}`,
+
+      // Simply subscribe, you would need to secure by adding broker specific options
+      setupReplyQueue: (replyQueueName: string, rxStomp1: RxStomp) => {
+        return rxStomp1.watch(replyQueueName, {
+          durable: 'false',
+          'auto-delete': 'true',
+          exclusive: 'true',
+        });
+      },
+    };
+
     rxStompRPC = new RxStompRPC(rxStomp, stompRPCConfig);
     await ensureRxStompConnected(rxStomp);
     await startRPCServer(rxStomp, myRPCEndPoint);
   });
 
-  test.afterAll(async () => {
+  test.afterEach(async () => {
     await rxStomp.deactivate({ force: true });
   });
 

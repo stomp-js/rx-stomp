@@ -14,18 +14,13 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-// Unique suffix so this file's queues don't collide with parallel runs of other spec files
-const runId = uuid().slice(0, 8);
-const topicSub = `/topic/ng-demo-sub-${runId}`;
-const topicSub01 = `/topic/ng-demo-sub01-${runId}`;
-const topicSub02 = `/topic/ng-demo-sub02-${runId}`;
-const queueSub02 = `/queue/ng-demo-sub02-${runId}`;
-
 test.describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp | null;
+  let testId: string;
 
   // Wait till RxStomp is actually connected
   test.beforeEach(() => {
+    testId = uuid().slice(0, 8);
     rxStomp = rxStompFactory();
   });
 
@@ -41,6 +36,7 @@ test.describe('Subscribe & Publish', () => {
     test.beforeEach(async () => ensureRxStompConnected(rxStomp));
 
     test('send and receive a message', async () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const msg = 'My very special message';
 
       // Subscribe
@@ -54,6 +50,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('send and receive a binary message', async () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const binaryMsg = generateBinaryData(1);
 
       // Subscribe
@@ -69,6 +66,7 @@ test.describe('Subscribe & Publish', () => {
 
   test.describe('Without established connection', () => {
     test('should be able to subscribe even before STOMP is connected', async () => {
+      const topicSub01 = `/topic/ng-demo-sub01-${testId}`;
       const msg = 'My very special message 01';
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
@@ -90,6 +88,7 @@ test.describe('Subscribe & Publish', () => {
 
     test('should be able to publish/subscribe even before STOMP is connected', async () => {
       // Queue is a durable queue
+      const queueSub02 = `/queue/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 02' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
@@ -108,6 +107,7 @@ test.describe('Subscribe & Publish', () => {
 
     test('should be able to publish/subscribe when STOMP is disconnected', async () => {
       // Queue is a durable queue
+      const queueSub02 = `/queue/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 03' + Math.random();
 
       // Actively disconnect simulating error after STOMP connects, then publish the message
@@ -127,6 +127,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should be able to subscribe before queued messages are actually sent', async () => {
+      const topicSub02 = `/topic/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 03' + Math.random();
 
       // Actively disconnect simulating error after STOMP connects, then publish the message
@@ -148,6 +149,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should be able to subscribe before sending queued messages when broker was disconnected', async () => {
+      const topicSub02 = `/topic/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 03' + Math.random();
 
       // Subscribe and set up the Observable, the underlying STOMP may not have been connected
@@ -169,6 +171,7 @@ test.describe('Subscribe & Publish', () => {
 
     test.describe('When providing retry flag', () => {
       test('should not be able to publish before STOMP is connected', () => {
+        const queueSub02 = `/queue/ng-demo-sub02-${testId}`;
         const msg = 'My very special message 02' + Math.random();
         expect(() =>
           rxStomp.publish({
@@ -180,6 +183,7 @@ test.describe('Subscribe & Publish', () => {
       });
 
       test('should not be able to publish when STOMP is disconnected', async () => {
+        const queueSub02 = `/queue/ng-demo-sub02-${testId}`;
         const msg = 'My very special message 03' + Math.random();
         // Actively disconnect simulating error after STOMP connects, then publish the message
         await forceDisconnectAndEnsure(rxStomp);
@@ -214,6 +218,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should send subscription headers', () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const sub = rxStomp
         .watch({ destination: topicSub, subHeaders })
         .subscribe(() => {});
@@ -221,6 +226,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should send subscription headers returned by a function', () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const sub = rxStomp
         .watch({ destination: topicSub, subHeaders: () => subHeaders })
         .subscribe(() => {});
@@ -229,6 +235,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should use passed unsubscription headers', () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const sub = rxStomp
         .watch({ destination: topicSub, unsubHeaders })
         .subscribe(() => {});
@@ -238,6 +245,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should use unsubscription headers returned by a function', () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const sub = rxStomp
         .watch({ destination: topicSub, unsubHeaders: () => unsubHeaders })
         .subscribe(() => {});
@@ -247,6 +255,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should use subscription/unsubscription headers', () => {
+      const topicSub = `/topic/ng-demo-sub-${testId}`;
       const sub = rxStomp
         .watch({ destination: topicSub, subHeaders, unsubHeaders })
         .subscribe(() => {});
@@ -259,6 +268,7 @@ test.describe('Subscribe & Publish', () => {
 
   test.describe('Reconnection', () => {
     test('should resubscribe on reconnection', async () => {
+      const topicSub02 = `/topic/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 05' + Math.random();
 
       const retPromise = firstValueFrom(
@@ -282,6 +292,7 @@ test.describe('Subscribe & Publish', () => {
     });
 
     test('should not resubscribe with subscribeOnlyOnce', async () => {
+      const topicSub02 = `/topic/ng-demo-sub02-${testId}`;
       const msg = 'My very special message 05' + Math.random();
 
       const onMessage = sinon.spy();

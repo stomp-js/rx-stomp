@@ -10,15 +10,13 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-const runId = uuid().slice(0, 8);
-const receiptTopic = `/topic/ng-demo-receipt-${runId}`;
-const timeoutTopic = `/topic/timeout-test-${runId}`;
-
 test.describe('Receipt', () => {
   let rxStomp: RxStomp | null;
+  let testId: string;
 
   // Wait till RxStomp is actually connected
   test.beforeEach(() => {
+    testId = uuid().slice(0, 8);
     rxStomp = rxStompFactory();
   });
 
@@ -29,6 +27,7 @@ test.describe('Receipt', () => {
   });
 
   async function sendReceiveWithReceipt() {
+    const receiptTopic = `/topic/ng-demo-receipt-${testId}`;
     const msg = 'My very special message';
 
     const watchReceipt = 'watch-receipt';
@@ -65,6 +64,7 @@ test.describe('Receipt', () => {
 
   test.describe('asyncReceipt with timeout', () => {
     test('resolves when the receipt arrives before the timeout', async () => {
+      const timeoutTopic = `/topic/timeout-test-${testId}`;
       await ensureRxStompConnected(rxStomp);
 
       const receiptId = 'timeout-receipt-ok';

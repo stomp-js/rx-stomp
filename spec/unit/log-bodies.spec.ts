@@ -9,9 +9,6 @@ import { RxStomp } from '../../src';
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
 
-const runId = uuid().slice(0, 8);
-const queueName = `/topic/ng-demo-sub-${runId}`;
-
 test.describe('Log Bodies', () => {
   let rxStomp: RxStomp | null;
 
@@ -23,6 +20,7 @@ test.describe('Log Bodies', () => {
   });
 
   test('logs when logRawCommunication is set', async () => {
+    const queueName = `/topic/ng-demo-sub-${uuid().slice(0, 8)}`;
     // Text picked up from https://github.com/stomp-js/stomp-websocket/pull/46
     const body = 'Älä sinä yhtään and السابق';
 

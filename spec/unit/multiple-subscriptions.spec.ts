@@ -12,13 +12,13 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-const runId = uuid().slice(0, 8);
-
 test.describe('Multiple Queues', () => {
   let rxStomp: RxStomp | null;
+  let testId: string;
 
   // Wait till RxStomp is actually connected
   test.beforeEach(async () => {
+    testId = uuid().slice(0, 8);
     rxStomp = rxStompFactory();
     await ensureRxStompConnected(rxStomp);
   });
@@ -31,8 +31,8 @@ test.describe('Multiple Queues', () => {
   });
 
   test.describe('should handle two simultaneous subscriptions', () => {
-    const queueName1 = `/topic/ng-demo-sub01-${runId}`;
-    const queueName2 = `/topic/ng-demo-sub02-${runId}`;
+    let queueName1: string;
+    let queueName2: string;
 
     let queSubscription1: Subscription;
     let queSubscription2: Subscription;
@@ -46,6 +46,8 @@ test.describe('Multiple Queues', () => {
     let spyHandler2: sinon.SinonSpy;
 
     test.beforeEach(() => {
+      queueName1 = `/topic/ng-demo-sub01-${testId}`;
+      queueName2 = `/topic/ng-demo-sub02-${testId}`;
       spyHandler1 = sinon.spy(handlers, 'handler1');
       spyHandler2 = sinon.spy(handlers, 'handler2');
     });
