@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.5.0-beta.1 (2026-05-02)
+
+- Add optional `timeoutMs` parameter to `asyncReceipt` — throws a `TimeoutError` if no receipt is received within the specified duration.
+- Improve TypeScript typings with strict null checks; adjust `_correlateErrors` default return value.
+- Replace Karma/Jasmine test runner with [Playwright](https://playwright.dev/) (`@playwright/test` + sinon), enabling parallel test execution.
+- Replace TSLint with ESLint for linting.
+- Add Husky and lint-staged for pre-commit checks.
+
 ## 2.4.0 (2026-05-01)
 
 - Extended `uuid` peer dependency range to `>=9.0.0 <15.0.0` to resolve npm audit advisory [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq) (missing buffer bounds check in `uuid` v3/v5/v6). Only `v4()` is used internally, no API changes. PR [#641](https://github.com/stomp-js/rx-stomp/pull/641). Fixes [#240](https://github.com/stomp-js/rx-stomp/issues/640).
