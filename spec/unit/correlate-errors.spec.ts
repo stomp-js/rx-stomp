@@ -1,5 +1,6 @@
 import { Client, FrameImpl, messageCallbackType } from '@stomp/stompjs';
-import 'jasmine';
+import { test, expect } from '@playwright/test';
+import sinon from 'sinon';
 import { skip } from 'rxjs';
 
 import { RxStomp } from '../../src';
@@ -32,21 +33,22 @@ function simulateStompErrorAtDestination(client: Client, destination: string) {
   );
 }
 
-describe('Correlate Errors', () => {
+test.describe('Correlate Errors', () => {
   let rxStomp: RxStomp;
   let client: Client;
 
-  beforeEach(() => {
+  test.beforeEach(() => {
     client = new Client();
 
-    spyOn(client, 'activate').and.callFake(() => {
+    sinon.stub(client, 'activate').callsFake(() => {
       simulateWebSocketConnected(client);
     });
 
     // Simulate a destination that simply sends back its destination id in a message body whenever
     // subscribed
-    spyOn(client, 'subscribe').and.callFake(
-      (destination: string, callback: messageCallbackType) => {
+    sinon
+      .stub(client, 'subscribe')
+      .callsFake((destination: string, callback: messageCallbackType) => {
         callback(
           new MessageImpl({
             command: 'MESSAGE',
@@ -58,8 +60,7 @@ describe('Correlate Errors', () => {
           id: `${destination}-subscription`,
           unsubscribe: noop,
         };
-      },
-    );
+      });
 
     rxStomp = new RxStomp(client);
 
@@ -72,27 +73,35 @@ describe('Correlate Errors', () => {
     rxStomp.activate();
   });
 
-  it('should terminate destination observable if error correlates', done => {
+  test.afterEach(() => {
+    sinon.restore();
+  });
+
+  test('should terminate destination observable if error correlates', async () => {
     const destinationA$ = rxStomp.watch({
       destination: destinationA,
     });
 
-    destinationA$.subscribe({
-      next: message => {
-        expect(message.command).toBe('MESSAGE');
-        expect(message.body).toBe(destinationA);
-      },
-      error: error => {
-        expect(error.command).toBe('ERROR');
-        expect(error.body).toBe(destinationA);
-        done();
-      },
+    const errorPromise = new Promise<FrameImpl>((resolve, reject) => {
+      destinationA$.subscribe({
+        next: message => {
+          expect(message.command).toBe('MESSAGE');
+          expect(message.body).toBe(destinationA);
+        },
+        error: error => {
+          resolve(error);
+        },
+      });
     });
 
     simulateStompErrorAtDestination(client, destinationA);
+
+    const error = await errorPromise;
+    expect(error.command).toBe('ERROR');
+    expect(error.body).toBe(destinationA);
   });
 
-  it('should not terminate destination observable if error does not correlate', () => {
+  test('should not terminate destination observable if error does not correlate', () => {
     const destinationB$ = rxStomp.watch({
       destination: destinationB,
     });
@@ -103,14 +112,14 @@ describe('Correlate Errors', () => {
         expect(message.body).toBe(destinationB);
       },
       error: () => {
-        fail();
+        expect(true).toBe(false);
       },
     });
 
     simulateStompErrorAtDestination(client, destinationA);
   });
 
-  it('should not automatically resubscribe destinations that error', () => {
+  test('should not automatically resubscribe destinations that error', () => {
     const destinationA$ = rxStomp.watch({
       destination: destinationA,
     });
@@ -120,7 +129,7 @@ describe('Correlate Errors', () => {
 
     // We should not expect a second emit after the reconnection on this destination that will error.
     destinationA$.pipe(skip(1)).subscribe({
-      next: () => fail(),
+      next: () => expect(true).toBe(false),
       error: error => {
         expect(error.command).toBe('ERROR');
         expect(error.body).toBe(destinationA);
@@ -133,7 +142,7 @@ describe('Correlate Errors', () => {
         expect(message.command).toBe('MESSAGE');
         expect(message.body).toBe(destinationB);
       },
-      error: () => fail(),
+      error: () => expect(true).toBe(false),
     });
 
     simulateStompErrorAtDestination(client, destinationA);

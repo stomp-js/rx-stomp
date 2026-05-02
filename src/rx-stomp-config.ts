@@ -1,11 +1,10 @@
 import {
-  debugFnType,
-  IFrame,
   ReconnectionTimeMode,
   StompHeaders,
   TickerStrategy,
   Versions,
 } from '@stomp/stompjs';
+import type { debugFnType, IFrame } from '@stomp/stompjs';
 import { RxStomp } from './rx-stomp.js';
 
 /**

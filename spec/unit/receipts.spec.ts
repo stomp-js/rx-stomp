@@ -1,4 +1,4 @@
-import 'jasmine';
+import { test, expect } from '@playwright/test';
 
 import { firstValueFrom, TimeoutError } from 'rxjs';
 
@@ -9,16 +9,16 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-describe('Receipt', () => {
+test.describe('Receipt', () => {
   let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
-  beforeEach(() => {
+  test.beforeEach(() => {
     rxStomp = rxStompFactory();
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
@@ -49,18 +49,18 @@ describe('Receipt', () => {
     expect(message.body).toBe(msg);
   }
 
-  it('gets a receipt with established connection', async () => {
+  test('gets a receipt with established connection', async () => {
     // Wait till RxStomp is actually connected
     await ensureRxStompConnected(rxStomp);
     await sendReceiveWithReceipt();
   });
 
-  it('gets a receipt for activities before establishing a connection', async () => {
+  test('gets a receipt for activities before establishing a connection', async () => {
     await sendReceiveWithReceipt();
   });
 
-  describe('asyncReceipt with timeout', () => {
-    it('resolves when the receipt arrives before the timeout', async () => {
+  test.describe('asyncReceipt with timeout', () => {
+    test('resolves when the receipt arrives before the timeout', async () => {
       await ensureRxStompConnected(rxStomp);
 
       const receiptId = 'timeout-receipt-ok';
@@ -72,10 +72,10 @@ describe('Receipt', () => {
         headers: { receipt: receiptId },
       });
 
-      await expectAsync(receiptPromise).toBeResolved();
+      await receiptPromise;
     });
 
-    it('rejects with TimeoutError when no receipt arrives within the timeout', async () => {
+    test('rejects with TimeoutError when no receipt arrives within the timeout', async () => {
       await ensureRxStompConnected(rxStomp);
 
       const receiptPromise = rxStomp.asyncReceipt(
@@ -83,7 +83,7 @@ describe('Receipt', () => {
         100,
       );
 
-      await expectAsync(receiptPromise).toBeRejectedWithError(TimeoutError);
+      await expect(receiptPromise).rejects.toThrow(TimeoutError);
     });
   });
 });

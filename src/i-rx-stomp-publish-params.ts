@@ -1,4 +1,4 @@
-import { IPublishParams } from '@stomp/stompjs';
+import type { IPublishParams } from '@stomp/stompjs';
 
 /**
  * Additional options for [RxStomp#publish]{@link RxStomp#publish}.

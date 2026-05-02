@@ -1,4 +1,5 @@
-import 'jasmine';
+import { test, expect } from '@playwright/test';
+import sinon from 'sinon';
 
 import { map, Subscription } from 'rxjs';
 
@@ -10,22 +11,23 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-describe('Multiple Queues', () => {
+test.describe('Multiple Queues', () => {
   let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
-  beforeEach(async () => {
+  test.beforeEach(async () => {
     rxStomp = rxStompFactory();
     await ensureRxStompConnected(rxStomp);
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
+    sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
-  describe('should handle two simultaneous subscriptions', () => {
+  test.describe('should handle two simultaneous subscriptions', () => {
     const queueName1 = '/topic/ng-demo-sub01';
     const queueName2 = '/topic/ng-demo-sub02';
 
@@ -37,16 +39,16 @@ describe('Multiple Queues', () => {
       handler2: () => {},
     };
 
-    let spyHandler1: jasmine.Spy;
-    let spyHandler2: jasmine.Spy;
+    let spyHandler1: sinon.SinonSpy;
+    let spyHandler2: sinon.SinonSpy;
 
-    beforeEach(() => {
-      spyHandler1 = spyOn(handlers, 'handler1');
-      spyHandler2 = spyOn(handlers, 'handler2');
+    test.beforeEach(() => {
+      spyHandler1 = sinon.spy(handlers, 'handler1');
+      spyHandler2 = sinon.spy(handlers, 'handler2');
     });
 
     // Subscribe to both queues
-    beforeEach(async () => {
+    test.beforeEach(async () => {
       queSubscription1 = rxStomp
         .watch(queueName1)
         .pipe(map(message => message.body))
@@ -61,34 +63,34 @@ describe('Multiple Queues', () => {
     });
 
     // Send one message to each queue and verify that these are received in respective subscriptions
-    beforeEach(async () => {
+    test.beforeEach(async () => {
       rxStomp.publish({ destination: queueName1, body: 'Message 01-01' });
       rxStomp.publish({ destination: queueName2, body: 'Message 02-01' });
 
       await wait(100);
-      expect(spyHandler1).toHaveBeenCalledWith('Message 01-01');
-      expect(spyHandler2).toHaveBeenCalledWith('Message 02-01');
+      expect(spyHandler1.calledWith('Message 01-01')).toBe(true);
+      expect(spyHandler2.calledWith('Message 02-01')).toBe(true);
     });
 
-    it('should receive message in correct queue', () => {
+    test('should receive message in correct queue', () => {
       // It is ensured by all beforeEach blocks
       expect(true).toBe(true);
     });
 
-    describe('unsubscribe both queues', () => {
-      beforeEach(async () => {
+    test.describe('unsubscribe both queues', () => {
+      test.beforeEach(async () => {
         queSubscription1.unsubscribe();
         queSubscription2.unsubscribe();
         await wait(100);
       });
 
-      it('should not receive message in any of the  queues', async () => {
+      test('should not receive message in any of the  queues', async () => {
         rxStomp.publish({ destination: queueName1, body: 'Message 01-02' });
         rxStomp.publish({ destination: queueName2, body: 'Message 02-02' });
 
         await wait(100);
-        expect(spyHandler1.calls.count()).toBe(1);
-        expect(spyHandler2.calls.count()).toBe(1);
+        expect(spyHandler1.callCount).toBe(1);
+        expect(spyHandler2.callCount).toBe(1);
       });
     });
   });

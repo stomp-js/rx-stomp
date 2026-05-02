@@ -1,5 +1,3 @@
-import 'jasmine';
-
 // Helper functions
 import { RxStomp, RxStompState } from '../../src';
 import { filter, firstValueFrom } from 'rxjs';

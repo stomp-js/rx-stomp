@@ -1,4 +1,4 @@
-import 'jasmine';
+import { test, expect } from '@playwright/test';
 
 import { RxStomp } from '../../src';
 
@@ -9,29 +9,29 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 import { firstValueFrom } from 'rxjs';
 
-describe('Connection', () => {
+test.describe('Connection', () => {
   let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
-  beforeEach(() => {
+  test.beforeEach(() => {
     rxStomp = rxStompFactory();
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
-  it('should be active', () => {
+  test('should be active', () => {
     expect(rxStomp.active).toBe(true);
   });
 
-  it('should connect', async () => {
+  test('should connect', async () => {
     await ensureRxStompConnected(rxStomp);
   });
 
-  it('should receive server headers', async () => {
+  test('should receive server headers', async () => {
     const headers = await firstValueFrom(rxStomp.serverHeaders$);
     // Check that we have received at least one key in header
     expect(Object.keys(headers).length).toBeGreaterThan(0);

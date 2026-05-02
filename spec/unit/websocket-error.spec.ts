@@ -1,22 +1,22 @@
 import { firstValueFrom, take } from 'rxjs';
 
-import 'jasmine';
+import { test, expect } from '@playwright/test';
 
 import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
 
-describe('WebSocket Error', () => {
+test.describe('WebSocket Error', () => {
   let rxStomp: RxStomp | null;
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
-  it('should trigger webSocketErrors$', async () => {
+  test('should trigger webSocketErrors$', async () => {
     rxStomp = new RxStomp();
     rxStomp.configure(defaultConfig());
 

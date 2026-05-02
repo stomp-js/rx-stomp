@@ -10,14 +10,12 @@ import {
   timeout,
 } from 'rxjs';
 
-import {
-  Client,
+import { Client, StompConfig, StompHeaders } from '@stomp/stompjs';
+import type {
   debugFnType,
   IFrame,
   IMessage,
   publishParams,
-  StompConfig,
-  StompHeaders,
   StompSubscription,
 } from '@stomp/stompjs';
 

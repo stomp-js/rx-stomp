@@ -1,4 +1,5 @@
-import 'jasmine';
+import { test, expect } from '@playwright/test';
+import sinon from 'sinon';
 
 import { filter, firstValueFrom } from 'rxjs';
 
@@ -12,25 +13,26 @@ import {
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
 
-describe('Subscribe & Publish', () => {
+test.describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp | null;
 
   // Wait till RxStomp is actually connected
-  beforeEach(() => {
+  test.beforeEach(() => {
     rxStomp = rxStompFactory();
   });
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
+    sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
-  describe('with established connection', () => {
+  test.describe('with established connection', () => {
     // Wait till RxStomp is actually connected
-    beforeEach(async () => ensureRxStompConnected(rxStomp));
+    test.beforeEach(async () => ensureRxStompConnected(rxStomp));
 
-    it('send and receive a message', async () => {
+    test('send and receive a message', async () => {
       const queueName = '/topic/ng-demo-sub';
       const msg = 'My very special message';
 
@@ -44,7 +46,7 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('send and receive a binary message', async () => {
+    test('send and receive a binary message', async () => {
       const queueName = '/topic/ng-demo-sub';
       const binaryMsg = generateBinaryData(1);
 
@@ -59,8 +61,8 @@ describe('Subscribe & Publish', () => {
     });
   });
 
-  describe('Without established connection', () => {
-    it('should be able to subscribe even before STOMP is connected', async () => {
+  test.describe('Without established connection', () => {
+    test('should be able to subscribe even before STOMP is connected', async () => {
       const queueName = '/topic/ng-demo-sub01';
       const msg = 'My very special message 01';
 
@@ -81,7 +83,7 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('should be able to publish/subscribe even before STOMP is connected', async () => {
+    test('should be able to publish/subscribe even before STOMP is connected', async () => {
       // Queue is a durable queue
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 02' + Math.random();
@@ -100,7 +102,7 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('should be able to publish/subscribe when STOMP is disconnected', async () => {
+    test('should be able to publish/subscribe when STOMP is disconnected', async () => {
       // Queue is a durable queue
       const queueName = '/queue/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
@@ -121,7 +123,7 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('should be able to subscribe before queued messages are actually sent', async () => {
+    test('should be able to subscribe before queued messages are actually sent', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
@@ -143,7 +145,7 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('should be able to subscribe before sending queued messages when broker was disconnected', async () => {
+    test('should be able to subscribe before sending queued messages when broker was disconnected', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 03' + Math.random();
 
@@ -164,8 +166,8 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    describe('When providing retry flag', () => {
-      it('should not be able to publish before STOMP is connected', () => {
+    test.describe('When providing retry flag', () => {
+      test('should not be able to publish before STOMP is connected', () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 02' + Math.random();
@@ -178,7 +180,7 @@ describe('Subscribe & Publish', () => {
         ).toThrow();
       });
 
-      it('should not be able to publish when STOMP is disconnected', async () => {
+      test('should not be able to publish when STOMP is disconnected', async () => {
         // Queue is a durable queue
         const queueName = '/queue/ng-demo-sub02';
         const msg = 'My very special message 03' + Math.random();
@@ -195,72 +197,72 @@ describe('Subscribe & Publish', () => {
     });
   });
 
-  describe('Headers', () => {
+  test.describe('Headers', () => {
     const queueName = '/topic/ng-demo-sub';
     const subHeaders = { hello: 'world' };
     const unsubHeaders = { bye: 'world' };
 
-    let subSpy: jasmine.Spy;
-    let unsubSpy: jasmine.Spy;
+    let subSpy: sinon.SinonSpy;
+    let unsubSpy: sinon.SinonSpy;
 
     // Wait till RxStomp is actually connected
-    beforeEach(async () => ensureRxStompConnected(rxStomp));
+    test.beforeEach(async () => ensureRxStompConnected(rxStomp));
 
-    beforeEach(() => {
-      subSpy = spyOn(rxStomp.stompClient, 'subscribe').and.callThrough();
-      unsubSpy = spyOn(
+    test.beforeEach(() => {
+      subSpy = sinon.spy(rxStomp.stompClient, 'subscribe');
+      unsubSpy = sinon.spy(
         // @ts-expect-error - accessing private property
         rxStomp.stompClient._stompHandler,
         'unsubscribe',
-      ).and.callThrough();
+      );
     });
 
-    it('should send subscription headers', () => {
+    test('should send subscription headers', () => {
       const sub = rxStomp
         .watch({ destination: queueName, subHeaders })
         .subscribe(() => {});
-      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
+      expect(subSpy.args[0][2]).toEqual(subHeaders);
     });
 
-    it('should send subscription headers returned by a function', () => {
+    test('should send subscription headers returned by a function', () => {
       const sub = rxStomp
         .watch({ destination: queueName, subHeaders: () => subHeaders })
         .subscribe(() => {});
 
-      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
+      expect(subSpy.args[0][2]).toEqual(subHeaders);
     });
 
-    it('should use passed unsubscription headers', () => {
+    test('should use passed unsubscription headers', () => {
       const sub = rxStomp
         .watch({ destination: queueName, unsubHeaders })
         .subscribe(() => {});
 
       sub.unsubscribe();
-      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+      expect(unsubSpy.args[0][1]).toEqual(unsubHeaders);
     });
 
-    it('should use unsubscription headers returned by a function', () => {
+    test('should use unsubscription headers returned by a function', () => {
       const sub = rxStomp
         .watch({ destination: queueName, unsubHeaders: () => unsubHeaders })
         .subscribe(() => {});
 
       sub.unsubscribe();
-      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+      expect(unsubSpy.args[0][1]).toEqual(unsubHeaders);
     });
 
-    it('should use subscription/unsubscription headers', () => {
+    test('should use subscription/unsubscription headers', () => {
       const sub = rxStomp
         .watch({ destination: queueName, subHeaders, unsubHeaders })
         .subscribe(() => {});
 
       sub.unsubscribe();
-      expect(subSpy.calls.argsFor(0)[2]).toEqual(subHeaders);
-      expect(unsubSpy.calls.argsFor(0)[1]).toEqual(unsubHeaders);
+      expect(subSpy.args[0][2]).toEqual(subHeaders);
+      expect(unsubSpy.args[0][1]).toEqual(unsubHeaders);
     });
   });
 
-  describe('Reconnection', () => {
-    it('should resubscribe on reconnection', async () => {
+  test.describe('Reconnection', () => {
+    test('should resubscribe on reconnection', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 05' + Math.random();
 
@@ -284,11 +286,11 @@ describe('Subscribe & Publish', () => {
       expect(message.body).toBe(msg);
     });
 
-    it('should not resubscribe with subscribeOnlyOnce', async () => {
+    test('should not resubscribe with subscribeOnlyOnce', async () => {
       const endPoint = '/topic/ng-demo-sub02';
       const msg = 'My very special message 05' + Math.random();
 
-      const onMessage = jasmine.createSpy('onMessage');
+      const onMessage = sinon.spy();
 
       rxStomp
         .watch({ destination: endPoint, subscribeOnlyOnce: true })
@@ -309,7 +311,7 @@ describe('Subscribe & Publish', () => {
       // wait for some time
       await wait(1000);
 
-      expect(onMessage).not.toHaveBeenCalled();
+      expect(onMessage.called).toBe(false);
     });
   });
 });

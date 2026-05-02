@@ -1,7 +1,7 @@
 // Tests under 'RPC' group are likely to fail on any broker other than RabbitMQ
 // The tests under 'Custom Queue RPC' should work on every broker
 
-import 'jasmine';
+import { test, expect } from '@playwright/test';
 
 import { IMessage, RxStomp, RxStompRPC } from '../../src';
 import { v4 as uuid } from 'uuid';
@@ -13,10 +13,7 @@ import { firstValueFrom } from 'rxjs';
 
 const myRPCEndPoint = '/topic/echo';
 
-let rxStomp: RxStomp;
-let rxStompRPC: RxStompRPC;
-
-const startRPCServer = async () => {
+const startRPCServer = async (rxStomp: RxStomp) => {
   const receiptId = uuid();
 
   rxStomp
@@ -40,32 +37,35 @@ const startRPCServer = async () => {
   });
 };
 
-const rpcCallHelper = (message: string): Promise<IMessage> =>
+const rpcCallHelper = (
+  rxStompRPC: RxStompRPC,
+  message: string,
+): Promise<IMessage> =>
   firstValueFrom(rxStompRPC.rpc({ destination: myRPCEndPoint, body: message }));
 
-const simpleRPCRetestTest = async () => {
+const simpleRPCRetestTest = async (rxStompRPC: RxStompRPC) => {
   const msg01 = 'Hello';
 
-  const reply01 = await rpcCallHelper(msg01);
+  const reply01 = await rpcCallHelper(rxStompRPC, msg01);
   expect(reply01.body).toEqual(msg01);
 };
 
-const multiRPCRetestsTest = async () => {
+const multiRPCRetestsTest = async (rxStompRPC: RxStompRPC) => {
   const msg01 = 'Hello';
   const msg02 = 'World';
   const msg03 = 'Hello World';
 
-  const reply01 = await rpcCallHelper(msg01);
+  const reply01 = await rpcCallHelper(rxStompRPC, msg01);
   expect(reply01.body).toEqual(msg01);
 
-  const reply02 = await rpcCallHelper(msg02);
+  const reply02 = await rpcCallHelper(rxStompRPC, msg02);
   expect(reply02.body).toEqual(msg02);
 
-  const reply03 = await rpcCallHelper(msg03);
+  const reply03 = await rpcCallHelper(rxStompRPC, msg03);
   expect(reply03.body).toEqual(msg03);
 };
 
-const rpcWithCustomCorrelationId = async () => {
+const rpcWithCustomCorrelationId = async (rxStompRPC: RxStompRPC) => {
   const msg = 'Hello';
   const customCorrelationId = `custom-${uuid()}`;
   const headers = { 'correlation-id': customCorrelationId };
@@ -77,7 +77,7 @@ const rpcWithCustomCorrelationId = async () => {
   expect(reply.headers['correlation-id']).toEqual(customCorrelationId);
 };
 
-const rpcWithBinayPayload = async () => {
+const rpcWithBinayPayload = async (rxStompRPC: RxStompRPC) => {
   const binaryMsg = generateBinaryData(1);
   const message = await firstValueFrom(
     rxStompRPC.rpc({ destination: myRPCEndPoint, binaryBody: binaryMsg }),
@@ -85,22 +85,29 @@ const rpcWithBinayPayload = async () => {
   expect(message.binaryBody.toString()).toEqual(binaryMsg.toString());
 };
 
-describe('RPC', () => {
+test.describe('RPC', () => {
+  let rxStomp: RxStomp;
+  let rxStompRPC: RxStompRPC;
+
   // Wait till RxStomp is actually connected
-  beforeAll(async () => {
+  test.beforeAll(async () => {
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp);
     await ensureRxStompConnected(rxStomp);
+    await startRPCServer(rxStomp);
   });
 
-  beforeAll(startRPCServer);
+  test.afterAll(async () => {
+    await rxStomp.deactivate();
+  });
 
-  it('Simple RPC', simpleRPCRetestTest);
-  it('Multiple RPC requests', multiRPCRetestsTest);
-  it('RPC with custom correlation-id', rpcWithCustomCorrelationId);
-  it('RPC with binary payload', rpcWithBinayPayload);
+  test('Simple RPC', async () => simpleRPCRetestTest(rxStompRPC));
+  test('Multiple RPC requests', async () => multiRPCRetestsTest(rxStompRPC));
+  test('RPC with custom correlation-id', async () =>
+    rpcWithCustomCorrelationId(rxStompRPC));
+  test('RPC with binary payload', async () => rpcWithBinayPayload(rxStompRPC));
 
-  it('Should not leak', async () => {
+  test('Should not leak', async () => {
     const numSubscribers = () => {
       // `.observers` is deprecated, as it is an internal implementation detail.
       // There is no equivalent. We will drop this test when this stops working.
@@ -113,7 +120,7 @@ describe('RPC', () => {
       rxStompRPC.rpc({ destination: myRPCEndPoint, body: 'Hello' }),
     );
 
-    // Just after initiating the request, teh count should go up by 1
+    // Just after initiating the request, the count should go up by 1
     expect(numSubscribers()).toBe(origNumSubscribers + 1);
 
     // After receiving the response, the count should go back
@@ -123,7 +130,10 @@ describe('RPC', () => {
   });
 });
 
-describe('Custom Queue RPC', () => {
+test.describe('Custom Queue RPC', () => {
+  let rxStomp: RxStomp;
+  let rxStompRPC: RxStompRPC;
+
   const stompRPCConfig = {
     // A name unique across all clients
     replyQueueName: `/queue/replies-${uuid()}`,
@@ -139,16 +149,20 @@ describe('Custom Queue RPC', () => {
   };
 
   // Wait till RxStomp is actually connected
-  beforeAll(async () => {
+  test.beforeAll(async () => {
     rxStomp = rxStompFactory();
     rxStompRPC = new RxStompRPC(rxStomp, stompRPCConfig);
     await ensureRxStompConnected(rxStomp);
+    await startRPCServer(rxStomp);
   });
 
-  beforeAll(startRPCServer);
+  test.afterAll(async () => {
+    await rxStomp.deactivate();
+  });
 
-  it('Simple RPC', simpleRPCRetestTest);
-  it('Multiple RPC requests', multiRPCRetestsTest);
-  it('RPC with custom correlation-id', rpcWithCustomCorrelationId);
-  it('RPC with binary payload', rpcWithBinayPayload);
+  test('Simple RPC', async () => simpleRPCRetestTest(rxStompRPC));
+  test('Multiple RPC requests', async () => multiRPCRetestsTest(rxStompRPC));
+  test('RPC with custom correlation-id', async () =>
+    rpcWithCustomCorrelationId(rxStompRPC));
+  test('RPC with binary payload', async () => rpcWithBinayPayload(rxStompRPC));
 });

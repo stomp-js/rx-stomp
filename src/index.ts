@@ -8,14 +8,17 @@ export * from './i-rx-stomp-publish-params.js';
 export * from './i-watch-params.js';
 
 export {
-  IFrame,
-  IMessage,
-  IPublishParams,
-  IStompSocket,
-  ITransaction,
   ReconnectionTimeMode,
   StompHeaders,
   StompSocketState,
   TickerStrategy,
   Versions,
+} from '@stomp/stompjs';
+
+export type {
+  IFrame,
+  IMessage,
+  IPublishParams,
+  IStompSocket,
+  ITransaction,
 } from '@stomp/stompjs';

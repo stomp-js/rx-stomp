@@ -1,42 +1,44 @@
 import { firstValueFrom, skip, take } from 'rxjs';
 
-import 'jasmine';
+import { test, expect } from '@playwright/test';
+import sinon from 'sinon';
 
 import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure, wait } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
 
-describe('Connection', () => {
+test.describe('Connection', () => {
   let rxStomp: RxStomp | null;
 
   // Disconnect and wait till it actually disconnects
-  afterEach(async () => {
+  test.afterEach(async () => {
+    sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
     rxStomp = null;
   });
 
-  it('should call beforeConnect', async () => {
+  test('should call beforeConnect', async () => {
     rxStomp = new RxStomp();
     rxStomp.configure(defaultConfig());
 
-    const beforeConnect = jasmine.createSpy();
+    const beforeConnect = sinon.spy();
     rxStomp.configure({ beforeConnect });
 
     rxStomp.activate();
 
     // Disconnect so that it reconnects
     rxStomp.connected$.pipe(take(1)).subscribe(() => {
-      expect(beforeConnect).toHaveBeenCalled();
+      expect(beforeConnect.called).toBe(true);
       rxStomp.stompClient.forceDisconnect();
     });
 
     // When it reconnects, beforeConnect should be called again
     await firstValueFrom(rxStomp.connected$.pipe(skip(1), take(1)));
-    expect(beforeConnect.calls.count()).toEqual(2);
+    expect(beforeConnect.callCount).toEqual(2);
   });
 
-  it('should allow async beforeConnect', async () => {
+  test('should allow async beforeConnect', async () => {
     // In this test, initially there is no valid configuration to connect to the broker
     // The configuration is set in async beforeConnect
     rxStomp = new RxStomp();

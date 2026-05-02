@@ -1,4 +1,4 @@
-import { IMessage } from '@stomp/stompjs';
+import type { IMessage } from '@stomp/stompjs';
 import { Observable } from 'rxjs';
 import { RxStomp } from './rx-stomp.js';
 
