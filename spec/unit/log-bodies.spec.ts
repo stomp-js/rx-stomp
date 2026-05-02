@@ -2,11 +2,15 @@ import { firstValueFrom, take } from 'rxjs';
 
 import { test, expect } from '@playwright/test';
 import sinon from 'sinon';
+import { v4 as uuid } from 'uuid';
 
 import { RxStomp } from '../../src';
 
 import { disconnectRxStompAndEnsure } from '../helpers/helpers';
 import { defaultConfig } from '../helpers/rx-stomp-factory';
+
+const runId = uuid().slice(0, 8);
+const queueName = `/topic/ng-demo-sub-${runId}`;
 
 test.describe('Log Bodies', () => {
   let rxStomp: RxStomp | null;
@@ -19,8 +23,6 @@ test.describe('Log Bodies', () => {
   });
 
   test('logs when logRawCommunication is set', async () => {
-    const queueName = '/topic/ng-demo-sub';
-
     // Text picked up from https://github.com/stomp-js/stomp-websocket/pull/46
     const body = 'Älä sinä yhtään and السابق';
 
@@ -38,7 +40,7 @@ test.describe('Log Bodies', () => {
     rxStomp.connected$.pipe(take(1)).subscribe(() => {
       rxStomp.publish({ destination: queueName, body });
       expect(debug.lastCall.args[0]).toEqual(
-        '>>> SEND\ndestination:/topic/ng-demo-sub\ncontent-length:37\n\nÄlä sinä yhtään and السابق' +
+        `>>> SEND\ndestination:${queueName}\ncontent-length:37\n\nÄlä sinä yhtään and السابق` +
           '\0',
       );
     });

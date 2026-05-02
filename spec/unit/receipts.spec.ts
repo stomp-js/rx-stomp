@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { firstValueFrom, TimeoutError } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 
 import { RxStomp } from '../../src';
 import {
@@ -8,6 +9,10 @@ import {
   ensureRxStompConnected,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
+
+const runId = uuid().slice(0, 8);
+const receiptTopic = `/topic/ng-demo-receipt-${runId}`;
+const timeoutTopic = `/topic/timeout-test-${runId}`;
 
 test.describe('Receipt', () => {
   let rxStomp: RxStomp | null;
@@ -24,7 +29,6 @@ test.describe('Receipt', () => {
   });
 
   async function sendReceiveWithReceipt() {
-    const queueName = '/topic/ng-demo-receipt';
     const msg = 'My very special message';
 
     const watchReceipt = 'watch-receipt';
@@ -32,14 +36,14 @@ test.describe('Receipt', () => {
 
     // Subscribe with receipt request
     const retPromise = firstValueFrom(
-      rxStomp.watch(queueName, { receipt: watchReceipt }),
+      rxStomp.watch(receiptTopic, { receipt: watchReceipt }),
     );
     await rxStomp.asyncReceipt(watchReceipt);
 
     // Now publish to the same queue with receipt request
     const promisePublishReceipt = rxStomp.asyncReceipt(publishReceipt);
     rxStomp.publish({
-      destination: queueName,
+      destination: receiptTopic,
       body: msg,
       headers: { receipt: publishReceipt },
     });
@@ -67,7 +71,7 @@ test.describe('Receipt', () => {
       const receiptPromise = rxStomp.asyncReceipt(receiptId, 5000);
 
       rxStomp.publish({
-        destination: '/topic/timeout-test',
+        destination: timeoutTopic,
         body: 'test',
         headers: { receipt: receiptId },
       });

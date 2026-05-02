@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import sinon from 'sinon';
+import { v4 as uuid } from 'uuid';
 
 import { map, Subscription } from 'rxjs';
 
@@ -10,6 +11,8 @@ import {
   wait,
 } from '../helpers/helpers';
 import { rxStompFactory } from '../helpers/rx-stomp-factory';
+
+const runId = uuid().slice(0, 8);
 
 test.describe('Multiple Queues', () => {
   let rxStomp: RxStomp | null;
@@ -28,8 +31,8 @@ test.describe('Multiple Queues', () => {
   });
 
   test.describe('should handle two simultaneous subscriptions', () => {
-    const queueName1 = '/topic/ng-demo-sub01';
-    const queueName2 = '/topic/ng-demo-sub02';
+    const queueName1 = `/topic/ng-demo-sub01-${runId}`;
+    const queueName2 = `/topic/ng-demo-sub02-${runId}`;
 
     let queSubscription1: Subscription;
     let queSubscription2: Subscription;
