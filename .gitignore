@@ -7,3 +7,7 @@ node_modules
 # Build/test files
 tmp
 /test-results/
+
+# Generated build artifacts — only committed during releases via bin/release.sh
+/bundles/
+/esm6/
