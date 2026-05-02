@@ -6,10 +6,10 @@
     "clean": "rm -rf bundles esm6",
     "rollup": "rollup -c --bundleConfigAsCjs && rm -f bundles/*.d.ts",
     "build": "npm run clean && tsc && npm run rollup",
-    "test": "playwright test",
+    "test": "playwright test --project=node",
     "lint": "eslint 'src/**/*.ts' 'spec/**/*.ts'",
     "prepare": "husky",
-    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run lint && playwright test && npm run build",
     "prettier": "prettier --write 'src/**/*.ts' 'spec/**/*.ts'"
   },
   "lint-staged": {
