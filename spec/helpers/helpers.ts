@@ -15,7 +15,7 @@ export async function ensureRxStompDisconnected(rxStomp: RxStomp) {
 }
 
 export async function disconnectRxStompAndEnsure(rxStomp: RxStomp) {
-  await rxStomp.deactivate();
+  await rxStomp.deactivate({ force: true });
 }
 
 export async function forceDisconnectAndEnsure(rxStomp: RxStomp) {
