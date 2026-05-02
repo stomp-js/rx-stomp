@@ -22,5 +22,5 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run lint
-      - run: npm install git+https://github.com/RLovelett/karma-safari-launcher.git#safari-webdriver
-      - run: npx karma start spec/karma.conf.js --single-run --browsers=Safari
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test --project=webkit
