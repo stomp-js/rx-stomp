@@ -10,7 +10,7 @@ import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 import { firstValueFrom } from 'rxjs';
 
 test.describe('Connection', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
 
   // Wait till RxStomp is actually connected
   test.beforeEach(() => {
@@ -20,7 +20,6 @@ test.describe('Connection', () => {
   // Disconnect and wait till it actually disconnects
   test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   test('should be active', () => {

@@ -10,13 +10,12 @@ import { disconnectRxStompAndEnsure } from '../helpers/helpers.js';
 import { defaultConfig } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Log Bodies', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
 
   // Disconnect and wait till it actually disconnects
   test.afterEach(async () => {
     sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   test('logs when logRawCommunication is set', async () => {

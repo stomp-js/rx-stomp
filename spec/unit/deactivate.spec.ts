@@ -11,7 +11,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Deactivate', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
 
   test.beforeEach(async () => {
     rxStomp = rxStompFactory();
@@ -21,7 +21,6 @@ test.describe('Deactivate', () => {
   // Disconnect and wait till it actually disconnects
   test.afterEach(async () => {
     await ensureRxStompDisconnected(rxStomp);
-    rxStomp = null;
   });
 
   test.describe('should disconnect', () => {

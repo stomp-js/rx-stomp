@@ -15,7 +15,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Subscribe & Publish', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
   let testId: string;
 
   // Wait till RxStomp is actually connected
@@ -28,7 +28,6 @@ test.describe('Subscribe & Publish', () => {
   test.afterEach(async () => {
     sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   test.describe('with established connection', () => {

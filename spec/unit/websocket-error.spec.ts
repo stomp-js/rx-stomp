@@ -8,12 +8,11 @@ import { disconnectRxStompAndEnsure } from '../helpers/helpers.js';
 import { defaultConfig } from '../helpers/rx-stomp-factory.js';
 
 test.describe('WebSocket Error', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
 
   // Disconnect and wait till it actually disconnects
   test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   test('should trigger webSocketErrors$', async () => {

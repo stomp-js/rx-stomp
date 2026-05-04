@@ -13,7 +13,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Multiple Queues', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
   let testId: string;
 
   // Wait till RxStomp is actually connected
@@ -27,7 +27,6 @@ test.describe('Multiple Queues', () => {
   test.afterEach(async () => {
     sinon.restore();
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   test.describe('should handle two simultaneous subscriptions', () => {

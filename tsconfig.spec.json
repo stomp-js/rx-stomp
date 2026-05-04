@@ -2,9 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "spec-out",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false
+    "noEmit": true
   },
   "include": ["./src/**/*.ts", "./spec/**/*.ts"]
 }

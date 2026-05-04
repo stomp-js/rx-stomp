@@ -11,7 +11,7 @@ import {
 import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Receipt', () => {
-  let rxStomp: RxStomp | null;
+  let rxStomp!: RxStomp;
   let testId: string;
 
   // Wait till RxStomp is actually connected
@@ -23,7 +23,6 @@ test.describe('Receipt', () => {
   // Disconnect and wait till it actually disconnects
   test.afterEach(async () => {
     await disconnectRxStompAndEnsure(rxStomp);
-    rxStomp = null;
   });
 
   async function sendReceiveWithReceipt() {
