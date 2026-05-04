@@ -6,7 +6,7 @@
     "clean": "rm -rf bundles esm6",
     "rollup": "rollup -c --bundleConfigAsCjs && rm -f bundles/*.d.ts",
     "build": "npm run clean && tsc && npm run rollup",
-    "test": "playwright test --project=node",
+    "test": "c8 playwright test --project=node",
     "lint": "eslint 'src/**/*.ts' 'spec/**/*.ts'",
     "prepare": "husky",
     "prepublishOnly": "npm run lint && playwright test && npm run build",
@@ -51,6 +51,7 @@
     "@rollup/plugin-terser": "^1.0.0",
     "@types/sinon": "^17.0.4",
     "@types/uuid": "^11.0.0",
+    "c8": "^11.0.0",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
@@ -66,5 +67,19 @@
   "main": "./esm6/index.js",
   "browser": "bundles/rx-stomp.umd.js",
   "typings": "index.d.ts",
-  "sideEffects": false
+  "sideEffects": false,
+  "c8": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "spec/**"
+    ],
+    "reporter": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "all": true
+  }
 }

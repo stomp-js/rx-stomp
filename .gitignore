@@ -8,6 +8,9 @@ node_modules
 tmp
 /test-results/
 
+# Code covergae output
+/coverage/
+
 # Generated build artifacts — only committed during releases via bin/release.sh
 /bundles/
 /esm6/
