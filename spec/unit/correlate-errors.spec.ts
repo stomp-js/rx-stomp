@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import sinon from 'sinon';
 import { skip } from 'rxjs';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 
 const noop: () => void = () => undefined;
 

@@ -4,13 +4,13 @@ import { v4 as uuid } from 'uuid';
 
 import { map, Subscription } from 'rxjs';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
   wait,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+} from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Multiple Queues', () => {
   let rxStomp: RxStomp | null;

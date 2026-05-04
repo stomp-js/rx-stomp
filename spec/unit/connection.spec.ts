@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+} from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 import { firstValueFrom } from 'rxjs';
 
 test.describe('Connection', () => {

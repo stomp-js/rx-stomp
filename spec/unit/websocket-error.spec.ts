@@ -2,10 +2,10 @@ import { firstValueFrom, take } from 'rxjs';
 
 import { test, expect } from '@playwright/test';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 
-import { disconnectRxStompAndEnsure } from '../helpers/helpers';
-import { defaultConfig } from '../helpers/rx-stomp-factory';
+import { disconnectRxStompAndEnsure } from '../helpers/helpers.js';
+import { defaultConfig } from '../helpers/rx-stomp-factory.js';
 
 test.describe('WebSocket Error', () => {
   let rxStomp: RxStomp | null;

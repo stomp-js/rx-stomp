@@ -3,12 +3,12 @@
 
 import { test, expect } from '@playwright/test';
 
-import { IMessage, RxStomp, RxStompRPC } from '../../src';
+import { IMessage, RxStomp, RxStompRPC } from '../../src/index.js';
 import { v4 as uuid } from 'uuid';
 
-import { generateBinaryData } from '../helpers/content-helpers';
-import { ensureRxStompConnected, wait } from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+import { generateBinaryData } from '../helpers/content-helpers.js';
+import { ensureRxStompConnected, wait } from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 import { firstValueFrom } from 'rxjs';
 
 const startRPCServer = async (rxStomp: RxStomp, endpoint: string) => {

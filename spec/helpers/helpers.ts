@@ -1,5 +1,5 @@
 // Helper functions
-import { RxStomp, RxStompState } from '../../src';
+import { RxStomp, RxStompState } from '../../src/index.js';
 import { filter, firstValueFrom } from 'rxjs';
 
 export async function ensureRxStompConnected(rxStomp: RxStomp) {

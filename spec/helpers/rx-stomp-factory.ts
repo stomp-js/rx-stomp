@@ -1,4 +1,4 @@
-import { RxStomp, RxStompConfig } from '../../src';
+import { RxStomp, RxStompConfig } from '../../src/index.js';
 
 export function defaultConfig(): RxStompConfig {
   return {

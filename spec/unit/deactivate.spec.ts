@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-import { RxStomp, RxStompState } from '../../src';
+import { RxStomp, RxStompState } from '../../src/index.js';
 
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
   ensureRxStompDisconnected,
   wait,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+} from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Deactivate', () => {
   let rxStomp: RxStomp | null;

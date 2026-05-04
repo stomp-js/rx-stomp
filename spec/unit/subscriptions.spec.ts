@@ -4,15 +4,15 @@ import { v4 as uuid } from 'uuid';
 
 import { filter, firstValueFrom } from 'rxjs';
 
-import { IMessage, RxStomp, RxStompState } from '../../src';
-import { generateBinaryData } from '../helpers/content-helpers';
+import { IMessage, RxStomp, RxStompState } from '../../src/index.js';
+import { generateBinaryData } from '../helpers/content-helpers.js';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
   forceDisconnectAndEnsure,
   wait,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+} from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Subscribe & Publish', () => {
   let rxStomp: RxStomp | null;

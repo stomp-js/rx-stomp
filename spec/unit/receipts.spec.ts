@@ -3,12 +3,12 @@ import { test, expect } from '@playwright/test';
 import { firstValueFrom, TimeoutError } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 import {
   disconnectRxStompAndEnsure,
   ensureRxStompConnected,
-} from '../helpers/helpers';
-import { rxStompFactory } from '../helpers/rx-stomp-factory';
+} from '../helpers/helpers.js';
+import { rxStompFactory } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Receipt', () => {
   let rxStomp: RxStomp | null;

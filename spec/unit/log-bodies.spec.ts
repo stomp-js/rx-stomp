@@ -4,10 +4,10 @@ import { test, expect } from '@playwright/test';
 import sinon from 'sinon';
 import { v4 as uuid } from 'uuid';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 
-import { disconnectRxStompAndEnsure } from '../helpers/helpers';
-import { defaultConfig } from '../helpers/rx-stomp-factory';
+import { disconnectRxStompAndEnsure } from '../helpers/helpers.js';
+import { defaultConfig } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Log Bodies', () => {
   let rxStomp: RxStomp | null;

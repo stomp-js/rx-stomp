@@ -3,10 +3,10 @@ import { firstValueFrom, skip, take } from 'rxjs';
 import { test, expect } from '@playwright/test';
 import sinon from 'sinon';
 
-import { RxStomp } from '../../src';
+import { RxStomp } from '../../src/index.js';
 
-import { disconnectRxStompAndEnsure, wait } from '../helpers/helpers';
-import { defaultConfig } from '../helpers/rx-stomp-factory';
+import { disconnectRxStompAndEnsure, wait } from '../helpers/helpers.js';
+import { defaultConfig } from '../helpers/rx-stomp-factory.js';
 
 test.describe('Connection', () => {
   let rxStomp: RxStomp | null;
