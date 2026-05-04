@@ -6,4 +6,4 @@ labels: ''
 assignees: ''
 ---
 
-Please see FAQs at https://stomp-js.github.io/faqs/2019/05/20/faqs.html before reporting.
+Please see FAQs at https://stomp-js.github.io/faqs/faqs.html before reporting.
